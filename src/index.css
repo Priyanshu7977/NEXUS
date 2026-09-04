@@ -1,0 +1,90 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --nexus-bg: #F6F6F3;
+    --nexus-bg-secondary: #FAFAF8;
+    --nexus-card: #FFFFFF;
+    --nexus-border: #E5E5E2;
+    --nexus-primary-text: #111318;
+    --nexus-secondary-text: #626873;
+    --nexus-muted-text: #8B919B;
+    --nexus-accent: #6D4AFF;
+    --nexus-blue: #3B82F6;
+    --nexus-cyan: #22C7E8;
+  }
+
+  body {
+    background-color: #F6F6F3;
+    color: #111318;
+    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* Custom subtle light scrollbar */
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  ::-webkit-scrollbar-track {
+    background: #F6F6F3;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: #D4D4CE;
+    border-radius: 3px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: #B8B8B0;
+  }
+}
+
+@layer utilities {
+  /* Subtle architectural light grid */
+  .bg-grid-light {
+    background-size: 40px 40px;
+    background-image: 
+      linear-gradient(to right, rgba(0, 0, 0, 0.03) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(0, 0, 0, 0.03) 1px, transparent 1px);
+  }
+
+  .bg-dots-light {
+    background-size: 24px 24px;
+    background-image: radial-gradient(rgba(0, 0, 0, 0.06) 1px, transparent 1px);
+  }
+
+  /* Technical dark canvas grid */
+  .bg-grid-dark {
+    background-size: 32px 32px;
+    background-image: 
+      linear-gradient(to right, rgba(255, 255, 255, 0.04) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
+  }
+
+  .bg-dots-dark {
+    background-size: 24px 24px;
+    background-image: radial-gradient(rgba(255, 255, 255, 0.08) 1px, transparent 1px);
+  }
+
+  /* Subtle card transition */
+  .card-hover {
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .card-hover:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 8px 24px -4px rgba(0, 0, 0, 0.06), 0 2px 6px -1px rgba(0, 0, 0, 0.03);
+    border-color: #D4D4CE;
+  }
+}
+
+/* Reduced motion preference */
+@media (prefers-reduced-motion: reduce) {
+  *, ::before, ::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
