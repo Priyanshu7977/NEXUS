@@ -77,6 +77,7 @@ export type WorkflowExecutionEventType =
   | 'MCP_TOOL_EXECUTED'
   | 'WORKFLOW_COMPLETED'
   | 'WORKFLOW_FAILED'
+  | 'WORKFLOW_CANCELLED'
   | 'WORKFLOW_PAUSED';
 
 export interface WorkflowExecutionNode {

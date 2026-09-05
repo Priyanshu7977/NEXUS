@@ -18,6 +18,7 @@ import { getWorkflowById, getWorkflowExecutions, updateWorkflow } from '../../se
 import { useAuth } from '../../context/AuthContext';
 import { RunWorkflowModal } from '../workflows/RunWorkflowModal';
 import { ApprovalActionModal } from '../workflows/ApprovalActionModal';
+import { LiveExecutionModal } from '../observability/LiveExecutionModal';
 
 export const WorkflowDetailPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -31,6 +32,7 @@ export const WorkflowDetailPage: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'Canvas' | 'Runs' | 'Settings'>('Canvas');
   const [showRunModal, setShowRunModal] = useState(false);
   const [selectedApprovalExec, setSelectedApprovalExec] = useState<WorkflowExecution | null>(null);
+  const [selectedExecutionId, setSelectedExecutionId] = useState<string | null>(null);
 
   // Settings form
   const [settingsName, setSettingsName] = useState('');
@@ -257,7 +259,8 @@ export const WorkflowDetailPage: React.FC = () => {
                   return (
                     <div
                       key={exec.id}
-                      className="p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4 hover:bg-[#FAFAF8] transition-colors"
+                      onClick={() => setSelectedExecutionId(exec.id)}
+                      className="p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4 hover:bg-[#FAFAF8] transition-colors cursor-pointer"
                     >
                       <div className="flex items-start gap-3">
                         <div className="w-8 h-8 rounded-lg bg-[#FAFAF8] border border-[#E5E5E2] flex items-center justify-center shrink-0 mt-0.5">
@@ -388,6 +391,23 @@ export const WorkflowDetailPage: React.FC = () => {
           onDecisionCompleted={() => {
             setSelectedApprovalExec(null);
             loadWorkflowData();
+          }}
+        />
+      )}
+
+      {/* Embedded Live Execution Modal */}
+      {selectedExecutionId && (
+        <LiveExecutionModal
+          isOpen={Boolean(selectedExecutionId)}
+          workspaceId={workspaceId}
+          executionId={selectedExecutionId}
+          onClose={() => {
+            setSelectedExecutionId(null);
+            loadWorkflowData();
+          }}
+          onNavigateToFullPage={(id) => {
+            setSelectedExecutionId(null);
+            navigate(`/app/activity/${id}`);
           }}
         />
       )}

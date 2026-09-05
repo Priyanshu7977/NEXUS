@@ -29,7 +29,7 @@ export const ActivityPage: React.FC = () => {
   const [viewMode, setViewMode] = useState<'operational' | 'audit'>('operational');
 
   // Operational State
-  const [selectedFilter, setSelectedFilter] = useState<'All' | 'Agents' | 'Workflows' | 'Connectors'>('All');
+  const [selectedFilter, setSelectedFilter] = useState<'All' | 'Agents' | 'Workflows' | 'Connectors' | 'Approvals' | 'Deployments'>('All');
   const [searchQuery, setSearchQuery] = useState('');
   const [activities, setActivities] = useState<WorkspaceActivity[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
@@ -92,7 +92,9 @@ export const ActivityPage: React.FC = () => {
       selectedFilter === 'All' ||
       (selectedFilter === 'Agents' && r.type === 'agent') ||
       (selectedFilter === 'Workflows' && r.type === 'workflow') ||
-      (selectedFilter === 'Connectors' && r.type === 'connector');
+      (selectedFilter === 'Connectors' && r.type === 'connector') ||
+      (selectedFilter === 'Approvals' && (r.action?.toLowerCase().includes('approval') || r.details?.toLowerCase().includes('approval'))) ||
+      (selectedFilter === 'Deployments' && (r.action?.toLowerCase().includes('deploy') || r.details?.toLowerCase().includes('deploy')));
     const matchesSearch =
       r.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       r.details.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -184,7 +186,7 @@ export const ActivityPage: React.FC = () => {
         {/* Filter buttons */}
         {viewMode === 'operational' ? (
           <div className="flex items-center gap-1.5 flex-wrap">
-            {(['All', 'Agents', 'Workflows', 'Connectors'] as const).map((filter) => {
+            {(['All', 'Agents', 'Workflows', 'Connectors', 'Approvals', 'Deployments'] as const).map((filter) => {
               const isSelected = selectedFilter === filter;
               return (
                 <button
@@ -263,8 +265,15 @@ export const ActivityPage: React.FC = () => {
                 </thead>
                 <tbody className="divide-y divide-[#EFEFEA] text-xs">
                   {filteredActivities.map((row) => {
-                    const executionId = row.metadata?.executionId;
-                    const isClickable = Boolean(executionId || row.type === 'agent');
+                    const executionId = row.metadata?.executionId || row.metadata?.execution_id;
+                    const agentId = row.metadata?.agentId || row.metadata?.agent_id || (row.type === 'agent' ? row.metadata?.resourceId : undefined);
+                    const workflowId = row.metadata?.workflowId || row.metadata?.workflow_id || (row.type === 'workflow' ? row.metadata?.resourceId : undefined);
+                    const isClickable = Boolean(
+                      executionId ||
+                      (row.type === 'agent' && agentId) ||
+                      (row.type === 'workflow' && workflowId) ||
+                      row.type === 'connector'
+                    );
 
                     return (
                       <tr
@@ -272,6 +281,12 @@ export const ActivityPage: React.FC = () => {
                         onClick={() => {
                           if (executionId) {
                             navigate(`/app/activity/${executionId}`);
+                          } else if (row.type === 'agent' && agentId) {
+                            navigate(`/app/agents/${agentId}`);
+                          } else if (row.type === 'workflow' && workflowId) {
+                            navigate(`/app/workflows/${workflowId}`);
+                          } else if (row.type === 'connector') {
+                            navigate('/app/connectors');
                           }
                         }}
                         className={`transition-colors group ${

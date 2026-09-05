@@ -28,6 +28,50 @@ import { recordAuditLog } from '../services/auditService';
 import { getWorkspaceMembership } from '../services/authorizationService';
 import { WorkspacePolicy } from '../types/security';
 
+const cancelledExecutionIds = new Set<string>();
+
+export function isExecutionCancelled(executionId: string): boolean {
+  return cancelledExecutionIds.has(executionId);
+}
+
+export async function cancelWorkflowExecution(
+  workspaceId: string,
+  executionId: string,
+  userId?: string
+): Promise<WorkflowExecution | null> {
+  cancelledExecutionIds.add(executionId);
+
+  const { execution } = await getWorkflowExecutionById(executionId);
+  if (!execution) return null;
+
+  const cancelMsg = 'Execution cancelled by user request.';
+
+  await saveWorkflowExecutionEventRecord(executionId, {
+    event_type: 'WORKFLOW_CANCELLED',
+    node_key: execution.current_node_key || null,
+    status: 'failed',
+    message: cancelMsg,
+    metadata: { cancelledBy: userId || 'user' },
+  });
+
+  const updated = await saveWorkflowExecutionRecord(workspaceId, {
+    ...execution,
+    status: 'cancelled',
+    error: cancelMsg,
+    completed_at: new Date().toISOString(),
+  });
+
+  await recordAuditLog(workspaceId, {
+    user_id: userId || 'user',
+    action: 'WORKFLOW_CANCELLED',
+    resource_type: 'workflow_execution',
+    resource_id: executionId,
+    metadata: { reason: 'User requested cancellation' },
+  });
+
+  return updated;
+}
+
 /**
  * Orchestrates and executes a multi-agent workflow DAG.
  */
@@ -181,6 +225,20 @@ export const executeWorkflow = async (
     const node = workflow.nodes.find((n) => n.node_key === nodeKey);
     if (!node) continue;
 
+    if (cancelledExecutionIds.has(executionId)) {
+      const cancelMsg = 'Execution stopped: cancelled by user request.';
+      await emitEvent('WORKFLOW_CANCELLED', cancelMsg, nodeKey, 'failed');
+      return await saveWorkflowExecutionRecord(workspaceId, {
+        id: executionId,
+        workflow_id: workflow.id,
+        status: 'cancelled',
+        error: cancelMsg,
+        context_data: contextData,
+        completed_at: new Date().toISOString(),
+        duration_ms: Date.now() - startTime,
+      });
+    }
+
     // Evaluate incoming conditional edges
     const incomingEdges = workflow.edges.filter((e) => e.target_node_key === nodeKey);
     let shouldSkipNode = false;
@@ -255,7 +313,10 @@ export const executeWorkflow = async (
       });
 
       // Check if node is an APPROVAL gate
-      if (node.node_type === 'APPROVAL') {
+      const isApprovalNode =
+        (node.node_type || '').toUpperCase() === 'APPROVAL' ||
+        (node.node_type || '').toUpperCase() === 'APPROVAL_GATE';
+      if (isApprovalNode) {
         // Pause execution and wait for human decision
         const pausedDuration = Date.now() - startTime;
         const pausedRecord = await saveWorkflowExecutionRecord(workspaceId, {
@@ -584,6 +645,17 @@ export const resumeWorkflowExecution = async (
   for (const nextKey of remainingNodes) {
     const node = workflow.nodes.find((n) => n.node_key === nextKey);
     if (!node) continue;
+
+    if (cancelledExecutionIds.has(executionId)) {
+      const cancelMsg = 'Execution stopped: cancelled by user request.';
+      await emitEvent('WORKFLOW_CANCELLED', cancelMsg, nextKey, 'failed');
+      return await saveWorkflowExecutionRecord(workspaceId, {
+        ...execution,
+        status: 'cancelled',
+        error: cancelMsg,
+        completed_at: new Date().toISOString(),
+      });
+    }
 
     await emitEvent(
       'NODE_STARTED',

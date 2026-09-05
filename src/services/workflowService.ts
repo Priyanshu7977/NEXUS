@@ -8,6 +8,7 @@ import {
   CreateWorkflowInput,
   UpdateWorkflowInput,
 } from '../types/workflow';
+import { broadcastExecutionEvent } from './realtimeExecutionService';
 
 const WORKFLOWS_STORAGE_KEY = 'nexus_workflows_store_v4';
 const EXECUTIONS_STORAGE_KEY = 'nexus_workflow_executions_store_v4';
@@ -676,6 +677,25 @@ export const saveWorkflowExecutionEventRecord = async (
   const localEvents = getLocalExecutionEvents(executionId);
   localEvents.push(fullEvent);
   saveLocalExecutionEvents(executionId, localEvents);
+
+  let sourceType: any = 'workflow';
+  if (fullEvent.event_type?.includes('APPROVAL')) sourceType = 'approval';
+  else if (fullEvent.event_type?.includes('DEPLOY') || fullEvent.node_key?.includes('deploy')) sourceType = 'deployment';
+  else if (fullEvent.event_type?.includes('TOOL') || fullEvent.node_key?.includes('tool')) sourceType = 'tool';
+  else if (fullEvent.event_type?.includes('AGENT') || fullEvent.node_key?.includes('agent')) sourceType = 'agent';
+
+  broadcastExecutionEvent({
+    id: fullEvent.id,
+    execution_id: executionId,
+    workspace_id: 'default-workspace',
+    source_type: sourceType,
+    source_id: fullEvent.node_key || null,
+    event_type: fullEvent.event_type,
+    status: fullEvent.status === 'running' ? 'running' : fullEvent.status === 'failed' ? 'failed' : 'completed',
+    message: fullEvent.message,
+    timestamp: fullEvent.created_at,
+    metadata: fullEvent.metadata,
+  });
 
   if (isSupabaseConfigured) {
     try {
