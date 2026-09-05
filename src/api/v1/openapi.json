@@ -1,0 +1,288 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "NEXUS Public API",
+    "version": "1.0.0",
+    "description": "Programmatic developer API for NEXUS: autonomous multi-agent pipelines, workflow orchestration, connectors, real-time observability, and developer webhooks."
+  },
+  "servers": [
+    {
+      "url": "https://api.nexus.dev/api/v1",
+      "description": "Production API"
+    },
+    {
+      "url": "http://127.0.0.1:5180/api/v1",
+      "description": "Local Development Server"
+    }
+  ],
+  "security": [
+    {
+      "ApiKeyAuth": []
+    }
+  ],
+  "components": {
+    "securitySchemes": {
+      "ApiKeyAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "nxs_live_...",
+        "description": "NEXUS Workspace API Key passed via 'Authorization: Bearer <API_KEY>'"
+      }
+    },
+    "schemas": {
+      "ApiSuccess": {
+        "type": "object",
+        "required": ["data", "request_id"],
+        "properties": {
+          "data": { "type": "object" },
+          "request_id": { "type": "string", "example": "req_1725519200_a1b2c3" }
+        }
+      },
+      "ApiError": {
+        "type": "object",
+        "required": ["error"],
+        "properties": {
+          "error": {
+            "type": "object",
+            "required": ["code", "message", "request_id"],
+            "properties": {
+              "code": { "type": "string", "enum": ["UNAUTHENTICATED", "FORBIDDEN", "NOT_FOUND", "VALIDATION_ERROR", "RATE_LIMIT_EXCEEDED", "CONFLICT", "INTERNAL_ERROR"] },
+              "message": { "type": "string" },
+              "request_id": { "type": "string" }
+            }
+          }
+        }
+      },
+      "Agent": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string" },
+          "name": { "type": "string" },
+          "role": { "type": "string" },
+          "model": { "type": "string" },
+          "description": { "type": "string" },
+          "status": { "type": "string" },
+          "tools": { "type": "array", "items": { "type": "string" } },
+          "created_at": { "type": "string" }
+        }
+      },
+      "Workflow": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string" },
+          "name": { "type": "string" },
+          "description": { "type": "string" },
+          "status": { "type": "string" },
+          "trigger_type": { "type": "string" },
+          "node_count": { "type": "integer" },
+          "created_at": { "type": "string" }
+        }
+      },
+      "Execution": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string" },
+          "status": { "type": "string", "enum": ["QUEUED", "RUNNING", "WAITING_FOR_APPROVAL", "COMPLETED", "FAILED", "CANCELLED"] },
+          "workflow_id": { "type": "string" },
+          "started_at": { "type": "string" },
+          "completed_at": { "type": "string", "nullable": true },
+          "duration_ms": { "type": "integer" },
+          "output": { "type": "object", "nullable": true },
+          "error": { "type": "string", "nullable": true }
+        }
+      },
+      "DeveloperWebhook": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string" },
+          "url": { "type": "string" },
+          "events": { "type": "array", "items": { "type": "string" } },
+          "status": { "type": "string", "enum": ["active", "disabled"] },
+          "description": { "type": "string", "nullable": true },
+          "created_at": { "type": "string" }
+        }
+      }
+    }
+  },
+  "paths": {
+    "/agents": {
+      "get": {
+        "summary": "List Agents",
+        "description": "List all configured AI agents within the authenticated workspace. Scope: `agents:read`",
+        "responses": {
+          "200": { "description": "Successful retrieval" },
+          "401": { "description": "Unauthenticated" },
+          "403": { "description": "Forbidden (missing scope)" }
+        }
+      }
+    },
+    "/agents/{id}": {
+      "get": {
+        "summary": "Get Agent",
+        "description": "Inspect single agent definition. Scope: `agents:read`",
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": { "description": "Agent found" },
+          "404": { "description": "Agent not found" }
+        }
+      }
+    },
+    "/agents/{id}/execute": {
+      "post": {
+        "summary": "Execute Agent",
+        "description": "Dispatch autonomous agent execution. Scope: `agents:execute`. Supports `Idempotency-Key`.",
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "string" } },
+          { "name": "Idempotency-Key", "in": "header", "required": false, "schema": { "type": "string" } }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["input"],
+                "properties": { "input": { "type": "string" } }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": { "description": "Execution queued" },
+          "422": { "description": "Validation error" }
+        }
+      }
+    },
+    "/workflows": {
+      "get": {
+        "summary": "List Workflows",
+        "description": "List multi-agent DAG workflows in workspace. Scope: `workflows:read`",
+        "responses": {
+          "200": { "description": "Workflows list" }
+        }
+      }
+    },
+    "/workflows/{id}": {
+      "get": {
+        "summary": "Get Workflow",
+        "description": "Inspect workflow DAG definition. Scope: `workflows:read`",
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": { "description": "Workflow found" },
+          "404": { "description": "Workflow not found" }
+        }
+      }
+    },
+    "/workflows/{id}/execute": {
+      "post": {
+        "summary": "Execute Workflow",
+        "description": "Trigger deterministic multi-agent workflow DAG execution. Scope: `workflows:execute`. Supports `Idempotency-Key`.",
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "string" } },
+          { "name": "Idempotency-Key", "in": "header", "required": false, "schema": { "type": "string" } }
+        ],
+        "requestBody": {
+          "required": false,
+          "content": {
+            "application/json": {
+              "schema": { "type": "object" }
+            }
+          }
+        },
+        "responses": {
+          "201": { "description": "Workflow execution queued" }
+        }
+      }
+    },
+    "/executions/{id}": {
+      "get": {
+        "summary": "Get Execution Status",
+        "description": "Poll live execution state, status, output, and duration. Scope: `executions:read`",
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": { "description": "Execution live state" }
+        }
+      }
+    },
+    "/executions/{id}/events": {
+      "get": {
+        "summary": "Get Execution Events",
+        "description": "Retrieve normalized event stream for execution. Scope: `executions:read`",
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": { "description": "Normalized events list" }
+        }
+      }
+    },
+    "/connectors": {
+      "get": {
+        "summary": "List Connectors",
+        "description": "List active connectors and authorization status. Scope: `connectors:read`",
+        "responses": {
+          "200": { "description": "Active connectors" }
+        }
+      }
+    },
+    "/activity": {
+      "get": {
+        "summary": "List Activity",
+        "description": "Retrieve workspace execution telemetry and activity. Scope: `activity:read`",
+        "responses": {
+          "200": { "description": "Activity stream" }
+        }
+      }
+    },
+    "/webhooks": {
+      "get": {
+        "summary": "List Webhooks",
+        "description": "List registered developer webhooks. Scope: `webhooks:read`",
+        "responses": {
+          "200": { "description": "Webhooks list" }
+        }
+      },
+      "post": {
+        "summary": "Create Webhook",
+        "description": "Subscribe an HTTPS endpoint to platform events. Scope: `webhooks:write`. Returns signing secret once.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["url", "events"],
+                "properties": {
+                  "url": { "type": "string", "example": "https://myapp.com/api/webhooks/nexus" },
+                  "events": { "type": "array", "items": { "type": "string" } },
+                  "description": { "type": "string" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": { "description": "Webhook created" }
+        }
+      }
+    },
+    "/webhooks/{id}/test": {
+      "post": {
+        "summary": "Send Test Webhook Event",
+        "description": "Dispatches a signed ping event to verify webhook connectivity. Scope: `webhooks:write`",
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": { "description": "Ping delivered successfully" }
+        }
+      }
+    }
+  }
+}

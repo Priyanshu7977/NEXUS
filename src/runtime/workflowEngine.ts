@@ -23,6 +23,7 @@ import { getWorkspaceExternalAgents, invokeExternalAgent } from '../services/ext
 import { logWorkspaceActivity } from '../services/activityService';
 import { McpServerConfig } from '../types/mcp';
 import { ExternalAgentConfig } from '../types/a2a';
+import { dispatchDeveloperWebhookEvent } from '../services/webhookDeliveryService';
 import { getWorkspacePolicy } from '../services/policyService';
 import { recordAuditLog } from '../services/auditService';
 import { getWorkspaceMembership } from '../services/authorizationService';
@@ -354,6 +355,14 @@ export const executeWorkflow = async (
           },
         });
 
+        dispatchDeveloperWebhookEvent(workspaceId, 'approval.requested', {
+          execution_id: executionId,
+          workflow_id: workflow.id,
+          workflow_name: workflow.name,
+          node_key: node.node_key,
+          prompt: node.config?.prompt || 'Review and approve next actions.',
+        });
+
         return pausedRecord;
       }
 
@@ -408,6 +417,13 @@ export const executeWorkflow = async (
           error: errMsg,
           failedNodeKey: node.node_key,
         },
+      });
+
+      dispatchDeveloperWebhookEvent(workspaceId, 'workflow.failed', {
+        execution_id: executionId,
+        workflow_id: workflow.id,
+        workflow_name: workflow.name,
+        error: errMsg,
       });
 
       return failedExec;
@@ -468,6 +484,14 @@ export const executeWorkflow = async (
       durationMs: totalDuration,
       status: 'completed',
     },
+  });
+
+  dispatchDeveloperWebhookEvent(workspaceId, 'workflow.completed', {
+    execution_id: executionId,
+    workflow_id: workflow.id,
+    workflow_name: workflow.name,
+    duration_ms: totalDuration,
+    output: finalSummary,
   });
 
   return completedExec;

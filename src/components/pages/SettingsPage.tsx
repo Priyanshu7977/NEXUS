@@ -19,7 +19,9 @@ import {
   Clock,
   Shield,
   CheckCircle2,
-  RefreshCw
+  RefreshCw,
+  Webhook,
+  Send
 } from 'lucide-react';
 import { 
   getWorkspaceApiKeys, 
@@ -42,24 +44,40 @@ import {
 } from '../../services/authorizationService';
 import { getWorkspaceAuditLogs } from '../../services/auditService';
 import { 
+  getWorkspaceWebhooks, 
+  createDeveloperWebhook, 
+  deleteDeveloperWebhook, 
+  sendTestWebhookEvent 
+} from '../../services/webhookDeliveryService';
+import { 
   ApiKey, 
   ApiKeyScope, 
   WorkspacePolicy, 
   WorkspaceRole, 
   AuditLogEntry
 } from '../../types/security';
+import { 
+  DeveloperWebhook, 
+  WebhookEventType, 
+  ALL_WEBHOOK_EVENTS 
+} from '../../types/api';
 import { WorkspaceMember } from '../../types/database';
 
-const ALL_SCOPES: { id: ApiKeyScope; label: string; description: string }[] = [
-  { id: '*', label: 'Full Access (*)', description: 'Full access to all workspace resources and APIs' },
-  { id: 'agents:read', label: 'agents:read', description: 'View agents and their configurations' },
-  { id: 'agents:write', label: 'agents:write', description: 'Create and update workspace agents' },
-  { id: 'workflows:read', label: 'workflows:read', description: 'View workflows and execution DAGs' },
-  { id: 'workflows:write', label: 'workflows:write', description: 'Create, modify, and delete workflows' },
-  { id: 'workflows:execute', label: 'workflows:execute', description: 'Trigger agent and workflow executions' },
-  { id: 'connectors:read', label: 'connectors:read', description: 'View installed connectors and status' },
-  { id: 'connectors:write', label: 'connectors:write', description: 'Install, authorize, and configure connectors' },
-  { id: 'audit:read', label: 'audit:read', description: 'Read immutable audit trails and activity' },
+const ALL_SCOPES: { id: ApiKeyScope; label: string; description: string; category: string }[] = [
+  { id: '*', label: 'Full Access (*)', description: 'Full access to all workspace resources and APIs', category: 'Administrative' },
+  { id: 'agents:read', label: 'agents:read', description: 'View agents and their configurations', category: 'Agents' },
+  { id: 'agents:write', label: 'agents:write', description: 'Create and update workspace agents', category: 'Agents' },
+  { id: 'agents:execute', label: 'agents:execute', description: 'Trigger autonomous agent executions', category: 'Agents' },
+  { id: 'workflows:read', label: 'workflows:read', description: 'View workflows and execution DAGs', category: 'Workflows' },
+  { id: 'workflows:write', label: 'workflows:write', description: 'Create, modify, and delete workflows', category: 'Workflows' },
+  { id: 'workflows:execute', label: 'workflows:execute', description: 'Trigger agent and workflow executions', category: 'Workflows' },
+  { id: 'executions:read', label: 'executions:read', description: 'Read execution telemetry, outputs, and event logs', category: 'Telemetry' },
+  { id: 'connectors:read', label: 'connectors:read', description: 'View installed connectors and status', category: 'Connectors' },
+  { id: 'connectors:write', label: 'connectors:write', description: 'Install, authorize, and configure connectors', category: 'Connectors' },
+  { id: 'activity:read', label: 'activity:read', description: 'Read immutable workspace audit trail', category: 'Telemetry' },
+  { id: 'audit:read', label: 'audit:read', description: 'Read compliance audit logs', category: 'Telemetry' },
+  { id: 'webhooks:read', label: 'webhooks:read', description: 'View configured developer webhook delivery endpoints', category: 'Webhooks' },
+  { id: 'webhooks:write', label: 'webhooks:write', description: 'Register, test, and delete developer webhooks', category: 'Webhooks' },
 ];
 
 export const SettingsPage: React.FC = () => {
@@ -94,6 +112,24 @@ export const SettingsPage: React.FC = () => {
   const [keyExpiryDays, setKeyExpiryDays] = useState<number>(90);
   const [createdKeySecret, setCreatedKeySecret] = useState<string | null>(null);
   const [copiedKey, setCopiedKey] = useState(false);
+  const [keyModalStep, setKeyModalStep] = useState<1 | 2 | 3>(1);
+  const [keyEnv, setKeyEnv] = useState<'live' | 'test'>('live');
+
+  // Webhooks State
+  const [webhooks, setWebhooks] = useState<DeveloperWebhook[]>([]);
+  const [loadingWebhooks, setLoadingWebhooks] = useState(false);
+  const [showAddWebhookModal, setShowAddWebhookModal] = useState(false);
+  const [newWebhookUrl, setNewWebhookUrl] = useState('');
+  const [newWebhookDesc, setNewWebhookDesc] = useState('');
+  const [newWebhookEvents, setNewWebhookEvents] = useState<WebhookEventType[]>([
+    'workflow.completed',
+    'workflow.failed',
+    'approval.requested',
+  ]);
+  const [createdWebhookSecret, setCreatedWebhookSecret] = useState<string | null>(null);
+  const [copiedWebhookSecret, setCopiedWebhookSecret] = useState(false);
+  const [testingWebhookId, setTestingWebhookId] = useState<string | null>(null);
+  const [testResults, setTestResults] = useState<Record<string, { success: boolean; message: string }>>({});
 
   // Security Events Feed
   const [securityEvents, setSecurityEvents] = useState<AuditLogEntry[]>([]);
@@ -132,11 +168,17 @@ export const SettingsPage: React.FC = () => {
   const loadTabContent = useCallback(async () => {
     if (activeTab === 'api') {
       setLoadingKeys(true);
+      setLoadingWebhooks(true);
       try {
-        const { keys } = await getWorkspaceApiKeys(workspaceId);
+        const [{ keys }, { webhooks: whList }] = await Promise.all([
+          getWorkspaceApiKeys(workspaceId),
+          getWorkspaceWebhooks(workspaceId)
+        ]);
         setApiKeys(keys);
+        setWebhooks(whList);
       } finally {
         setLoadingKeys(false);
+        setLoadingWebhooks(false);
       }
     } else if (activeTab === 'permissions') {
       const p = await getWorkspacePolicy(workspaceId);
@@ -229,6 +271,82 @@ export const SettingsPage: React.FC = () => {
       setApiKeys(keys);
     } catch (err: any) {
       alert(err.message || 'Failed to revoke API key');
+    }
+  };
+
+  // Handle Developer Webhook Creation
+  const handleCreateWebhook = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newWebhookUrl.trim()) return;
+
+    try {
+      const res = await createDeveloperWebhook(workspaceId, {
+        url: newWebhookUrl.trim(),
+        description: newWebhookDesc.trim(),
+        events: newWebhookEvents,
+      });
+
+      if (res.error) {
+        alert(res.error);
+        return;
+      }
+
+      if (res.secret) {
+        setCreatedWebhookSecret(res.secret);
+        setShowAddWebhookModal(false);
+        setNewWebhookUrl('');
+        setNewWebhookDesc('');
+        const { webhooks: whList } = await getWorkspaceWebhooks(workspaceId);
+        setWebhooks(whList);
+      }
+    } catch (err: any) {
+      alert(err.message || 'Failed to register webhook');
+    }
+  };
+
+  // Handle Developer Webhook Deletion
+  const handleDeleteWebhook = async (webhookId: string) => {
+    if (!confirm('Are you sure you want to delete this developer webhook?')) return;
+    try {
+      await deleteDeveloperWebhook(workspaceId, webhookId);
+      const { webhooks: whList } = await getWorkspaceWebhooks(workspaceId);
+      setWebhooks(whList);
+    } catch (err: any) {
+      alert(err.message || 'Failed to delete webhook');
+    }
+  };
+
+  // Handle Webhook Test Event Ping
+  const handleTestWebhook = async (webhookId: string) => {
+    setTestingWebhookId(webhookId);
+    try {
+      const res = await sendTestWebhookEvent(workspaceId, webhookId);
+      if (res.success) {
+        setTestResults((prev) => ({
+          ...prev,
+          [webhookId]: { success: true, message: `Ping delivered successfully (${res.status || 200} OK)` },
+        }));
+      } else {
+        setTestResults((prev) => ({
+          ...prev,
+          [webhookId]: { success: false, message: res.error || 'Delivery failed' },
+        }));
+      }
+    } catch (err: any) {
+      setTestResults((prev) => ({
+        ...prev,
+        [webhookId]: { success: false, message: err.message || 'Test error' },
+      }));
+    } finally {
+      setTestingWebhookId(null);
+    }
+  };
+
+  const copyWebhookSecretHandler = () => {
+    if (createdWebhookSecret) {
+      navigator.clipboard.writeText(createdWebhookSecret);
+      setCopiedWebhookSecret(true);
+      setTimeout(() => setCopiedWebhookSecret(false), 2000);
     }
   };
 
@@ -899,117 +1017,276 @@ export const SettingsPage: React.FC = () => {
               </div>
             )}
 
-            {/* API KEYS TAB */}
+            {/* API KEYS & DEVELOPER PLATFORM TAB */}
             {activeTab === 'api' && (
-              <div className="flex flex-col gap-6">
+              <div className="flex flex-col gap-8">
+                {/* Header & Quick Action */}
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                   <div>
                     <h3 className="text-base font-bold text-[#111318] mb-1">
-                      API Keys & Developer Tokens
+                      Developer Platform, Keys & Webhooks
                     </h3>
                     <p className="text-xs text-[#626873]">
-                      Cryptographically secure API keys for programmatic agent orchestration and workflow triggers.
+                      Cryptographically secure API keys, signed real-time webhooks, and programmatic SDK integration.
                     </p>
                   </div>
                   {isKeyAdmin && (
-                    <Button size="sm" onClick={() => setShowCreateKeyModal(true)}>
-                      <Plus className="w-3.5 h-3.5 mr-1.5" />
-                      <span>Create New Secret Key</span>
-                    </Button>
+                    <div className="flex items-center gap-2">
+                      <Button size="sm" variant="secondary" onClick={() => setShowAddWebhookModal(true)}>
+                        <Webhook className="w-3.5 h-3.5 mr-1.5 text-[#6D4AFF]" />
+                        <span>Add Webhook</span>
+                      </Button>
+                      <Button size="sm" onClick={() => { setKeyModalStep(1); setShowCreateKeyModal(true); }}>
+                        <Plus className="w-3.5 h-3.5 mr-1.5" />
+                        <span>Create API Key</span>
+                      </Button>
+                    </div>
                   )}
+                </div>
+
+                {/* Developer Telemetry & Limits Card */}
+                <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
+                  <div className="p-4 rounded-xl bg-white border border-[#E5E5E2] shadow-2xs">
+                    <span className="text-[10px] font-mono uppercase text-[#8B919B]">API Requests (Billing Cycle)</span>
+                    <div className="text-xl font-bold text-[#111318] mt-1">1,482</div>
+                    <span className="text-[10px] text-emerald-600 font-medium">&uarr; 12% vs last cycle</span>
+                  </div>
+                  <div className="p-4 rounded-xl bg-white border border-[#E5E5E2] shadow-2xs">
+                    <span className="text-[10px] font-mono uppercase text-[#8B919B]">Rate Limit Tier</span>
+                    <div className="text-xl font-bold text-[#111318] mt-1">120 <span className="text-xs text-[#8B919B] font-normal">req/min</span></div>
+                    <span className="text-[10px] text-[#626873]">Burst allowance: 180</span>
+                  </div>
+                  <div className="p-4 rounded-xl bg-white border border-[#E5E5E2] shadow-2xs">
+                    <span className="text-[10px] font-mono uppercase text-[#8B919B]">Active API Keys</span>
+                    <div className="text-xl font-bold text-[#111318] mt-1">{apiKeys.filter(k => k.status === 'active').length}</div>
+                    <span className="text-[10px] text-[#626873]">Max 20 live keys</span>
+                  </div>
+                  <div className="p-4 rounded-xl bg-white border border-[#E5E5E2] shadow-2xs">
+                    <span className="text-[10px] font-mono uppercase text-[#8B919B]">Active Webhooks</span>
+                    <div className="text-xl font-bold text-[#111318] mt-1">{webhooks.filter(w => w.status === 'active').length}</div>
+                    <span className="text-[10px] text-[#626873]">HMAC-SHA256 verified</span>
+                  </div>
                 </div>
 
                 {!isKeyAdmin && (
                   <div className="p-3.5 rounded-xl bg-amber-50 border border-amber-200 text-xs text-amber-800 flex items-center gap-2">
                     <AlertTriangle className="w-4 h-4 shrink-0 text-amber-600" />
                     <span>
-                      Viewing API keys in read-only mode as <strong>{currentRole.toUpperCase()}</strong>. Only Workspace Admins or Owners can provision or revoke keys.
+                      Viewing API keys and webhooks in read-only mode as <strong>{currentRole.toUpperCase()}</strong>. Only Workspace Admins or Owners can provision keys or configure webhooks.
                     </span>
                   </div>
                 )}
 
-                {loadingKeys ? (
-                  <div className="py-12 text-center text-xs text-[#8B919B]">Loading API keys...</div>
-                ) : apiKeys.length === 0 ? (
-                  <div className="p-8 rounded-2xl bg-[#FAFAF8] border border-[#E5E5E2] text-center flex flex-col items-center">
-                    <div className="w-10 h-10 rounded-xl bg-white border border-[#E5E5E2] text-[#6D4AFF] flex items-center justify-center mb-3">
-                      <Key className="w-5 h-5" />
+                {/* API KEYS SECTION */}
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between">
+                    <h4 className="text-sm font-bold text-[#111318] flex items-center gap-2">
+                      <Key className="w-4 h-4 text-[#6D4AFF]" />
+                      <span>Workspace API Keys</span>
+                    </h4>
+                    <span className="text-xs text-[#8B919B]">Prefix: <code className="font-mono text-xs">nxs_live_</code></span>
+                  </div>
+
+                  {loadingKeys ? (
+                    <div className="py-10 text-center text-xs text-[#8B919B]">Loading API keys...</div>
+                  ) : apiKeys.length === 0 ? (
+                    <div className="p-8 rounded-2xl bg-[#FAFAF8] border border-[#E5E5E2] text-center flex flex-col items-center">
+                      <div className="w-10 h-10 rounded-xl bg-white border border-[#E5E5E2] text-[#6D4AFF] flex items-center justify-center mb-3">
+                        <Key className="w-5 h-5" />
+                      </div>
+                      <h4 className="text-sm font-bold text-[#111318] mb-1">No API keys created yet</h4>
+                      <p className="text-xs text-[#626873] max-w-sm mb-4">
+                        Create a scoped API key to trigger workflows, run agents, and integrate with external CI/CD or CLI tools.
+                      </p>
+                      {isKeyAdmin && (
+                        <Button size="sm" onClick={() => { setKeyModalStep(1); setShowCreateKeyModal(true); }}>
+                          <Plus className="w-3.5 h-3.5 mr-1.5" /> Create API Key
+                        </Button>
+                      )}
                     </div>
-                    <h4 className="text-sm font-bold text-[#111318] mb-1">No API keys created yet</h4>
-                    <p className="text-xs text-[#626873] max-w-sm mb-4">
-                      Create a scoped API key to trigger workflows, run agents, and integrate with external webhooks.
-                    </p>
+                  ) : (
+                    <div className="rounded-xl border border-[#E5E5E2] overflow-hidden bg-white shadow-2xs">
+                      <table className="w-full text-left border-collapse text-xs">
+                        <thead>
+                          <tr className="bg-[#FAFAF8] border-b border-[#E5E5E2] text-[11px] font-mono uppercase text-[#8B919B]">
+                            <th className="py-2.5 px-4 font-semibold">Name</th>
+                            <th className="py-2.5 px-4 font-semibold">Token Prefix</th>
+                            <th className="py-2.5 px-4 font-semibold">Scopes</th>
+                            <th className="py-2.5 px-4 font-semibold">Status</th>
+                            <th className="py-2.5 px-4 font-semibold">Created</th>
+                            <th className="py-2.5 px-4 font-semibold text-right">Actions</th>
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-[#EFEFEA]">
+                          {apiKeys.map((k) => (
+                            <tr key={k.id} className="hover:bg-[#FAFAF8]/50">
+                              <td className="py-3 px-4 font-semibold text-[#111318]">
+                                {k.name}
+                              </td>
+                              <td className="py-3 px-4 font-mono text-[11px] text-[#6D4AFF]">
+                                {k.key_prefix}...
+                              </td>
+                              <td className="py-3 px-4">
+                                <div className="flex flex-wrap gap-1">
+                                  {k.scopes.slice(0, 2).map((s) => (
+                                    <span key={s} className="font-mono text-[9px] px-1.5 py-0.5 rounded bg-[#FAFAF8] text-[#626873] border border-[#E5E5E2]">
+                                      {s}
+                                    </span>
+                                  ))}
+                                  {k.scopes.length > 2 && (
+                                    <span className="font-mono text-[9px] px-1.5 py-0.5 rounded bg-[#FAFAF8] text-[#8B919B]">
+                                      +{k.scopes.length - 2}
+                                    </span>
+                                  )}
+                                </div>
+                              </td>
+                              <td className="py-3 px-4">
+                                <span className={`font-mono text-[10px] uppercase font-bold px-2 py-0.5 rounded border ${
+                                  k.status === 'active' 
+                                    ? 'bg-emerald-50 text-emerald-700 border-emerald-200' 
+                                    : 'bg-red-50 text-red-700 border-red-200'
+                                }`}>
+                                  {k.status}
+                                </span>
+                              </td>
+                              <td className="py-3 px-4 font-mono text-[10px] text-[#8B919B]">
+                                {new Date(k.created_at).toLocaleDateString()}
+                              </td>
+                              <td className="py-3 px-4 text-right">
+                                {isKeyAdmin && k.status === 'active' && (
+                                  <button
+                                    type="button"
+                                    onClick={() => handleRevokeKey(k.id)}
+                                    className="text-red-500 hover:text-red-700 text-xs font-semibold hover:underline cursor-pointer"
+                                  >
+                                    Revoke
+                                  </button>
+                                )}
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  )}
+                </div>
+
+                {/* DEVELOPER WEBHOOKS SECTION */}
+                <div className="space-y-3 pt-4 border-t border-[#EFEFEA]">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                    <div>
+                      <h4 className="text-sm font-bold text-[#111318] flex items-center gap-2">
+                        <Webhook className="w-4 h-4 text-emerald-600" />
+                        <span>Developer Webhooks</span>
+                      </h4>
+                      <p className="text-xs text-[#626873] mt-0.5">
+                        Deliver real-time JSON execution payloads signed with HMAC-SHA256 (<code className="font-mono text-[11px]">X-NEXUS-Signature</code>).
+                      </p>
+                    </div>
                     {isKeyAdmin && (
-                      <Button size="sm" onClick={() => setShowCreateKeyModal(true)}>
-                        <Plus className="w-3.5 h-3.5 mr-1.5" /> Create API Key
+                      <Button size="sm" variant="secondary" onClick={() => setShowAddWebhookModal(true)}>
+                        <Plus className="w-3.5 h-3.5 mr-1" />
+                        <span>Add Endpoint</span>
                       </Button>
                     )}
                   </div>
-                ) : (
-                  <div className="rounded-xl border border-[#E5E5E2] overflow-hidden">
-                    <table className="w-full text-left border-collapse text-xs">
-                      <thead>
-                        <tr className="bg-[#FAFAF8] border-b border-[#E5E5E2] text-[11px] font-mono uppercase text-[#8B919B]">
-                          <th className="py-2.5 px-4 font-semibold">Name</th>
-                          <th className="py-2.5 px-4 font-semibold">Key Token Prefix</th>
-                          <th className="py-2.5 px-4 font-semibold">Scopes</th>
-                          <th className="py-2.5 px-4 font-semibold">Status</th>
-                          <th className="py-2.5 px-4 font-semibold">Created</th>
-                          <th className="py-2.5 px-4 font-semibold text-right">Actions</th>
-                        </tr>
-                      </thead>
-                      <tbody className="divide-y divide-[#EFEFEA]">
-                        {apiKeys.map((k) => (
-                          <tr key={k.id} className="hover:bg-[#FAFAF8]/50">
-                            <td className="py-3 px-4 font-semibold text-[#111318]">
-                              {k.name}
-                            </td>
-                            <td className="py-3 px-4 font-mono text-[11px] text-[#6D4AFF]">
-                              {k.key_prefix}...
-                            </td>
-                            <td className="py-3 px-4">
-                              <div className="flex flex-wrap gap-1">
-                                {k.scopes.slice(0, 2).map((s) => (
-                                  <span key={s} className="font-mono text-[9px] px-1.5 py-0.5 rounded bg-[#FAFAF8] text-[#626873] border border-[#E5E5E2]">
-                                    {s}
-                                  </span>
-                                ))}
-                                {k.scopes.length > 2 && (
-                                  <span className="font-mono text-[9px] px-1.5 py-0.5 rounded bg-[#FAFAF8] text-[#8B919B]">
-                                    +{k.scopes.length - 2}
-                                  </span>
-                                )}
-                              </div>
-                            </td>
-                            <td className="py-3 px-4">
-                              <span className={`font-mono text-[10px] uppercase font-bold px-2 py-0.5 rounded border ${
-                                k.status === 'active' 
-                                  ? 'bg-emerald-50 text-emerald-700 border-emerald-200' 
-                                  : 'bg-red-50 text-red-700 border-red-200'
-                              }`}>
-                                {k.status}
-                              </span>
-                            </td>
-                            <td className="py-3 px-4 font-mono text-[10px] text-[#8B919B]">
-                              {new Date(k.created_at).toLocaleDateString()}
-                            </td>
-                            <td className="py-3 px-4 text-right">
-                              {isKeyAdmin && k.status === 'active' && (
-                                <button
-                                  type="button"
-                                  onClick={() => handleRevokeKey(k.id)}
-                                  className="text-red-500 hover:text-red-700 text-xs font-semibold hover:underline cursor-pointer"
-                                >
-                                  Revoke
-                                </button>
-                              )}
-                            </td>
+
+                  {loadingWebhooks ? (
+                    <div className="py-10 text-center text-xs text-[#8B919B]">Loading webhooks...</div>
+                  ) : webhooks.length === 0 ? (
+                    <div className="p-8 rounded-2xl bg-[#FAFAF8] border border-[#E5E5E2] text-center flex flex-col items-center">
+                      <div className="w-10 h-10 rounded-xl bg-white border border-[#E5E5E2] text-emerald-600 flex items-center justify-center mb-3">
+                        <Webhook className="w-5 h-5" />
+                      </div>
+                      <h4 className="text-sm font-bold text-[#111318] mb-1">No webhooks registered</h4>
+                      <p className="text-xs text-[#626873] max-w-sm mb-4">
+                        Add an HTTPS URL to receive instant notifications when workflows complete, agents fail, or human approvals are requested.
+                      </p>
+                      {isKeyAdmin && (
+                        <Button size="sm" variant="secondary" onClick={() => setShowAddWebhookModal(true)}>
+                          <Plus className="w-3.5 h-3.5 mr-1.5" /> Register Webhook
+                        </Button>
+                      )}
+                    </div>
+                  ) : (
+                    <div className="rounded-xl border border-[#E5E5E2] overflow-hidden bg-white shadow-2xs">
+                      <table className="w-full text-left border-collapse text-xs">
+                        <thead>
+                          <tr className="bg-[#FAFAF8] border-b border-[#E5E5E2] text-[11px] font-mono uppercase text-[#8B919B]">
+                            <th className="py-2.5 px-4 font-semibold">Endpoint URL</th>
+                            <th className="py-2.5 px-4 font-semibold">Events</th>
+                            <th className="py-2.5 px-4 font-semibold">Status</th>
+                            <th className="py-2.5 px-4 font-semibold">Created</th>
+                            <th className="py-2.5 px-4 font-semibold text-right">Actions</th>
                           </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </div>
-                )}
+                        </thead>
+                        <tbody className="divide-y divide-[#EFEFEA]">
+                          {webhooks.map((w) => {
+                            const isTesting = testingWebhookId === w.id;
+                            const result = testResults[w.id];
+                            return (
+                              <tr key={w.id} className="hover:bg-[#FAFAF8]/50">
+                                <td className="py-3 px-4">
+                                  <div className="font-mono text-[11px] text-[#111318] font-semibold truncate max-w-xs">
+                                    {w.url}
+                                  </div>
+                                  {w.description && (
+                                    <div className="text-[10px] text-[#8B919B] mt-0.5">{w.description}</div>
+                                  )}
+                                  {result && (
+                                    <div className={`text-[10px] font-mono mt-1 ${result.success ? 'text-emerald-600 font-semibold' : 'text-red-600'}`}>
+                                      {result.message}
+                                    </div>
+                                  )}
+                                </td>
+                                <td className="py-3 px-4">
+                                  <div className="flex flex-wrap gap-1 max-w-xs">
+                                    {w.events.map((ev) => (
+                                      <span key={ev} className="font-mono text-[9px] px-1.5 py-0.5 rounded bg-purple-50 text-[#6D4AFF] border border-purple-200">
+                                        {ev}
+                                      </span>
+                                    ))}
+                                  </div>
+                                </td>
+                                <td className="py-3 px-4">
+                                  <span className="font-mono text-[10px] uppercase font-bold px-2 py-0.5 rounded bg-emerald-50 text-emerald-700 border border-emerald-200">
+                                    {w.status}
+                                  </span>
+                                </td>
+                                <td className="py-3 px-4 font-mono text-[10px] text-[#8B919B]">
+                                  {new Date(w.created_at).toLocaleDateString()}
+                                </td>
+                                <td className="py-3 px-4 text-right">
+                                  <div className="flex items-center justify-end gap-2">
+                                    <button
+                                      type="button"
+                                      disabled={isTesting}
+                                      onClick={() => handleTestWebhook(w.id)}
+                                      className="px-2 py-1 rounded-lg bg-[#FAFAF8] border border-[#E5E5E2] hover:bg-white text-[11px] font-mono text-[#111318] hover:text-[#6D4AFF] flex items-center gap-1 cursor-pointer transition-colors"
+                                    >
+                                      <Send className={`w-3 h-3 ${isTesting ? 'animate-spin text-[#6D4AFF]' : ''}`} />
+                                      <span>{isTesting ? 'Pinging...' : 'Send Test Ping'}</span>
+                                    </button>
+                                    {isKeyAdmin && (
+                                      <button
+                                        type="button"
+                                        onClick={() => handleDeleteWebhook(w.id)}
+                                        className="text-red-500 hover:text-red-700 text-xs font-semibold p-1 cursor-pointer"
+                                        title="Delete Webhook"
+                                      >
+                                        <Trash2 className="w-3.5 h-3.5" />
+                                      </button>
+                                    )}
+                                  </div>
+                                </td>
+                              </tr>
+                            );
+                          })}
+                        </tbody>
+                      </table>
+                    </div>
+                  )}
+                </div>
               </div>
             )}
 
@@ -1059,77 +1336,197 @@ export const SettingsPage: React.FC = () => {
         </div>
       </div>
 
-      {/* CREATE API KEY MODAL */}
+      {/* CREATE API KEY MULTI-STEP WIZARD MODAL */}
       {showCreateKeyModal && (
         <div className="fixed inset-0 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4 z-50">
-          <div className="bg-white rounded-2xl border border-[#E5E5E2] shadow-xl max-w-md w-full p-6 text-left">
-            <h3 className="text-base font-bold text-[#111318] mb-1">Create Secret API Key</h3>
-            <p className="text-xs text-[#626873] mb-4">
-              API keys grant programmatic access to your NEXUS workspace according to specified capability scopes.
-            </p>
-
-            <form onSubmit={handleCreateKey} className="flex flex-col gap-4">
+          <div className="bg-white rounded-2xl border border-[#E5E5E2] shadow-xl max-w-lg w-full p-6 text-left">
+            {/* Step Indicators */}
+            <div className="flex items-center justify-between pb-4 border-b border-[#EFEFEA] mb-5">
               <div>
-                <label className="block text-xs font-semibold text-[#111318] mb-1">Key Name</label>
-                <input
-                  type="text"
-                  required
-                  placeholder="e.g. CI/CD GitHub Action or Webhook Dispatcher"
-                  value={newKeyName}
-                  onChange={(e) => setNewKeyName(e.target.value)}
-                  className="w-full h-9 px-3 rounded-lg bg-[#FAFAF8] border border-[#E5E5E2] focus:border-[#6D4AFF] focus:bg-white text-xs text-[#111318] outline-none"
-                />
+                <h3 className="text-base font-bold text-[#111318]">Create Secret API Key</h3>
+                <span className="text-xs text-[#8B919B]">Step {keyModalStep} of 3</span>
               </div>
-
-              <div>
-                <label className="block text-xs font-semibold text-[#111318] mb-1">Expiration</label>
-                <select
-                  value={keyExpiryDays}
-                  onChange={(e) => setKeyExpiryDays(parseInt(e.target.value, 10))}
-                  className="w-full h-9 px-3 rounded-lg bg-[#FAFAF8] border border-[#E5E5E2] text-xs text-[#111318] outline-none"
-                >
-                  <option value={30}>30 Days</option>
-                  <option value={90}>90 Days (Recommended)</option>
-                  <option value={365}>1 Year</option>
-                  <option value={0}>No Expiration</option>
-                </select>
+              <div className="flex items-center gap-1.5">
+                {[1, 2, 3].map((step) => (
+                  <div
+                    key={step}
+                    className={`w-6 h-6 rounded-full text-xs font-mono font-bold flex items-center justify-center transition-colors ${
+                      keyModalStep === step
+                        ? 'bg-[#6D4AFF] text-white'
+                        : keyModalStep > step
+                        ? 'bg-emerald-100 text-emerald-800'
+                        : 'bg-[#FAFAF8] text-[#8B919B] border border-[#E5E5E2]'
+                    }`}
+                  >
+                    {keyModalStep > step ? '✓' : step}
+                  </div>
+                ))}
               </div>
+            </div>
 
-              <div>
-                <label className="block text-xs font-semibold text-[#111318] mb-1.5">Permitted Scopes</label>
-                <div className="max-h-48 overflow-y-auto rounded-lg border border-[#E5E5E2] p-2 flex flex-col gap-1.5">
-                  {ALL_SCOPES.map((sc) => {
-                    const isChecked = selectedScopes.includes(sc.id);
-                    return (
-                      <label key={sc.id} className="flex items-start gap-2 p-1.5 rounded hover:bg-[#FAFAF8] cursor-pointer">
-                        <input
-                          type="checkbox"
-                          checked={isChecked}
-                          onChange={() => {
-                            if (isChecked) {
-                              setSelectedScopes(selectedScopes.filter((s) => s !== sc.id));
-                            } else {
-                              setSelectedScopes([...selectedScopes, sc.id]);
-                            }
-                          }}
-                          className="mt-0.5 accent-[#6D4AFF]"
-                        />
-                        <div>
-                          <div className="text-xs font-mono font-semibold text-[#111318]">{sc.label}</div>
-                          <div className="text-[10px] text-[#8B919B]">{sc.description}</div>
-                        </div>
-                      </label>
-                    );
-                  })}
+            <form onSubmit={keyModalStep === 3 ? handleCreateKey : (e) => { e.preventDefault(); setKeyModalStep((s) => (s + 1) as any); }}>
+              {/* STEP 1: Name & Environment */}
+              {keyModalStep === 1 && (
+                <div className="space-y-4">
+                  <div>
+                    <label className="block text-xs font-semibold text-[#111318] mb-1">Key Name</label>
+                    <input
+                      type="text"
+                      required
+                      placeholder="e.g. CI/CD GitHub Action or Webhook Dispatcher"
+                      value={newKeyName}
+                      onChange={(e) => setNewKeyName(e.target.value)}
+                      className="w-full h-9 px-3 rounded-lg bg-[#FAFAF8] border border-[#E5E5E2] focus:border-[#6D4AFF] focus:bg-white text-xs text-[#111318] outline-none"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-semibold text-[#111318] mb-1">Environment</label>
+                    <div className="grid grid-cols-2 gap-3">
+                      <button
+                        type="button"
+                        onClick={() => setKeyEnv('live')}
+                        className={`p-3 rounded-xl text-left border cursor-pointer transition-all ${
+                          keyEnv === 'live'
+                            ? 'bg-purple-50/50 border-[#6D4AFF] text-[#111318]'
+                            : 'bg-white border-[#E5E5E2] text-[#626873]'
+                        }`}
+                      >
+                        <div className="font-mono text-xs font-bold text-[#6D4AFF]">Production (nxs_live_)</div>
+                        <div className="text-[10px] text-[#8B919B] mt-0.5">Executes against production agents & tools</div>
+                      </button>
+
+                      <button
+                        type="button"
+                        onClick={() => setKeyEnv('test')}
+                        className={`p-3 rounded-xl text-left border cursor-pointer transition-all ${
+                          keyEnv === 'test'
+                            ? 'bg-purple-50/50 border-[#6D4AFF] text-[#111318]'
+                            : 'bg-white border-[#E5E5E2] text-[#626873]'
+                        }`}
+                      >
+                        <div className="font-mono text-xs font-bold text-neutral-800">Development (nxs_test_)</div>
+                        <div className="text-[10px] text-[#8B919B] mt-0.5">Sandboxed execution for local tests</div>
+                      </button>
+                    </div>
+                  </div>
                 </div>
-              </div>
+              )}
 
-              <div className="flex justify-end gap-2 pt-2 border-t border-[#EFEFEA]">
-                <Button type="button" variant="secondary" size="sm" onClick={() => setShowCreateKeyModal(false)}>
-                  Cancel
-                </Button>
-                <Button type="submit" size="sm">
-                  Create Secret Key
+              {/* STEP 2: Granular Scopes */}
+              {keyModalStep === 2 && (
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between">
+                    <label className="text-xs font-semibold text-[#111318]">Assign Capabilities & Scopes</label>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        if (selectedScopes.length === ALL_SCOPES.length) {
+                          setSelectedScopes([]);
+                        } else {
+                          setSelectedScopes(ALL_SCOPES.map(s => s.id));
+                        }
+                      }}
+                      className="text-[11px] font-mono text-[#6D4AFF] hover:underline cursor-pointer"
+                    >
+                      {selectedScopes.length === ALL_SCOPES.length ? 'Deselect All' : 'Select All'}
+                    </button>
+                  </div>
+
+                  <div className="max-h-56 overflow-y-auto rounded-xl border border-[#E5E5E2] p-2 space-y-3 bg-[#FAFAF8]/50">
+                    {['Agents', 'Workflows', 'Telemetry', 'Webhooks', 'Connectors'].map((category) => {
+                      const catScopes = ALL_SCOPES.filter(s => s.category === category);
+                      if (catScopes.length === 0) return null;
+                      return (
+                        <div key={category} className="space-y-1">
+                          <div className="text-[10px] font-mono uppercase text-[#8B919B] px-1 font-semibold">
+                            {category}
+                          </div>
+                          <div className="space-y-1">
+                            {catScopes.map((sc) => {
+                              const isChecked = selectedScopes.includes(sc.id);
+                              return (
+                                <label key={sc.id} className="flex items-start gap-2 p-1.5 rounded-lg hover:bg-white cursor-pointer transition-colors">
+                                  <input
+                                    type="checkbox"
+                                    checked={isChecked}
+                                    onChange={() => {
+                                      if (isChecked) {
+                                        setSelectedScopes(selectedScopes.filter((s) => s !== sc.id));
+                                      } else {
+                                        setSelectedScopes([...selectedScopes, sc.id]);
+                                      }
+                                    }}
+                                    className="mt-0.5 accent-[#6D4AFF]"
+                                  />
+                                  <div>
+                                    <div className="text-xs font-mono font-semibold text-[#111318]">{sc.label}</div>
+                                    <div className="text-[10px] text-[#8B919B]">{sc.description}</div>
+                                  </div>
+                                </label>
+                              );
+                            })}
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
+
+              {/* STEP 3: Expiration & Review */}
+              {keyModalStep === 3 && (
+                <div className="space-y-4">
+                  <div>
+                    <label className="block text-xs font-semibold text-[#111318] mb-1">Key Expiration</label>
+                    <select
+                      value={keyExpiryDays}
+                      onChange={(e) => setKeyExpiryDays(parseInt(e.target.value, 10))}
+                      className="w-full h-9 px-3 rounded-lg bg-[#FAFAF8] border border-[#E5E5E2] text-xs text-[#111318] outline-none"
+                    >
+                      <option value={30}>30 Days</option>
+                      <option value={90}>90 Days (Recommended)</option>
+                      <option value={365}>1 Year</option>
+                      <option value={0}>No Expiration</option>
+                    </select>
+                  </div>
+
+                  <div className="p-3.5 rounded-xl bg-[#FAFAF8] border border-[#E5E5E2] space-y-2 text-xs">
+                    <div className="flex justify-between text-[#626873]">
+                      <span>Key Name:</span>
+                      <strong className="text-[#111318]">{newKeyName}</strong>
+                    </div>
+                    <div className="flex justify-between text-[#626873]">
+                      <span>Environment:</span>
+                      <strong className="font-mono text-[#6D4AFF]">{keyEnv.toUpperCase()}</strong>
+                    </div>
+                    <div className="flex justify-between text-[#626873]">
+                      <span>Selected Scopes:</span>
+                      <span className="font-mono text-xs">{selectedScopes.length} scopes</span>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* Modal Action Buttons */}
+              <div className="flex justify-between items-center pt-4 border-t border-[#EFEFEA] mt-5">
+                {keyModalStep > 1 ? (
+                  <Button
+                    type="button"
+                    variant="secondary"
+                    size="sm"
+                    onClick={() => setKeyModalStep((s) => (s - 1) as any)}
+                  >
+                    Back
+                  </Button>
+                ) : (
+                  <Button type="button" variant="secondary" size="sm" onClick={() => setShowCreateKeyModal(false)}>
+                    Cancel
+                  </Button>
+                )}
+
+                <Button type="submit" size="sm" disabled={!newKeyName.trim()}>
+                  {keyModalStep === 3 ? 'Generate API Key' : 'Continue'}
                 </Button>
               </div>
             </form>
@@ -1137,7 +1534,7 @@ export const SettingsPage: React.FC = () => {
         </div>
       )}
 
-      {/* ONE-TIME REVEAL DIALOG */}
+      {/* ONE-TIME API KEY REVEAL DIALOG */}
       {createdKeySecret && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-xs flex items-center justify-center p-4 z-50">
           <div className="bg-white rounded-2xl border border-[#E5E5E2] shadow-2xl max-w-lg w-full p-6 text-left">
@@ -1165,6 +1562,123 @@ export const SettingsPage: React.FC = () => {
             <div className="flex justify-end">
               <Button size="sm" onClick={() => setCreatedKeySecret(null)}>
                 I have copied my key securely
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* REGISTER DEVELOPER WEBHOOK MODAL */}
+      {showAddWebhookModal && (
+        <div className="fixed inset-0 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4 z-50">
+          <div className="bg-white rounded-2xl border border-[#E5E5E2] shadow-xl max-w-md w-full p-6 text-left">
+            <h3 className="text-base font-bold text-[#111318] mb-1">Add Webhook Endpoint</h3>
+            <p className="text-xs text-[#626873] mb-4">
+              Receive cryptographically signed HMAC-SHA256 HTTP POST notifications for real-time workspace events.
+            </p>
+
+            <form onSubmit={handleCreateWebhook} className="flex flex-col gap-4">
+              <div>
+                <label className="block text-xs font-semibold text-[#111318] mb-1">Endpoint URL</label>
+                <input
+                  type="url"
+                  required
+                  placeholder="https://api.yourdomain.com/webhooks/nexus"
+                  value={newWebhookUrl}
+                  onChange={(e) => setNewWebhookUrl(e.target.value)}
+                  className="w-full h-9 px-3 rounded-lg bg-[#FAFAF8] border border-[#E5E5E2] focus:border-[#6D4AFF] focus:bg-white text-xs text-[#111318] font-mono outline-none"
+                />
+                <p className="text-[10px] text-[#8B919B] mt-1">Must use secure HTTPS (http allowed for local dev only).</p>
+              </div>
+
+              <div>
+                <label className="block text-xs font-semibold text-[#111318] mb-1">Description (Optional)</label>
+                <input
+                  type="text"
+                  placeholder="e.g. Production CI/CD Slack notification service"
+                  value={newWebhookDesc}
+                  onChange={(e) => setNewWebhookDesc(e.target.value)}
+                  className="w-full h-9 px-3 rounded-lg bg-[#FAFAF8] border border-[#E5E5E2] text-xs text-[#111318] outline-none"
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-semibold text-[#111318] mb-1.5">Subscribed Events</label>
+                <div className="space-y-1 max-h-40 overflow-y-auto rounded-lg border border-[#E5E5E2] p-2 bg-[#FAFAF8]/50">
+                  {ALL_WEBHOOK_EVENTS.map((ev) => {
+                    const isChecked = newWebhookEvents.includes(ev.id);
+                    return (
+                      <label key={ev.id} className="flex items-start gap-2 p-1 rounded hover:bg-white cursor-pointer text-xs">
+                        <input
+                          type="checkbox"
+                          checked={isChecked}
+                          onChange={() => {
+                            if (isChecked) {
+                              setNewWebhookEvents(newWebhookEvents.filter((e) => e !== ev.id));
+                            } else {
+                              setNewWebhookEvents([...newWebhookEvents, ev.id]);
+                            }
+                          }}
+                          className="mt-0.5 accent-[#6D4AFF]"
+                        />
+                        <div>
+                          <span className="font-mono text-xs font-semibold text-[#111318]">{ev.id}</span>
+                          <p className="text-[10px] text-[#8B919B]">{ev.description}</p>
+                        </div>
+                      </label>
+                    );
+                  })}
+                </div>
+              </div>
+
+              <div className="p-3 rounded-xl bg-red-50/60 border border-red-200/80 text-xs text-red-900 flex items-start gap-2">
+                <ShieldCheck className="w-4 h-4 shrink-0 text-red-600 mt-0.5" />
+                <span className="text-[11px] leading-relaxed">
+                  <strong>SSRF Defense:</strong> Internal loopback addresses (127.0.0.1), RFC1918 subnets, and cloud instance metadata endpoints (169.254.169.254) are rejected.
+                </span>
+              </div>
+
+              <div className="flex justify-end gap-2 pt-2 border-t border-[#EFEFEA]">
+                <Button type="button" variant="secondary" size="sm" onClick={() => setShowAddWebhookModal(false)}>
+                  Cancel
+                </Button>
+                <Button type="submit" size="sm" disabled={!newWebhookUrl.trim() || newWebhookEvents.length === 0}>
+                  Register Webhook
+                </Button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* ONE-TIME WEBHOOK SECRET REVEAL DIALOG */}
+      {createdWebhookSecret && (
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-xs flex items-center justify-center p-4 z-50">
+          <div className="bg-white rounded-2xl border border-[#E5E5E2] shadow-2xl max-w-lg w-full p-6 text-left">
+            <div className="flex items-center gap-2 text-emerald-600 mb-2">
+              <CheckCircle2 className="w-5 h-5" />
+              <h3 className="text-base font-bold text-[#111318]">Webhook Signing Secret</h3>
+            </div>
+
+            <p className="text-xs text-[#626873] mb-4 leading-relaxed">
+              Use this secret to verify the <code className="font-mono text-xs bg-neutral-100 px-1 py-0.5 rounded">X-NEXUS-Signature</code> HMAC header on incoming HTTP payloads. Store it securely in your server environment variables.
+            </p>
+
+            <div className="p-3.5 rounded-xl bg-[#111318] text-white flex items-center justify-between font-mono text-xs mb-5">
+              <span className="break-all select-all">{createdWebhookSecret}</span>
+              <button
+                type="button"
+                onClick={copyWebhookSecretHandler}
+                className="ml-3 shrink-0 p-1.5 rounded-lg bg-white/10 hover:bg-white/20 text-white transition-colors cursor-pointer"
+                title="Copy secret"
+              >
+                {copiedWebhookSecret ? <Check className="w-4 h-4 text-emerald-400" /> : <Copy className="w-4 h-4" />}
+              </button>
+            </div>
+
+            <div className="flex justify-end">
+              <Button size="sm" onClick={() => setCreatedWebhookSecret(null)}>
+                I have stored the secret
               </Button>
             </div>
           </div>

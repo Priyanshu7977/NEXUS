@@ -7,6 +7,7 @@ import { ModelMessage, ModelToolDefinition } from '../ai/types';
 import { logWorkspaceActivity } from '../services/activityService';
 import { getWorkspacePolicy } from '../services/policyService';
 import { recordAuditLog } from '../services/auditService';
+import { dispatchDeveloperWebhookEvent } from '../services/webhookDeliveryService';
 
 export interface ExecuteAgentOptions {
   workspaceId: string;
@@ -420,6 +421,17 @@ export const executeAgent = async (
       steps: stepCount,
       status: finalStatus,
     },
+  });
+
+  const webhookEvent = finalStatus === 'completed' ? 'agent.completed' : 'agent.failed';
+  dispatchDeveloperWebhookEvent(workspaceId, webhookEvent, {
+    execution_id: executionId,
+    agent_id: agentId,
+    agent_name: agent.name,
+    status: finalStatus,
+    duration_ms: durationMs,
+    output: finalOutput,
+    error: executionError,
   });
 
   return finalized;

@@ -143,6 +143,9 @@ export type ApiKeyScope =
   | 'connectors:read'
   | 'connectors:write'
   | 'executions:read'
+  | 'activity:read'
+  | 'webhooks:read'
+  | 'webhooks:write'
   | 'audit:read'
   | (string & {});
 
@@ -157,6 +160,9 @@ export const ALL_API_KEY_SCOPES: { id: ApiKeyScope; label: string; description: 
   { id: 'connectors:read', label: 'Read Connectors', description: 'Inspect active connector status and scopes' },
   { id: 'connectors:write', label: 'Write Connectors', description: 'Install, authorize, and configure connectors' },
   { id: 'executions:read', label: 'Read Executions', description: 'Query execution history, node logs, and outputs' },
+  { id: 'activity:read', label: 'Read Activity', description: 'Query execution activity and telemetry logs' },
+  { id: 'webhooks:read', label: 'Read Webhooks', description: 'List registered developer webhook subscriptions' },
+  { id: 'webhooks:write', label: 'Manage Webhooks', description: 'Create, test, disable, or delete developer webhooks' },
   { id: 'audit:read', label: 'Read Audit Logs', description: 'Query security and activity audit records' },
 ];
 

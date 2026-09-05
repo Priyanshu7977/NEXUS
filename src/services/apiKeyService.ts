@@ -130,10 +130,11 @@ export async function verifyApiKey(
   valid: boolean;
   apiKey?: ApiKey;
   workspaceId?: string;
+  reason?: 'INVALID_FORMAT' | 'NOT_FOUND' | 'REVOKED' | 'EXPIRED' | 'INSUFFICIENT_SCOPE';
   error?: string;
 }> {
   if (!rawKey || !rawKey.startsWith('nxs_live_')) {
-    return { valid: false, error: 'Invalid API key format. Must begin with "nxs_live_".' };
+    return { valid: false, reason: 'INVALID_FORMAT', error: 'Invalid API key format. Must begin with "nxs_live_".' };
   }
 
   const keyHash = await hashApiKey(rawKey);
@@ -183,20 +184,21 @@ export async function verifyApiKey(
   }
 
   if (!match) {
-    return { valid: false, error: 'API key not recognized.' };
+    return { valid: false, reason: 'NOT_FOUND', error: 'API key not recognized.' };
   }
 
   if (match.revoked_at) {
-    return { valid: false, error: 'API key has been revoked.' };
+    return { valid: false, reason: 'REVOKED', error: 'API key has been revoked.' };
   }
 
   if (match.expires_at && new Date(match.expires_at).getTime() < Date.now()) {
-    return { valid: false, error: 'API key has expired.' };
+    return { valid: false, reason: 'EXPIRED', error: 'API key has expired.' };
   }
 
   if (requiredScope && (!match.scopes || (!match.scopes.includes(requiredScope) && !match.scopes.includes('*')))) {
     return {
       valid: false,
+      reason: 'INSUFFICIENT_SCOPE',
       error: `Missing required scope: API key lacks required scope "${requiredScope}". Authorized scopes: [${match.scopes?.join(', ')}]`,
     };
   }

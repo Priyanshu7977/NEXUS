@@ -1,0 +1,25 @@
+{
+  "name": "@nexus/sdk",
+  "version": "1.0.0",
+  "description": "Official TypeScript & JavaScript SDK for the NEXUS AI Agent Orchestration Platform",
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "scripts": {
+    "build": "tsc -p tsconfig.json"
+  },
+  "keywords": [
+    "nexus",
+    "ai",
+    "agents",
+    "orchestration",
+    "sdk",
+    "mcp",
+    "a2a"
+  ],
+  "author": "NEXUS Core Team",
+  "license": "Apache-2.0",
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
