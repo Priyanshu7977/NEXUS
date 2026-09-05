@@ -1,13 +1,16 @@
 /**
  * NEXUS Token Encryption Service
- * Provides AES-GCM (256-bit) encryption and decryption for sensitive third-party connector tokens.
+ * Provides AES-GCM (256-bit) encryption, versioning, and key rotation for sensitive third-party connector tokens.
  * Utilizes the standard Web Crypto API (crypto.subtle) for secure browser/client and edge execution.
  */
 
 // Fallback key used only when VITE_CONNECTOR_ENCRYPTION_KEY is not defined in .env
 const DEFAULT_KEY_SEED = 'nexus_default_connector_enc_key_32bytes!';
 
-const getEncryptionKeyMaterial = (): string => {
+const getEncryptionKeyMaterial = (customMaterial?: string): string => {
+  if (customMaterial && customMaterial.length >= 16) {
+    return customMaterial;
+  }
   const envKey = (typeof import.meta !== 'undefined' && import.meta.env && import.meta.env.VITE_CONNECTOR_ENCRYPTION_KEY) || '';
   if (envKey && envKey.length >= 16) {
     return envKey;
@@ -16,9 +19,9 @@ const getEncryptionKeyMaterial = (): string => {
 };
 
 // Derive a CryptoKey from the string material using SHA-256
-async function getCryptoKey(): Promise<CryptoKey> {
+async function getCryptoKey(customMaterial?: string): Promise<CryptoKey> {
   const enc = new TextEncoder();
-  const keyMaterial = enc.encode(getEncryptionKeyMaterial());
+  const keyMaterial = enc.encode(getEncryptionKeyMaterial(customMaterial));
   const hash = await crypto.subtle.digest('SHA-256', keyMaterial);
   return crypto.subtle.importKey(
     'raw',
@@ -49,12 +52,12 @@ function base64ToArrayBuffer(base64: string): ArrayBuffer {
 
 /**
  * Encrypt a plaintext token (e.g. GitHub access token) into a secure AES-GCM ciphertext
- * Format: "iv_base64:ciphertext_base64"
+ * Format: "v1:iv_base64:ciphertext_base64"
  */
-export async function encryptToken(plainText: string): Promise<string> {
+export async function encryptToken(plainText: string, customKeyMaterial?: string): Promise<string> {
   if (!plainText) return '';
   try {
-    const key = await getCryptoKey();
+    const key = await getCryptoKey(customKeyMaterial);
     // 12-byte IV for AES-GCM
     const iv = crypto.getRandomValues(new Uint8Array(12));
     const encoded = new TextEncoder().encode(plainText);
@@ -71,27 +74,38 @@ export async function encryptToken(plainText: string): Promise<string> {
     const ivB64 = arrayBufferToBase64(iv);
     const cipherB64 = arrayBufferToBase64(ciphertext);
 
-    return `${ivB64}:${cipherB64}`;
+    return `v1:${ivB64}:${cipherB64}`;
   } catch (err) {
-    console.error('[NEXUS Encryption] Failed to encrypt token safely');
+    console.error('[NEXUS Encryption] Failed to encrypt token safely:', err);
     throw new Error('Encryption operation failed');
   }
 }
 
 /**
- * Decrypt an AES-GCM ciphertext back into the original plaintext token
+ * Decrypt an AES-GCM ciphertext back into the original plaintext token.
+ * Supports versioned "v1:iv:cipher" format and backwards compatibility with legacy "iv:cipher".
  */
-export async function decryptToken(encryptedPayload: string): Promise<string> {
+export async function decryptToken(encryptedPayload: string, customKeyMaterial?: string): Promise<string> {
   if (!encryptedPayload) return '';
   try {
     const parts = encryptedPayload.split(':');
-    if (parts.length !== 2) {
+    let ivB64: string;
+    let cipherB64: string;
+
+    if (parts.length === 3 && parts[0] === 'v1') {
+      ivB64 = parts[1];
+      cipherB64 = parts[2];
+    } else if (parts.length === 2) {
+      // Legacy unversioned format fallback
+      ivB64 = parts[0];
+      cipherB64 = parts[1];
+    } else {
       throw new Error('Invalid encrypted payload format');
     }
 
-    const iv = new Uint8Array(base64ToArrayBuffer(parts[0]));
-    const ciphertext = base64ToArrayBuffer(parts[1]);
-    const key = await getCryptoKey();
+    const iv = new Uint8Array(base64ToArrayBuffer(ivB64));
+    const ciphertext = base64ToArrayBuffer(cipherB64);
+    const key = await getCryptoKey(customKeyMaterial);
 
     const decrypted = await crypto.subtle.decrypt(
       {
@@ -104,7 +118,20 @@ export async function decryptToken(encryptedPayload: string): Promise<string> {
 
     return new TextDecoder().decode(decrypted);
   } catch (err) {
-    console.error('[NEXUS Encryption] Failed to decrypt token safely');
+    console.error('[NEXUS Encryption] Failed to decrypt token safely:', err);
     throw new Error('Decryption operation failed');
   }
+}
+
+/**
+ * Rotates credential encryption from an old key seed to a new key seed.
+ */
+export async function rotateCredentialEncryptionKey(
+  encryptedPayload: string,
+  newKeyMaterial: string,
+  oldKeyMaterial?: string
+): Promise<string> {
+  const plainText = await decryptToken(encryptedPayload, oldKeyMaterial);
+  if (!plainText) return '';
+  return await encryptToken(plainText, newKeyMaterial);
 }

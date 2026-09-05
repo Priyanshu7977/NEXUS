@@ -406,9 +406,20 @@ export const getWorkflowById = async (
 };
 
 export const createWorkflow = async (
-  workspaceId: string,
-  input: CreateWorkflowInput
-): Promise<{ workflow: Workflow | null; error: string | null }> => {
+  workspaceIdOrInput: string | (CreateWorkflowInput & { workspace_id?: string }),
+  inputParam?: CreateWorkflowInput
+): Promise<{ workflow: Workflow | null; error: string | null } & Workflow> => {
+  let workspaceId: string;
+  let input: CreateWorkflowInput;
+
+  if (typeof workspaceIdOrInput === 'string') {
+    workspaceId = workspaceIdOrInput;
+    input = inputParam!;
+  } else {
+    workspaceId = workspaceIdOrInput.workspace_id || 'default-workspace';
+    input = workspaceIdOrInput;
+  }
+
   const newId = crypto.randomUUID();
   const slug = input.slug || input.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
 
@@ -421,12 +432,12 @@ export const createWorkflow = async (
     status: input.status || 'active',
     trigger_type: input.trigger_type || 'manual',
     trigger_config: input.trigger_config || {},
-    nodes: input.nodes.map((n, i) => ({
+    nodes: (input.nodes || []).map((n, i) => ({
       ...n,
       id: n.id || `node_${Date.now()}_${i}`,
       workflow_id: newId,
     })),
-    edges: input.edges.map((e, i) => ({
+    edges: (input.edges || []).map((e, i) => ({
       ...e,
       id: e.id || `edge_${Date.now()}_${i}`,
       workflow_id: newId,
@@ -483,7 +494,7 @@ export const createWorkflow = async (
     }
   }
 
-  return { workflow: newWorkflow, error: null };
+  return Object.assign(newWorkflow, { workflow: newWorkflow, error: null });
 };
 
 export const updateWorkflow = async (

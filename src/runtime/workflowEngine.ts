@@ -23,6 +23,10 @@ import { getWorkspaceExternalAgents, invokeExternalAgent } from '../services/ext
 import { logWorkspaceActivity } from '../services/activityService';
 import { McpServerConfig } from '../types/mcp';
 import { ExternalAgentConfig } from '../types/a2a';
+import { getWorkspacePolicy } from '../services/policyService';
+import { recordAuditLog } from '../services/auditService';
+import { getWorkspaceMembership } from '../services/authorizationService';
+import { WorkspacePolicy } from '../types/security';
 
 /**
  * Orchestrates and executes a multi-agent workflow DAG.
@@ -73,6 +77,24 @@ export const executeWorkflow = async (
     });
   }
 
+  // Fetch Workspace Policy
+  const policy = await getWorkspacePolicy(workspaceId);
+
+  // Policy check: Max nodes per workflow
+  const maxNodes = policy.max_nodes_per_workflow ?? policy.max_workflow_nodes ?? 30;
+  if (workflow.nodes.length > maxNodes) {
+    const errorMsg = `Policy violation: Workflow has ${workflow.nodes.length} nodes, which exceeds workspace limit of ${maxNodes} nodes.`;
+    await emitEvent('WORKFLOW_FAILED', errorMsg, null, 'failed');
+    return await saveWorkflowExecutionRecord(workspaceId, {
+      id: executionId,
+      workflow_id: workflowId,
+      status: 'failed',
+      error: errorMsg,
+      completed_at: new Date().toISOString(),
+      duration_ms: Date.now() - startTime,
+    });
+  }
+
   // 2. Validate DAG Structure & Detect Cycles
   const validation = validateWorkflowGraph(workflow.nodes, workflow.edges);
   if (!validation.isValid) {
@@ -87,6 +109,20 @@ export const executeWorkflow = async (
       duration_ms: Date.now() - startTime,
     });
   }
+
+  // Record audit log for workflow execution start
+  await recordAuditLog(workspaceId, {
+    user_id: input.userId,
+    action: 'workflow.run',
+    resource_type: 'workflow',
+    resource_id: workflow.id,
+    status: 'success',
+    metadata: {
+      executionId,
+      workflowName: workflow.name,
+      nodeCount: workflow.nodes.length,
+    },
+  });
 
   // 3. Initialize Execution Context & Record
   const initialTrigger = {
@@ -171,6 +207,31 @@ export const executeWorkflow = async (
       continue;
     }
 
+    // Policy check: Max workflow runtime
+    const maxRuntimeSec = policy.max_workflow_runtime_seconds ?? policy.max_workflow_runtime ?? 300;
+    if (Date.now() - startTime > maxRuntimeSec * 1000) {
+      const timeoutErr = `Execution timeout: Workflow exceeded maximum runtime limit (${maxRuntimeSec}s).`;
+      await emitEvent('WORKFLOW_FAILED', timeoutErr, node.node_key, 'failed');
+      const failedExec = await saveWorkflowExecutionRecord(workspaceId, {
+        id: executionId,
+        workflow_id: workflow.id,
+        status: 'failed',
+        error: timeoutErr,
+        context_data: contextData,
+        completed_at: new Date().toISOString(),
+        duration_ms: Date.now() - startTime,
+      });
+      await recordAuditLog(workspaceId, {
+        user_id: input.userId,
+        action: 'workflow.run',
+        resource_type: 'workflow',
+        resource_id: workflow.id,
+        status: 'failure',
+        metadata: { executionId, workflowName: workflow.name, error: timeoutErr },
+      });
+      return failedExec;
+    }
+
     // Execute Node
     await emitEvent(
       'NODE_STARTED',
@@ -189,6 +250,7 @@ export const executeWorkflow = async (
         connections,
         mcpServers,
         externalAgents,
+        policy,
         emitEvent,
       });
 
@@ -273,6 +335,20 @@ export const executeWorkflow = async (
         },
       });
 
+      await recordAuditLog(workspaceId, {
+        user_id: input.userId,
+        action: 'workflow.run',
+        resource_type: 'workflow',
+        resource_id: workflow.id,
+        status: 'failure',
+        metadata: {
+          executionId,
+          workflowName: workflow.name,
+          error: errMsg,
+          failedNodeKey: node.node_key,
+        },
+      });
+
       return failedExec;
     }
   }
@@ -316,6 +392,20 @@ export const executeWorkflow = async (
       workflowId: workflow.id,
       executionId,
       durationMs: totalDuration,
+    },
+  });
+
+  await recordAuditLog(workspaceId, {
+    user_id: input.userId,
+    action: 'workflow.run',
+    resource_type: 'workflow',
+    resource_id: workflow.id,
+    status: 'success',
+    metadata: {
+      executionId,
+      workflowName: workflow.name,
+      durationMs: totalDuration,
+      status: 'completed',
     },
   });
 
@@ -364,6 +454,14 @@ export const resumeWorkflowExecution = async (
     throw new Error(`Execution ${executionId} is currently "${execution.status}", not waiting for approval.`);
   }
 
+  // Authorization check: Viewers cannot make approval decisions
+  if (input.userId) {
+    const membership = await getWorkspaceMembership(workspaceId, input.userId);
+    if (membership && membership.role === 'viewer') {
+      throw new Error('Unauthorized: Viewers cannot make approval decisions.');
+    }
+  }
+
   // Handle Rejection
   if (decision === 'reject') {
     await emitEvent(
@@ -399,6 +497,21 @@ export const resumeWorkflowExecution = async (
       metadata: { executionId, workflowId: execution.workflow_id, nodeKey },
     });
 
+    await recordAuditLog(workspaceId, {
+      user_id: input.userId,
+      action: 'approval.reject',
+      resource_type: 'workflow',
+      resource_id: execution.workflow_id,
+      status: 'success',
+      metadata: {
+        executionId,
+        nodeKey,
+        decision: 'reject',
+        decidedBy,
+        notes,
+      },
+    });
+
     return aborted;
   }
 
@@ -410,6 +523,21 @@ export const resumeWorkflowExecution = async (
     'completed',
     { decision: 'approved', decidedBy, notes }
   );
+
+  await recordAuditLog(workspaceId, {
+    user_id: input.userId,
+    action: 'approval.approve',
+    resource_type: 'workflow',
+    resource_id: execution.workflow_id,
+    status: 'success',
+    metadata: {
+      executionId,
+      nodeKey,
+      decision: 'approve',
+      decidedBy,
+      notes,
+    },
+  });
 
   // Fetch Workflow Definition
   const { workflow } = await getWorkflowById(workspaceId, execution.workflow_id);
@@ -449,6 +577,9 @@ export const resumeWorkflowExecution = async (
     }
   }
 
+  // Fetch policy for remaining execution
+  const policy = await getWorkspacePolicy(workspaceId);
+
   // Execute remaining nodes
   for (const nextKey of remainingNodes) {
     const node = workflow.nodes.find((n) => n.node_key === nextKey);
@@ -471,6 +602,7 @@ export const resumeWorkflowExecution = async (
         connections,
         mcpServers,
         externalAgents,
+        policy,
         emitEvent,
       });
 
@@ -556,6 +688,7 @@ interface ExecuteNodeParams {
   connections: any[];
   mcpServers?: McpServerConfig[];
   externalAgents?: ExternalAgentConfig[];
+  policy?: WorkspacePolicy;
   emitEvent: (
     eventType: WorkflowExecutionEvent['event_type'],
     message: string,
@@ -575,6 +708,7 @@ const executeWorkflowNode = async (params: ExecuteNodeParams): Promise<any> => {
     connections,
     mcpServers = [],
     externalAgents = [],
+    policy,
     emitEvent,
   } = params;
 
@@ -646,6 +780,10 @@ const executeWorkflowNode = async (params: ExecuteNodeParams): Promise<any> => {
     }
 
     case 'EXTERNAL_AGENT': {
+      if (policy && !policy.allow_external_agents) {
+        throw new Error('Policy violation: External A2A agents are disallowed in this workspace.');
+      }
+
       // 1. Locate External Agent
       const agentIdentifier = node.config?.agent_slug || node.config?.agent_id || node.config?.agent_name || '';
       let targetExternalAgent = externalAgents.find(
@@ -722,6 +860,25 @@ const executeWorkflowNode = async (params: ExecuteNodeParams): Promise<any> => {
     case 'TOOL': {
       const toolName = node.config?.toolName || 'github_get_repository';
       const isMcpTool = toolName.startsWith('mcp.') || toolName.startsWith('mcp_') || Boolean(node.config?.is_mcp);
+
+      if (isMcpTool && policy && !policy.allow_mcp) {
+        throw new Error('Policy violation: MCP tools are disallowed in this workspace.');
+      }
+
+      const isDeployTool =
+        toolName.toLowerCase().includes('deploy') ||
+        node.name.toLowerCase().includes('deploy') ||
+        toolName.includes('vercel');
+
+      if (isDeployTool && policy && policy.require_approval_for_deploy) {
+        const hasApproval = Object.keys(contextData).some((k) => {
+          const item = contextData[k];
+          return item && (item.approved === true || item.decision === 'approved');
+        });
+        if (!hasApproval) {
+          throw new Error(`Policy violation: Deployment tool "${toolName}" requires preceding Human Approval.`);
+        }
+      }
 
       if (isMcpTool && mcpServers.length > 0) {
         for (const s of mcpServers) {

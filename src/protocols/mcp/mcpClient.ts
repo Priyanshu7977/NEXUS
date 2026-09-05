@@ -7,6 +7,7 @@ import {
 } from '../../types/mcp';
 import { ProtocolAuthType } from '../../types/database';
 import { ProtocolError } from '../../types/protocol';
+import { assertSafeUrl } from '../../services/ssrfProtection';
 
 export interface McpClientOptions {
   serverUrl: string;
@@ -74,6 +75,8 @@ export class McpClient {
     if (this.isMockOrDemoServer(this.serverUrl)) {
       return this.handleMockJsonRpc<T>(method, params);
     }
+
+    assertSafeUrl(this.serverUrl);
 
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), this.timeoutMs);

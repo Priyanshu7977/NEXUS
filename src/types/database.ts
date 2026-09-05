@@ -6,7 +6,7 @@ export type Json =
   | { [key: string]: Json | undefined }
   | Json[];
 
-export type WorkspaceRole = 'owner' | 'admin' | 'member';
+export type WorkspaceRole = 'owner' | 'admin' | 'member' | 'viewer';
 
 export interface Profile {
   id: string;
@@ -32,7 +32,9 @@ export interface WorkspaceMember {
   workspace_id: string;
   user_id: string;
   role: WorkspaceRole;
+  status?: 'active' | 'invited' | 'suspended';
   created_at: string;
+  updated_at?: string;
   profile?: Profile;
 }
 
@@ -211,6 +213,49 @@ export interface MarketplaceReviewRow {
   rating: number;
   review_title: string | null;
   review_text: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface ApiKeyRow {
+  id: string;
+  workspace_id: string;
+  name: string;
+  key_prefix: string;
+  key_hash: string;
+  scopes: string[];
+  created_by: string | null;
+  last_used_at: string | null;
+  expires_at: string | null;
+  revoked_at: string | null;
+  created_at: string;
+}
+
+export interface AuditLogRow {
+  id: string;
+  workspace_id: string;
+  user_id: string | null;
+  action: string;
+  resource_type: string;
+  resource_id: string | null;
+  metadata: Record<string, any>;
+  ip_address: string | null;
+  user_agent: string | null;
+  created_at: string;
+}
+
+export interface WorkspacePolicyRow {
+  id: string;
+  workspace_id: string;
+  require_approval_for_deployment: boolean;
+  allow_external_agents: boolean;
+  allow_mcp: boolean;
+  allow_marketplace_install: boolean;
+  allow_public_publishing: boolean;
+  max_workflow_runtime: number;
+  max_workflow_nodes: number;
+  max_agent_steps: number;
+  max_tool_calls: number;
   created_at: string;
   updated_at: string;
 }
@@ -1136,6 +1181,98 @@ export interface Database {
           rating?: number;
           review_title?: string | null;
           review_text?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Relationships: [];
+      };
+      api_keys: {
+        Row: ApiKeyRow;
+        Insert: {
+          id?: string;
+          workspace_id: string;
+          name: string;
+          key_prefix: string;
+          key_hash: string;
+          scopes?: string[];
+          created_by?: string | null;
+          last_used_at?: string | null;
+          expires_at?: string | null;
+          revoked_at?: string | null;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          workspace_id?: string;
+          name?: string;
+          key_prefix?: string;
+          key_hash?: string;
+          scopes?: string[];
+          created_by?: string | null;
+          last_used_at?: string | null;
+          expires_at?: string | null;
+          revoked_at?: string | null;
+          created_at?: string;
+        };
+        Relationships: [];
+      };
+      audit_logs: {
+        Row: AuditLogRow;
+        Insert: {
+          id?: string;
+          workspace_id: string;
+          user_id?: string | null;
+          action: string;
+          resource_type: string;
+          resource_id?: string | null;
+          metadata?: Record<string, any>;
+          ip_address?: string | null;
+          user_agent?: string | null;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          workspace_id?: string;
+          user_id?: string | null;
+          action?: string;
+          resource_type?: string;
+          resource_id?: string | null;
+          metadata?: Record<string, any>;
+          ip_address?: string | null;
+          user_agent?: string | null;
+          created_at?: string;
+        };
+        Relationships: [];
+      };
+      workspace_policies: {
+        Row: WorkspacePolicyRow;
+        Insert: {
+          id?: string;
+          workspace_id: string;
+          require_approval_for_deployment?: boolean;
+          allow_external_agents?: boolean;
+          allow_mcp?: boolean;
+          allow_marketplace_install?: boolean;
+          allow_public_publishing?: boolean;
+          max_workflow_runtime?: number;
+          max_workflow_nodes?: number;
+          max_agent_steps?: number;
+          max_tool_calls?: number;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          workspace_id?: string;
+          require_approval_for_deployment?: boolean;
+          allow_external_agents?: boolean;
+          allow_mcp?: boolean;
+          allow_marketplace_install?: boolean;
+          allow_public_publishing?: boolean;
+          max_workflow_runtime?: number;
+          max_workflow_nodes?: number;
+          max_agent_steps?: number;
+          max_tool_calls?: number;
           created_at?: string;
           updated_at?: string;
         };

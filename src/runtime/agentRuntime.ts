@@ -5,6 +5,8 @@ import { toolRegistry } from './tools/toolRegistry';
 import { getModelProvider } from '../ai/modelRegistry';
 import { ModelMessage, ModelToolDefinition } from '../ai/types';
 import { logWorkspaceActivity } from '../services/activityService';
+import { getWorkspacePolicy } from '../services/policyService';
+import { recordAuditLog } from '../services/auditService';
 
 export interface ExecuteAgentOptions {
   workspaceId: string;
@@ -89,20 +91,36 @@ export const executeAgent = async (
     });
   }
 
-  // 3. Load active connector connections for workspace
+  // 3. Fetch Workspace Policy
+  const policy = await getWorkspacePolicy(workspaceId);
+
+  // 4. Load active connector connections for workspace
   const { connections } = await getWorkspaceConnections(workspaceId);
   const activeConnectorIds = connections
     .filter((c) => c.status === 'connected')
     .map((c) => c.connector_id);
 
-  // 4. Discover authorized tools
+  // 5. Discover authorized tools
   const grantedCapabilities = (agent.tools || []).map((t) => t.capability);
   const authorizedTools = toolRegistry.getAuthorizedToolsForAgent(
     grantedCapabilities,
     activeConnectorIds
   );
 
-  // 5. Check AI model provider
+  // Record audit log for execution start
+  await recordAuditLog(workspaceId, {
+    action: 'agent.execute',
+    resource_type: 'agent',
+    resource_id: agentId,
+    status: 'success',
+    metadata: {
+      executionId,
+      agentName: agent.name,
+      model: `${agent.model_provider}/${agent.model_name}`,
+    },
+  });
+
+  // 6. Check AI model provider
   const provider = getModelProvider(agent.model_provider);
   if (!provider.isConfigured()) {
     const isCodeAgent = agent.slug?.includes('code') || agent.name.toLowerCase().includes('code');
@@ -122,6 +140,21 @@ export const executeAgent = async (
       'completed',
       { simulated: true }
     );
+
+    await recordAuditLog(workspaceId, {
+      action: 'agent.execute',
+      resource_type: 'agent',
+      resource_id: agentId,
+      status: 'success',
+      metadata: {
+        executionId,
+        agentName: agent.name,
+        finalStatus: 'completed',
+        simulated: true,
+        stepsUsed: 1,
+        durationMs: Date.now() - startTime,
+      },
+    });
 
     return await saveExecutionRecord(workspaceId, {
       id: executionId,
@@ -170,13 +203,15 @@ export const executeAgent = async (
   ];
 
   let stepCount = 0;
+  let totalToolCalls = 0;
   let finalOutput: string | null = null;
   let finalStatus: AgentExecutionStatus = 'completed';
   let executionError: string | null = null;
   let totalTokens = 0;
 
-  const maxSteps = Math.min(Math.max(agent.max_steps || 10, 1), 30);
-  const maxRuntimeMs = (agent.max_runtime_seconds || 300) * 1000;
+  const maxSteps = Math.min(Math.max(agent.max_steps || 10, 1), policy.max_agent_steps);
+  const maxRuntimeSec = policy.max_workflow_runtime_seconds ?? policy.max_workflow_runtime ?? 300;
+  const maxRuntimeMs = Math.min((agent.max_runtime_seconds || 300), maxRuntimeSec) * 1000;
 
   // Reasoning loop
   while (stepCount < maxSteps) {
@@ -185,7 +220,7 @@ export const executeAgent = async (
     // Guardrail: Max runtime check
     if (Date.now() - startTime > maxRuntimeMs) {
       finalStatus = 'limit_reached';
-      executionError = `Execution timeout: runtime exceeded maximum allowed limit (${agent.max_runtime_seconds}s).`;
+      executionError = `Execution timeout: runtime exceeded maximum allowed limit (${maxRuntimeSec}s).`;
       await emitEvent('LIMIT_REACHED', executionError, null, 'failed');
       break;
     }
@@ -227,6 +262,14 @@ export const executeAgent = async (
       });
 
       for (const call of modelRes.toolCalls) {
+        totalToolCalls++;
+        if (totalToolCalls > policy.max_tool_calls) {
+          finalStatus = 'limit_reached';
+          executionError = `Policy limit reached: Workspace policy restricts agent to a maximum of ${policy.max_tool_calls} tool calls per execution.`;
+          await emitEvent('LIMIT_REACHED', executionError, call.name, 'failed');
+          break;
+        }
+
         await emitEvent(
           'TOOL_CALL',
           `Invoking tool: ${call.name}`,
@@ -294,6 +337,9 @@ export const executeAgent = async (
           });
         }
       }
+      if (finalStatus === 'limit_reached') {
+        break;
+      }
     } else {
       // Model returned final response
       finalOutput = modelRes.text || 'No response generated.';
@@ -339,6 +385,23 @@ export const executeAgent = async (
     duration_ms: durationMs,
     model: `${agent.model_provider}/${agent.model_name}`,
     tokens_used: totalTokens > 0 ? totalTokens : null,
+  });
+
+  // Record completion audit log
+  await recordAuditLog(workspaceId, {
+    action: 'agent.execute',
+    resource_type: 'agent',
+    resource_id: agentId,
+    status: finalStatus === 'completed' ? 'success' : 'failure',
+    metadata: {
+      executionId,
+      agentName: agent.name,
+      finalStatus,
+      stepsUsed: stepCount,
+      toolCalls: totalToolCalls,
+      durationMs,
+      error: executionError,
+    },
   });
 
   // Log activity

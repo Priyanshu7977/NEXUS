@@ -5,6 +5,7 @@ import {
 } from '../../types/a2a';
 import { ProtocolAuthType } from '../../types/database';
 import { ProtocolError } from '../../types/protocol';
+import { assertSafeUrl } from '../../services/ssrfProtection';
 
 export interface A2AClientOptions {
   endpointUrl: string;
@@ -60,6 +61,8 @@ export class A2AClient {
       return this.getMockAgentCard();
     }
 
+    assertSafeUrl(this.agentCardUrl);
+
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), 12000);
 
@@ -102,6 +105,8 @@ export class A2AClient {
     if (this.isMockOrDemoAgent(this.endpointUrl)) {
       return this.handleMockInvocation(request);
     }
+
+    assertSafeUrl(this.endpointUrl);
 
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), this.timeoutMs);

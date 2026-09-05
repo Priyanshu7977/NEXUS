@@ -149,6 +149,7 @@ export interface UpdateWorkflowInput {
 export interface RunWorkflowInput {
   workspaceId: string;
   workflowId: string;
+  userId?: string;
   triggerData?: Record<string, any>;
   onEvent?: (event: WorkflowExecutionEvent) => void;
 }
@@ -160,5 +161,6 @@ export interface ApprovalDecisionInput {
   decision: 'approve' | 'reject';
   notes?: string;
   decidedBy?: string;
+  userId?: string;
   onEvent?: (event: WorkflowExecutionEvent) => void;
 }
