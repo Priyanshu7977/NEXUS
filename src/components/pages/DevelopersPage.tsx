@@ -53,7 +53,7 @@ export const DevelopersPage: React.FC = () => {
   ];
 
   return (
-    <div className="pt-24 pb-20 px-4 sm:px-6 lg:px-8 text-left max-w-7xl mx-auto">
+    <div className="pt-28 sm:pt-32 pb-24 px-4 sm:px-6 lg:px-8 text-left max-w-7xl mx-auto">
       {/* Top Breadcrumb */}
       <div className="flex items-center gap-2 text-xs font-mono text-[#8B919B] pb-6 border-b border-[#E5E5E2] mb-8">
         <Link to="/" className="hover:text-[#111318] transition-colors">NEXUS</Link>

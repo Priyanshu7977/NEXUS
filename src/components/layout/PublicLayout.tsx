@@ -32,7 +32,7 @@ export const PublicLayout: React.FC = () => {
   return (
     <div className="min-h-screen bg-[#F6F6F3] text-[#111318] flex flex-col antialiased selection:bg-[#6D4AFF]/20 selection:text-[#111318]">
       <Navbar />
-      <main className="flex-1">
+      <main className="flex-1 w-full overflow-x-hidden">
         <Outlet />
       </main>
       <Footer />

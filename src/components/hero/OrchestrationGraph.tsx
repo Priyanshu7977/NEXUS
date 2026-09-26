@@ -23,7 +23,7 @@ export const OrchestrationGraph: React.FC = () => {
       role: 'Goal decomposition & routing',
       brand: 'anthropic',
       status: 'Ready',
-      x: 23,
+      x: 24,
       y: 20,
     },
     {
@@ -32,7 +32,7 @@ export const OrchestrationGraph: React.FC = () => {
       role: 'Implementation & PR generation',
       brand: 'github',
       status: 'Executing',
-      x: 77,
+      x: 76,
       y: 20,
     },
     {
@@ -41,8 +41,8 @@ export const OrchestrationGraph: React.FC = () => {
       role: 'Schema & state persistence',
       brand: 'supabase',
       status: 'Connected',
-      x: 23,
-      y: 75,
+      x: 24,
+      y: 76,
     },
     {
       id: 'deploy',
@@ -50,16 +50,16 @@ export const OrchestrationGraph: React.FC = () => {
       role: 'Ephemeral preview & verification',
       brand: 'vercel',
       status: 'Connected',
-      x: 77,
-      y: 75,
+      x: 76,
+      y: 76,
     },
   ];
 
   const centerX = 50;
-  const centerY = 47.5;
+  const centerY = 48;
 
   return (
-    <div className="relative w-full aspect-[4/3] sm:aspect-[16/11] min-h-[340px] max-h-[460px] rounded-2xl bg-white border border-[#E5E5E2] shadow-[0_4px_24px_rgba(0,0,0,0.04)] overflow-hidden p-4 sm:p-6 select-none">
+    <div className="relative w-full aspect-[4/3] sm:aspect-[16/11] min-h-[360px] sm:min-h-[420px] max-h-[500px] rounded-2xl bg-white border border-[#E5E5E2] shadow-[0_4px_24px_rgba(0,0,0,0.04)] overflow-hidden p-4 sm:p-6 select-none">
       {/* Background Dots Pattern */}
       <div className="absolute inset-0 bg-dots-light opacity-80 pointer-events-none" />
 
@@ -132,24 +132,24 @@ export const OrchestrationGraph: React.FC = () => {
             className="absolute -translate-x-1/2 -translate-y-1/2 z-10 cursor-pointer"
           >
             <div
-              className={`flex items-center gap-2 sm:gap-3 p-2 sm:p-3 rounded-xl bg-white border transition-all duration-200 shadow-sm w-36 xs:w-40 sm:w-44 md:w-48 text-left ${
+              className={`flex items-center gap-2.5 sm:gap-3 p-2.5 sm:p-3 rounded-xl bg-white border transition-all duration-200 shadow-sm w-48 xs:w-52 sm:w-56 md:w-60 text-left ${
                 isHovered
                   ? 'border-[#6D4AFF] shadow-[0_6px_20px_rgba(109,74,255,0.12)] -translate-y-0.5'
                   : 'border-[#E5E5E2] hover:border-[#D4D4CE]'
               }`}
             >
               {node.brand && (
-                <div className="w-6 h-6 sm:w-8 sm:h-8 rounded-lg bg-[#FAFAF8] border border-[#E5E5E2] flex items-center justify-center shrink-0">
-                  <BrandLogo brand={node.brand} size={15} />
+                <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-[#FAFAF8] border border-[#E5E5E2] flex items-center justify-center shrink-0 text-[#111318]">
+                  <BrandLogo brand={node.brand} size={16} />
                 </div>
               )}
 
-              <div className="truncate flex-1 min-w-0">
-                <div className="flex items-center justify-between gap-1">
-                  <span className="text-[11px] sm:text-xs font-semibold text-[#111318] truncate">{node.name}</span>
-                  {isHovered && <ArrowUpRight className="w-3 h-3 text-[#6D4AFF] shrink-0" />}
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center justify-between gap-1 mb-0.5">
+                  <span className="text-xs sm:text-[13px] font-semibold text-[#111318] truncate">{node.name}</span>
+                  {isHovered && <ArrowUpRight className="w-3.5 h-3.5 text-[#6D4AFF] shrink-0" />}
                 </div>
-                <div className="text-[9px] sm:text-[10px] text-[#626873] truncate">{node.role}</div>
+                <div className="text-[10px] sm:text-[11px] text-[#626873] leading-snug break-words line-clamp-2">{node.role}</div>
               </div>
             </div>
           </div>

@@ -31,7 +31,7 @@ export const Hero: React.FC = () => {
 
             <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3.5 mb-6">
               <Link to="/signup" className="w-full sm:w-auto">
-                <Button size="lg" withArrow className="w-full sm:w-auto justify-center">
+                <Button size="lg" withArrow className="w-full sm:w-48 sm:min-w-[190px] justify-center text-center">
                   Start Building
                 </Button>
               </Link>
@@ -39,7 +39,7 @@ export const Hero: React.FC = () => {
                 variant="secondary"
                 size="lg"
                 onClick={() => scrollToSection('features')}
-                className="w-full sm:w-auto justify-center"
+                className="w-full sm:w-48 sm:min-w-[190px] justify-center text-center"
               >
                 Explore NEXUS
               </Button>

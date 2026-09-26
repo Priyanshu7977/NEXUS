@@ -162,12 +162,18 @@ export const BrandLogo: React.FC<BrandLogoProps> = ({
     }
   };
 
+  const colorClass = className.includes('text-')
+    ? ''
+    : monochrome
+    ? 'text-[#9BA3AF] hover:text-[#111318]'
+    : 'text-[#111318]';
+
   return (
     <div
       title={title || brand}
-      className={`inline-flex items-center justify-center shrink-0 transition-colors duration-200 ${
-        monochrome ? 'text-[#9BA3AF] hover:text-[#F5F7FA]' : 'text-[#F5F7FA]'
-      } ${hoverEffect ? 'hover:scale-105' : ''} ${className}`}
+      className={`inline-flex items-center justify-center shrink-0 transition-colors duration-200 ${colorClass} ${
+        hoverEffect ? 'hover:scale-105' : ''
+      } ${className}`}
     >
       {renderIcon()}
     </div>

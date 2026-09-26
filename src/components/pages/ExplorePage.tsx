@@ -147,9 +147,9 @@ export const ExplorePage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#F6F6F3] text-gray-900 pb-20">
+    <div className="min-h-screen bg-[#F6F6F3] text-gray-900 pb-32">
       {/* Top Banner Header */}
-      <div className="border-b border-gray-200/80 bg-white pt-10 pb-8 px-6">
+      <div className="border-b border-gray-200/80 bg-white pt-24 pb-8 sm:pt-28 sm:pb-10 px-4 sm:px-6">
         <div className="max-w-6xl mx-auto flex flex-col md:flex-row md:items-center justify-between gap-6">
           <div className="space-y-2">
             <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-medium bg-purple-50 text-[#6D4AFF] border border-purple-200/70">
@@ -167,7 +167,7 @@ export const ExplorePage: React.FC = () => {
           <div className="flex items-center gap-3">
             <button
               onClick={() => setIsPublishOpen(true)}
-              className="px-4 py-2.5 bg-gray-950 hover:bg-gray-800 text-white text-xs font-medium rounded-xl shadow-sm hover:shadow transition-all flex items-center gap-2 shrink-0"
+              className="px-4 py-2.5 bg-gray-950 hover:bg-gray-800 text-white text-xs font-medium rounded-xl shadow-sm hover:shadow transition-all flex items-center gap-2 shrink-0 cursor-pointer"
             >
               <Plus className="w-3.5 h-3.5" />
               <span>Publish Resource</span>
@@ -177,7 +177,7 @@ export const ExplorePage: React.FC = () => {
       </div>
 
       {/* Discovery Explorer Container */}
-      <div className="max-w-6xl mx-auto px-6 pt-8 space-y-6">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 pt-8 pb-32 space-y-6">
         {/* Search & Filter Controls */}
         <div className="bg-white rounded-2xl border border-gray-200/80 p-4 shadow-sm space-y-4">
           <div className="flex flex-col md:flex-row items-center gap-3">
@@ -338,7 +338,7 @@ export const ExplorePage: React.FC = () => {
                   <div className="min-w-0">
                     <Link
                       to={`/explore/${item.slug}`}
-                      className="text-base font-semibold text-gray-950 hover:text-[#6D4AFF] transition-colors truncate block"
+                      className="text-base font-semibold text-gray-950 hover:text-[#6D4AFF] transition-colors line-clamp-1 break-words block"
                     >
                       {item.name}
                     </Link>
@@ -372,7 +372,7 @@ export const ExplorePage: React.FC = () => {
 
                   {/* Tags */}
                   {item.tags.length > 0 && (
-                    <div className="flex flex-wrap gap-1 mt-auto pt-1">
+                    <div className="flex flex-wrap gap-1 mt-auto pt-2">
                       {item.tags.slice(0, 3).map((tag) => (
                         <span
                           key={tag}
@@ -386,8 +386,8 @@ export const ExplorePage: React.FC = () => {
                 </div>
 
                 {/* Card Footer: Installs and Actions */}
-                <div className="pt-4 mt-4 border-t border-gray-100 flex items-center justify-between gap-2">
-                  <div className="text-[11px] text-gray-500 truncate">
+                <div className="pt-4 mt-auto border-t border-gray-100 flex items-center justify-between gap-2">
+                  <div className="text-[11px] text-gray-500 shrink-0">
                     <span className="font-mono font-medium text-gray-800">{item.install_count}</span>{' '}
                     install{item.install_count === 1 ? '' : 's'}
                   </div>

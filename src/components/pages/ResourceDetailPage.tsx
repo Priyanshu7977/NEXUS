@@ -152,9 +152,9 @@ export const ResourceDetailPage: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-[#F6F6F3] text-gray-900 pb-20">
+    <div className="min-h-screen bg-[#F6F6F3] text-gray-900 pt-20 sm:pt-24 pb-28 sm:pb-32">
       {/* Top Breadcrumbs */}
-      <div className="border-b border-gray-200/60 bg-white/60 backdrop-blur-sm sticky top-0 z-30">
+      <div className="border-b border-gray-200/60 bg-white/80 backdrop-blur-md sticky top-16 sm:top-18 z-30">
         <div className="max-w-6xl mx-auto px-6 py-3 flex items-center justify-between text-xs">
           <div className="flex items-center gap-2 text-gray-500">
             <Link to="/explore" className="hover:text-gray-900 transition-colors flex items-center gap-1">
