@@ -328,7 +328,7 @@ export const ConnectorsPage: React.FC = () => {
       {/* TAB 1: NATIVE CONNECTORS GRID                                  */}
       {/* ------------------------------------------------------------- */}
       {activeTab === 'native' && (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 items-stretch">
           {filteredNative.map((item) => {
             const connection = getConnectionForConnector(item.id);
             const isConnected = Boolean(connection);
@@ -344,66 +344,66 @@ export const ConnectorsPage: React.FC = () => {
               <div
                 key={item.id}
                 onClick={() => navigate(`/app/connectors/${item.id}`)}
-                className={`p-5 rounded-2xl bg-white border transition-all flex flex-col justify-between cursor-pointer group ${
+                className={`p-5 rounded-2xl bg-white border transition-all h-full min-w-0 flex flex-col justify-between cursor-pointer group ${
                   isConnected
                     ? 'border-[#6D4AFF]/40 shadow-[0_4px_20px_rgba(109,74,255,0.06)] ring-1 ring-[#6D4AFF]/10'
                     : 'border-[#E5E5E2] hover:border-[#D4D4CE] hover:shadow-[0_4px_16px_rgba(0,0,0,0.04)]'
                 }`}
               >
-                <div>
+                <div className="flex-1 flex flex-col min-w-0">
                   {/* Card Top Row: Brand & Status Tag */}
-                  <div className="flex items-start justify-between mb-3.5">
-                    <div className="w-10 h-10 rounded-xl bg-[#FAFAF8] border border-[#E5E5E2] flex items-center justify-center">
+                  <div className="flex items-start justify-between mb-3.5 gap-2">
+                    <div className="w-10 h-10 rounded-xl bg-[#FAFAF8] border border-[#E5E5E2] flex items-center justify-center shrink-0">
                       <BrandLogo brand={item.brand} size={22} />
                     </div>
 
                     {isConnected ? (
-                      <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 text-[10px] font-semibold">
+                      <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 text-[10px] font-semibold shrink-0">
                         <span className="w-1.5 h-1.5 rounded-full bg-emerald-600 animate-pulse" />
                         Connected
                       </span>
                     ) : isLiveConnector ? (
                       isConfigured ? (
-                        <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-blue-50 text-blue-700 border border-blue-200">
+                        <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-blue-50 text-blue-700 border border-blue-200 shrink-0">
                           Ready to Connect
                         </span>
                       ) : (
-                        <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-amber-50 text-amber-700 border border-amber-200">
+                        <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-amber-50 text-amber-700 border border-amber-200 shrink-0">
                           Setup Required
                         </span>
                       )
                     ) : (
-                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-[#FAFAF8] text-[#8B919B] border border-[#EFEFEA]">
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-[#FAFAF8] text-[#8B919B] border border-[#EFEFEA] shrink-0">
                         Coming Soon
                       </span>
                     )}
                   </div>
 
                   {/* Name & Handle if connected */}
-                  <div className="mb-1 flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      <h3 className="text-base font-bold text-[#111318]">{item.name}</h3>
+                  <div className="mb-1 flex items-center justify-between gap-2 min-w-0">
+                    <div className="flex items-center gap-2 min-w-0">
+                      <h3 className="text-base font-bold text-[#111318] truncate">{item.name}</h3>
                       {isConnected && connection && (
-                        <span className="text-xs font-mono text-[#6D4AFF] font-medium">
+                        <span className="text-xs font-mono text-[#6D4AFF] font-medium truncate">
                           @{connection.provider_account_name}
                         </span>
                       )}
                     </div>
-                    <ArrowUpRight className="w-4 h-4 text-[#8B919B] group-hover:text-[#111318] transition-colors" />
+                    <ArrowUpRight className="w-4 h-4 text-[#8B919B] group-hover:text-[#111318] transition-colors shrink-0" />
                   </div>
 
                   {/* Description */}
-                  <p className="text-xs text-[#626873] leading-relaxed mb-4">{item.description}</p>
+                  <p className="text-xs text-[#626873] leading-relaxed mb-4 break-words">{item.description}</p>
 
                   {/* Connected Metadata Strip */}
                   {isConnected && connection && (
-                    <div className="mb-4 p-2.5 rounded-xl bg-[#FAFAF8] border border-[#E5E5E2] flex items-center justify-between text-[11px] text-[#626873]">
-                      <div className="flex items-center gap-2">
+                    <div className="mb-4 mt-auto p-2.5 rounded-xl bg-[#FAFAF8] border border-[#E5E5E2] flex items-center justify-between text-[11px] text-[#626873] gap-2">
+                      <div className="flex items-center gap-2 min-w-0">
                         {connection.provider_avatar_url && (
                           <img
                             src={connection.provider_avatar_url}
                             alt={connection.provider_account_name}
-                            className="w-5 h-5 rounded-full border border-[#E5E5E2]"
+                            className="w-5 h-5 rounded-full border border-[#E5E5E2] shrink-0"
                           />
                         )}
                         <span className="truncate max-w-[120px]">
@@ -414,7 +414,7 @@ export const ConnectorsPage: React.FC = () => {
                       <button
                         type="button"
                         onClick={(e) => handleOpenRepos(e, item)}
-                        className="text-[#6D4AFF] hover:underline flex items-center gap-1 font-medium cursor-pointer"
+                        className="text-[#6D4AFF] hover:underline flex items-center gap-1 font-medium cursor-pointer shrink-0"
                       >
                         <FolderGit2 className="w-3 h-3" />
                         <span>{item.id === 'vercel' ? 'Browse Projects' : 'Browse Repos'}</span>
@@ -424,7 +424,7 @@ export const ConnectorsPage: React.FC = () => {
                 </div>
 
                 {/* Card Footer Actions */}
-                <div className="pt-3 border-t border-[#EFEFEA] flex items-center justify-between">
+                <div className="pt-3 border-t border-[#EFEFEA] flex items-center justify-between mt-auto">
                   <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-[#FAFAF8] text-[#8B919B]">
                     {item.category}
                   </span>
@@ -514,7 +514,7 @@ export const ConnectorsPage: React.FC = () => {
               </button>
             </div>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 items-stretch">
               {filteredMcp.map((server) => {
                 const highRiskCount = (server.capabilities || []).filter((t) => t.is_high_risk).length;
 
@@ -525,47 +525,47 @@ export const ConnectorsPage: React.FC = () => {
                       setSelectedMcpServer(server);
                       setMcpDetailsModalOpen(true);
                     }}
-                    className="p-5 rounded-2xl bg-white border border-[#E5E5E2] hover:border-[#6D4AFF]/40 hover:shadow-[0_4px_20px_rgba(109,74,255,0.06)] transition-all flex flex-col justify-between cursor-pointer group"
+                    className="p-5 rounded-2xl bg-white border border-[#E5E5E2] hover:border-[#6D4AFF]/40 hover:shadow-[0_4px_20px_rgba(109,74,255,0.06)] transition-all h-full min-w-0 flex flex-col justify-between cursor-pointer group"
                   >
-                    <div>
+                    <div className="flex-1 flex flex-col min-w-0">
                       {/* Top row */}
-                      <div className="flex items-start justify-between mb-3">
-                        <div className="w-10 h-10 rounded-xl bg-[#6D4AFF]/10 border border-[#6D4AFF]/20 flex items-center justify-center">
+                      <div className="flex items-start justify-between mb-3 gap-2">
+                        <div className="w-10 h-10 rounded-xl bg-[#6D4AFF]/10 border border-[#6D4AFF]/20 flex items-center justify-center shrink-0">
                           <Server className="w-5 h-5 text-[#6D4AFF]" />
                         </div>
                         {server.status === 'connected' ? (
-                          <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 text-[10px] font-semibold">
+                          <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 text-[10px] font-semibold shrink-0">
                             <span className="w-1.5 h-1.5 rounded-full bg-emerald-600 animate-pulse" />
                             Connected
                           </span>
                         ) : (
-                          <span className="px-2.5 py-1 rounded-full bg-rose-50 text-rose-700 border border-rose-200 text-[10px] font-semibold">
+                          <span className="px-2.5 py-1 rounded-full bg-rose-50 text-rose-700 border border-rose-200 text-[10px] font-semibold shrink-0">
                             Error
                           </span>
                         )}
                       </div>
 
                       {/* Name & Slug */}
-                      <div className="mb-1 flex items-center justify-between">
-                        <div>
-                          <h3 className="text-base font-bold text-[#111318]">{server.name}</h3>
-                          <span className="font-mono text-xs text-[#6D4AFF]">mcp:{server.slug}</span>
+                      <div className="mb-1 flex items-center justify-between gap-2 min-w-0">
+                        <div className="min-w-0">
+                          <h3 className="text-base font-bold text-[#111318] truncate">{server.name}</h3>
+                          <span className="font-mono text-xs text-[#6D4AFF] truncate block">mcp:{server.slug}</span>
                         </div>
-                        <ArrowUpRight className="w-4 h-4 text-[#8B919B] group-hover:text-[#111318] transition-colors" />
+                        <ArrowUpRight className="w-4 h-4 text-[#8B919B] group-hover:text-[#111318] transition-colors shrink-0" />
                       </div>
 
                       {/* Description */}
-                      <p className="text-xs text-[#626873] leading-relaxed mb-4 line-clamp-2">
+                      <p className="text-xs text-[#626873] leading-relaxed mb-4 break-words line-clamp-2">
                         {server.description || 'Model Context Protocol JSON-RPC tool server.'}
                       </p>
 
                       {/* Tools Strip */}
-                      <div className="mb-4 p-2.5 rounded-xl bg-[#FAFAF8] border border-[#E5E5E2] flex items-center justify-between text-[11px]">
-                        <span className="text-[#626873] font-medium">
+                      <div className="mb-4 mt-auto p-2.5 rounded-xl bg-[#FAFAF8] border border-[#E5E5E2] flex items-center justify-between text-[11px] gap-2">
+                        <span className="text-[#626873] font-medium truncate">
                           {server.enabled_tools?.length || 0} / {server.capabilities?.length || 0} Tools Enabled
                         </span>
                         {highRiskCount > 0 && (
-                          <span className="inline-flex items-center gap-1 text-[10px] font-semibold text-amber-700">
+                          <span className="inline-flex items-center gap-1 text-[10px] font-semibold text-amber-700 shrink-0">
                             <ShieldAlert className="w-3 h-3 text-amber-600" />
                             {highRiskCount} High Risk
                           </span>
@@ -574,7 +574,7 @@ export const ConnectorsPage: React.FC = () => {
                     </div>
 
                     {/* Footer */}
-                    <div className="pt-3 border-t border-[#EFEFEA] flex items-center justify-between">
+                    <div className="pt-3 border-t border-[#EFEFEA] flex items-center justify-between mt-auto">
                       <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-purple-50 text-[#6D4AFF]">
                         {server.transport_type}
                       </span>
@@ -625,7 +625,7 @@ export const ConnectorsPage: React.FC = () => {
               </button>
             </div>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 items-stretch">
               {filteredA2A.map((agent) => {
                 const skillsCount = agent.agent_card?.skills?.length || 0;
                 const providerName = agent.agent_card?.provider?.name || 'Autonomous Agent';
@@ -637,53 +637,53 @@ export const ConnectorsPage: React.FC = () => {
                       setSelectedExternalAgent(agent);
                       setA2ADetailsModalOpen(true);
                     }}
-                    className="p-5 rounded-2xl bg-white border border-[#E5E5E2] hover:border-blue-400 hover:shadow-[0_4px_20px_rgba(37,99,235,0.06)] transition-all flex flex-col justify-between cursor-pointer group"
+                    className="p-5 rounded-2xl bg-white border border-[#E5E5E2] hover:border-blue-400 hover:shadow-[0_4px_20px_rgba(37,99,235,0.06)] transition-all h-full min-w-0 flex flex-col justify-between cursor-pointer group"
                   >
-                    <div>
+                    <div className="flex-1 flex flex-col min-w-0">
                       {/* Top row */}
-                      <div className="flex items-start justify-between mb-3">
-                        <div className="w-10 h-10 rounded-xl bg-blue-50 border border-blue-200 flex items-center justify-center">
+                      <div className="flex items-start justify-between mb-3 gap-2">
+                        <div className="w-10 h-10 rounded-xl bg-blue-50 border border-blue-200 flex items-center justify-center shrink-0">
                           <Bot className="w-5 h-5 text-blue-600" />
                         </div>
                         {agent.status === 'active' ? (
-                          <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 text-[10px] font-semibold">
+                          <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 text-[10px] font-semibold shrink-0">
                             <span className="w-1.5 h-1.5 rounded-full bg-emerald-600 animate-pulse" />
                             Active
                           </span>
                         ) : (
-                          <span className="px-2.5 py-1 rounded-full bg-amber-50 text-amber-700 border border-amber-200 text-[10px] font-semibold">
+                          <span className="px-2.5 py-1 rounded-full bg-amber-50 text-amber-700 border border-amber-200 text-[10px] font-semibold shrink-0">
                             {agent.status}
                           </span>
                         )}
                       </div>
 
                       {/* Name & Slug */}
-                      <div className="mb-1 flex items-center justify-between">
-                        <div>
-                          <h3 className="text-base font-bold text-[#111318]">{agent.name}</h3>
-                          <span className="font-mono text-xs text-blue-600">a2a:{agent.slug}</span>
+                      <div className="mb-1 flex items-center justify-between gap-2 min-w-0">
+                        <div className="min-w-0">
+                          <h3 className="text-base font-bold text-[#111318] truncate">{agent.name}</h3>
+                          <span className="font-mono text-xs text-blue-600 truncate block">a2a:{agent.slug}</span>
                         </div>
-                        <ArrowUpRight className="w-4 h-4 text-[#8B919B] group-hover:text-[#111318] transition-colors" />
+                        <ArrowUpRight className="w-4 h-4 text-[#8B919B] group-hover:text-[#111318] transition-colors shrink-0" />
                       </div>
 
                       {/* Description */}
-                      <p className="text-xs text-[#626873] leading-relaxed mb-4 line-clamp-2">
+                      <p className="text-xs text-[#626873] leading-relaxed mb-4 break-words line-clamp-2">
                         {agent.description || 'Agent-to-Agent autonomous worker.'}
                       </p>
 
                       {/* Skills Strip */}
-                      <div className="mb-4 p-2.5 rounded-xl bg-[#FAFAF8] border border-[#E5E5E2] flex items-center justify-between text-[11px]">
+                      <div className="mb-4 mt-auto p-2.5 rounded-xl bg-[#FAFAF8] border border-[#E5E5E2] flex items-center justify-between text-[11px] gap-2">
                         <span className="text-[#626873] font-medium truncate max-w-[140px]">
                           By {providerName}
                         </span>
-                        <span className="font-mono font-bold text-blue-600">
+                        <span className="font-mono font-bold text-blue-600 shrink-0">
                           {skillsCount} {skillsCount === 1 ? 'Skill' : 'Skills'}
                         </span>
                       </div>
                     </div>
 
                     {/* Footer */}
-                    <div className="pt-3 border-t border-[#EFEFEA] flex items-center justify-between">
+                    <div className="pt-3 border-t border-[#EFEFEA] flex items-center justify-between mt-auto">
                       <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-blue-50 text-blue-700">
                         A2A v{agent.protocol_version}
                       </span>

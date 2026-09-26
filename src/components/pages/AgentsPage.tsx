@@ -131,19 +131,19 @@ export const AgentsPage: React.FC = () => {
           onAction={() => navigate('/app/agents/new')}
         />
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 items-stretch">
           {filteredAgents.map((ag) => (
             <div
               key={ag.id}
               onClick={() => navigate(`/app/agents/${ag.id}`)}
-              className="p-5 rounded-2xl bg-white border border-[#E5E5E2] hover:border-[#D4D4CE] hover:shadow-[0_4px_16px_rgba(0,0,0,0.04)] transition-all cursor-pointer flex flex-col justify-between group"
+              className="p-5 rounded-2xl bg-white border border-[#E5E5E2] hover:border-[#D4D4CE] hover:shadow-[0_4px_16px_rgba(0,0,0,0.04)] transition-all cursor-pointer h-full min-w-0 flex flex-col justify-between group"
             >
-              <div>
-                <div className="flex items-start justify-between mb-3.5">
-                  <div className="w-10 h-10 rounded-xl bg-purple-50 text-[#6D4AFF] border border-purple-100 flex items-center justify-center">
+              <div className="flex-1 flex flex-col min-w-0">
+                <div className="flex items-start justify-between mb-3.5 gap-2">
+                  <div className="w-10 h-10 rounded-xl bg-purple-50 text-[#6D4AFF] border border-purple-100 flex items-center justify-center shrink-0">
                     <Bot className="w-5 h-5" />
                   </div>
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-2 shrink-0">
                     <span
                       className={`text-[10px] font-mono px-2 py-0.5 rounded uppercase font-semibold ${
                         ag.status === 'active'
@@ -158,27 +158,27 @@ export const AgentsPage: React.FC = () => {
                   </div>
                 </div>
 
-                <h3 className="text-base font-bold text-[#111318] mb-1 flex items-center justify-between">
-                  <span>{ag.name}</span>
-                  <ArrowUpRight className="w-4 h-4 text-[#8B919B] group-hover:text-[#111318] transition-colors" />
+                <h3 className="text-base font-bold text-[#111318] mb-1 flex items-center justify-between gap-2 min-w-0">
+                  <span className="truncate">{ag.name}</span>
+                  <ArrowUpRight className="w-4 h-4 text-[#8B919B] group-hover:text-[#111318] transition-colors shrink-0" />
                 </h3>
-                <p className="text-xs text-[#6D4AFF] font-medium mb-2">
+                <p className="text-xs text-[#6D4AFF] font-medium mb-2 truncate">
                   {ag.role || 'Specialized Agent'}
                 </p>
-                <p className="text-xs text-[#626873] line-clamp-2 leading-relaxed mb-4">
+                <p className="text-xs text-[#626873] line-clamp-2 leading-relaxed mb-4 break-words">
                   {ag.description || ag.instructions}
                 </p>
               </div>
 
-              <div className="pt-3 border-t border-[#EFEFEA] flex items-center justify-between text-xs text-[#8B919B]">
-                <div className="flex items-center gap-1.5">
-                  <span className="text-[11px] font-mono">Model:</span>
-                  <span className="font-medium text-[#111318] uppercase text-[10px] bg-[#FAFAF8] px-2 py-0.5 rounded border border-[#E5E5E2] flex items-center gap-1">
+              <div className="pt-3 border-t border-[#EFEFEA] flex items-center justify-between text-xs text-[#8B919B] mt-auto">
+                <div className="flex items-center gap-1.5 min-w-0">
+                  <span className="text-[11px] font-mono shrink-0">Model:</span>
+                  <span className="font-medium text-[#111318] uppercase text-[10px] bg-[#FAFAF8] px-2 py-0.5 rounded border border-[#E5E5E2] flex items-center gap-1 truncate">
                     <BrandLogo brand={ag.model_provider} size={12} />
-                    <span>{ag.model_provider}</span>
+                    <span className="truncate">{ag.model_provider}</span>
                   </span>
                 </div>
-                <span className="text-[11px] text-[#626873]">
+                <span className="text-[11px] text-[#626873] shrink-0">
                   {(ag.tools || []).length} {(ag.tools || []).length === 1 ? 'tool' : 'tools'}
                 </span>
               </div>

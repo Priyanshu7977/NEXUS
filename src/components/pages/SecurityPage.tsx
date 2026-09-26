@@ -193,31 +193,31 @@ export const SecurityPage: React.FC = () => {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 items-stretch">
             {SECURITY_PILLARS.map((pillar) => {
               const Icon = pillar.icon;
               return (
                 <div
                   key={pillar.id}
-                  className="p-6 rounded-2xl bg-white border border-[#E5E5E2] hover:border-[#D4D4CE] transition-all flex flex-col justify-between shadow-sm"
+                  className="h-full p-6 rounded-2xl bg-white border border-[#E5E5E2] hover:border-[#D4D4CE] transition-all flex flex-col justify-between shadow-sm min-w-0"
                 >
-                  <div>
-                    <div className={`w-10 h-10 rounded-xl ${pillar.bg} ${pillar.color} border flex items-center justify-center mb-4`}>
+                  <div className="flex-1 flex flex-col">
+                    <div className={`w-10 h-10 rounded-xl ${pillar.bg} ${pillar.color} border flex items-center justify-center mb-4 shrink-0`}>
                       <Icon className="w-5 h-5" />
                     </div>
 
-                    <h4 className="text-base font-bold text-[#111318] mb-1">
+                    <h4 className="text-base font-bold text-[#111318] mb-1 truncate">
                       {pillar.title}
                     </h4>
-                    <p className="text-xs font-semibold text-[#6D4AFF] mb-2">
+                    <p className="text-xs font-semibold text-[#6D4AFF] mb-2 break-words">
                       {pillar.headline}
                     </p>
-                    <p className="text-xs text-[#626873] leading-relaxed mb-4">
+                    <p className="text-xs text-[#626873] leading-relaxed mb-4 break-words flex-1">
                       {pillar.description}
                     </p>
                   </div>
 
-                  <div className="pt-3 border-t border-[#EFEFEA] text-[11px] font-mono text-[#8B919B]">
+                  <div className="pt-3 border-t border-[#EFEFEA] text-[11px] font-mono text-[#8B919B] mt-auto">
                     Built-in Guardrail
                   </div>
                 </div>
@@ -244,8 +244,8 @@ export const SecurityPage: React.FC = () => {
             Connect your first service with granular permissions and complete execution audit trails.
           </p>
           <div className="flex items-center justify-center gap-3">
-            <Link to="/signup">
-              <Button size="md" withArrow>
+            <Link to="/signup" className="w-full sm:w-auto">
+              <Button size="md" withArrow className="w-full sm:w-auto justify-center">
                 Start Free in Sandbox
               </Button>
             </Link>

@@ -123,24 +123,24 @@ export const PricingPage: React.FC = () => {
         </div>
 
         {/* Pricing Cards Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-20">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-20 items-stretch">
           {PRICING_TIERS.map((tier) => (
             <div
               key={tier.id}
-              className={`p-6 sm:p-8 rounded-2xl bg-white border transition-all flex flex-col justify-between relative ${
+              className={`h-full p-6 sm:p-8 rounded-2xl bg-white border transition-all flex flex-col justify-between relative min-w-0 ${
                 tier.highlighted
                   ? 'border-[#6D4AFF] shadow-[0_8px_30px_rgba(109,74,255,0.08)] ring-1 ring-[#6D4AFF]/20'
                   : 'border-[#E5E5E2] shadow-sm hover:border-[#D4D4CE]'
               }`}
             >
-              {/* Top Row: Name & Optional Badge */}
-              <div>
-                <div className="flex items-center justify-between mb-2">
-                  <h3 className="text-lg font-bold text-[#111318]">
+              {/* Top Section */}
+              <div className="flex-1 flex flex-col">
+                <div className="flex items-center justify-between mb-2 gap-2 min-w-0">
+                  <h3 className="text-lg font-bold text-[#111318] truncate">
                     {tier.name}
                   </h3>
                   {tier.badge && (
-                    <span className="px-2.5 py-0.5 rounded-full bg-[#6D4AFF]/10 text-[#6D4AFF] text-[10px] font-mono font-bold tracking-wider">
+                    <span className="px-2.5 py-0.5 rounded-full bg-[#6D4AFF]/10 text-[#6D4AFF] text-[10px] font-mono font-bold tracking-wider shrink-0">
                       {tier.badge}
                     </span>
                   )}
@@ -155,37 +155,39 @@ export const PricingPage: React.FC = () => {
                   </span>
                 </div>
 
-                <p className="text-xs text-[#626873] leading-relaxed mb-6">
+                <p className="text-xs text-[#626873] leading-relaxed mb-6 break-words">
                   {tier.description}
                 </p>
 
                 {/* Features List */}
-                <div className="space-y-3 mb-8 pt-6 border-t border-[#EFEFEA]">
+                <div className="space-y-3 mb-8 pt-6 border-t border-[#EFEFEA] flex-1">
                   <div className="text-[10px] uppercase tracking-wider text-[#8B919B] font-mono font-semibold">
                     Included in {tier.name}:
                   </div>
                   {tier.features.map((feat) => (
-                    <div key={feat} className="flex items-center gap-2.5 text-xs text-[#111318]">
-                      <div className="w-4 h-4 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center flex-shrink-0">
+                    <div key={feat} className="flex items-start gap-2.5 text-xs text-[#111318] min-w-0">
+                      <div className="w-4 h-4 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0 mt-0.5">
                         <Check className="w-3 h-3" />
                       </div>
-                      <span>{feat}</span>
+                      <span className="break-words flex-1">{feat}</span>
                     </div>
                   ))}
                 </div>
               </div>
 
-              {/* Action Button */}
-              <Link to={tier.ctaLink} className="w-full">
-                <Button
-                  variant={tier.highlighted ? 'primary' : 'secondary'}
-                  size="md"
-                  className="w-full justify-center"
-                  withArrow={tier.highlighted}
-                >
-                  {tier.ctaLabel}
-                </Button>
-              </Link>
+              {/* Action Button locked to bottom */}
+              <div className="w-full mt-auto pt-2">
+                <Link to={tier.ctaLink} className="w-full block">
+                  <Button
+                    variant={tier.highlighted ? 'primary' : 'secondary'}
+                    size="md"
+                    className="w-full justify-center"
+                    withArrow={tier.highlighted}
+                  >
+                    {tier.ctaLabel}
+                  </Button>
+                </Link>
+              </div>
             </div>
           ))}
         </div>
@@ -204,45 +206,53 @@ export const PricingPage: React.FC = () => {
               Credits measure AI model inference and workflow orchestration operations across your connected services. Instead of complex token accounting, NEXUS uses a unified credit balance.
             </p>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div className="p-4 rounded-xl bg-[#FAFAF8] border border-[#E5E5E2]">
-                <div className="flex items-center gap-2 font-bold text-sm text-[#111318] mb-1">
-                  <Bot className="w-4 h-4 text-[#6D4AFF]" />
-                  <span>Agent Execution</span>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 items-stretch">
+              <div className="h-full p-4 rounded-xl bg-[#FAFAF8] border border-[#E5E5E2] flex flex-col justify-between min-w-0">
+                <div>
+                  <div className="flex items-center gap-2 font-bold text-sm text-[#111318] mb-1">
+                    <Bot className="w-4 h-4 text-[#6D4AFF] shrink-0" />
+                    <span>Agent Execution</span>
+                  </div>
+                  <p className="text-xs text-[#626873] leading-relaxed break-words">
+                    Reasoning turns and prompt evaluations calculated based on the selected LLM provider and depth of thinking.
+                  </p>
                 </div>
-                <p className="text-xs text-[#626873] leading-relaxed">
-                  Reasoning turns and prompt evaluations calculated based on the selected LLM provider and depth of thinking.
-                </p>
               </div>
 
-              <div className="p-4 rounded-xl bg-[#FAFAF8] border border-[#E5E5E2]">
-                <div className="flex items-center gap-2 font-bold text-sm text-[#111318] mb-1">
-                  <Cpu className="w-4 h-4 text-[#3B82F6]" />
-                  <span>Tool Calls & APIs</span>
+              <div className="h-full p-4 rounded-xl bg-[#FAFAF8] border border-[#E5E5E2] flex flex-col justify-between min-w-0">
+                <div>
+                  <div className="flex items-center gap-2 font-bold text-sm text-[#111318] mb-1">
+                    <Cpu className="w-4 h-4 text-[#3B82F6] shrink-0" />
+                    <span>Tool Calls & APIs</span>
+                  </div>
+                  <p className="text-xs text-[#626873] leading-relaxed break-words">
+                    Executing external tools (such as reading GitHub trees or invoking database queries) across connected services.
+                  </p>
                 </div>
-                <p className="text-xs text-[#626873] leading-relaxed">
-                  Executing external tools (such as reading GitHub trees or invoking database queries) across connected services.
-                </p>
               </div>
 
-              <div className="p-4 rounded-xl bg-[#FAFAF8] border border-[#E5E5E2]">
-                <div className="flex items-center gap-2 font-bold text-sm text-[#111318] mb-1">
-                  <Activity className="w-4 h-4 text-emerald-600" />
-                  <span>Workflow Dispatch</span>
+              <div className="h-full p-4 rounded-xl bg-[#FAFAF8] border border-[#E5E5E2] flex flex-col justify-between min-w-0">
+                <div>
+                  <div className="flex items-center gap-2 font-bold text-sm text-[#111318] mb-1">
+                    <Activity className="w-4 h-4 text-emerald-600 shrink-0" />
+                    <span>Workflow Dispatch</span>
+                  </div>
+                  <p className="text-xs text-[#626873] leading-relaxed break-words">
+                    Routing execution state and orchestrating parallel DAG pipeline stages with deterministic checkpointing.
+                  </p>
                 </div>
-                <p className="text-xs text-[#626873] leading-relaxed">
-                  Routing execution state and orchestrating parallel DAG pipeline stages with deterministic checkpointing.
-                </p>
               </div>
 
-              <div className="p-4 rounded-xl bg-[#FAFAF8] border border-[#E5E5E2]">
-                <div className="flex items-center gap-2 font-bold text-sm text-[#111318] mb-1">
-                  <ShieldCheck className="w-4 h-4 text-amber-600" />
-                  <span>Security & Verification</span>
+              <div className="h-full p-4 rounded-xl bg-[#FAFAF8] border border-[#E5E5E2] flex flex-col justify-between min-w-0">
+                <div>
+                  <div className="flex items-center gap-2 font-bold text-sm text-[#111318] mb-1">
+                    <ShieldCheck className="w-4 h-4 text-amber-600 shrink-0" />
+                    <span>Security & Verification</span>
+                  </div>
+                  <p className="text-xs text-[#626873] leading-relaxed break-words">
+                    Automated SAST guardrails and human-in-the-loop review approvals processed before sensitive write actions.
+                  </p>
                 </div>
-                <p className="text-xs text-[#626873] leading-relaxed">
-                  Automated SAST guardrails and human-in-the-loop review approvals processed before sensitive write actions.
-                </p>
               </div>
             </div>
           </div>
@@ -330,8 +340,8 @@ export const PricingPage: React.FC = () => {
             Create an account in seconds, connect your GitHub repositories, and begin orchestrating your first agent pipeline.
           </p>
           <div className="flex items-center justify-center gap-3">
-            <Link to="/signup">
-              <Button size="md" withArrow>
+            <Link to="/signup" className="w-full sm:w-auto">
+              <Button size="md" withArrow className="w-full sm:w-auto justify-center">
                 Get Started Free
               </Button>
             </Link>

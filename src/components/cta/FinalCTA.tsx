@@ -33,7 +33,7 @@ export const FinalCTA: React.FC = () => {
 
             <div className="flex flex-col sm:flex-row items-center justify-center gap-3.5 mb-10">
               <Link to="/signup" className="w-full sm:w-auto">
-                <Button size="lg" withArrow className="w-full sm:w-auto">
+                <Button size="lg" withArrow className="w-full sm:w-auto justify-center">
                   Start Building
                 </Button>
               </Link>
@@ -41,7 +41,7 @@ export const FinalCTA: React.FC = () => {
               <Button
                 variant="dark"
                 size="lg"
-                className="w-full sm:w-auto"
+                className="w-full sm:w-auto justify-center"
                 onClick={() => {
                   const el = document.getElementById('features');
                   el?.scrollIntoView({ behavior: 'smooth' });

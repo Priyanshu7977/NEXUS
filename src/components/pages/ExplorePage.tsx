@@ -197,7 +197,7 @@ export const ExplorePage: React.FC = () => {
             <select
               value={selectedCategory}
               onChange={(e) => setSelectedCategory(e.target.value)}
-              className="px-3 py-2 bg-white border border-gray-200 rounded-xl text-xs text-gray-700 focus:outline-none focus:ring-2 focus:ring-[#6D4AFF]/20"
+              className="w-full sm:w-auto px-3 py-2 bg-white border border-gray-200 rounded-xl text-xs text-gray-700 focus:outline-none focus:ring-2 focus:ring-[#6D4AFF]/20"
             >
               <option value="ALL">All Categories</option>
               <option value="Code & DevOps">Code & DevOps</option>
@@ -212,7 +212,7 @@ export const ExplorePage: React.FC = () => {
             <select
               value={selectedVerification}
               onChange={(e) => setSelectedVerification(e.target.value)}
-              className="px-3 py-2 bg-white border border-gray-200 rounded-xl text-xs text-gray-700 focus:outline-none focus:ring-2 focus:ring-[#6D4AFF]/20"
+              className="w-full sm:w-auto px-3 py-2 bg-white border border-gray-200 rounded-xl text-xs text-gray-700 focus:outline-none focus:ring-2 focus:ring-[#6D4AFF]/20"
             >
               <option value="ALL">All Verification</option>
               <option value="OFFICIAL">Official NEXUS Only</option>
@@ -223,7 +223,7 @@ export const ExplorePage: React.FC = () => {
             <select
               value={sortBy}
               onChange={(e) => setSortBy(e.target.value as any)}
-              className="px-3 py-2 bg-white border border-gray-200 rounded-xl text-xs text-gray-700 focus:outline-none focus:ring-2 focus:ring-[#6D4AFF]/20"
+              className="w-full sm:w-auto px-3 py-2 bg-white border border-gray-200 rounded-xl text-xs text-gray-700 focus:outline-none focus:ring-2 focus:ring-[#6D4AFF]/20"
             >
               <option value="popular">Most Installed</option>
               <option value="recent">Recently Added</option>
@@ -305,44 +305,44 @@ export const ExplorePage: React.FC = () => {
             </div>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 items-stretch">
             {filtered.map((item) => (
               <div
                 key={item.id}
-                className="bg-white rounded-2xl border border-gray-200/80 hover:border-gray-300 transition-all p-5 shadow-sm hover:shadow flex flex-col justify-between group"
+                className="h-full bg-white rounded-2xl border border-gray-200/80 hover:border-gray-300 transition-all p-5 shadow-sm hover:shadow flex flex-col justify-between group min-w-0"
               >
-                <div className="space-y-3">
+                <div className="space-y-3 flex-1 flex flex-col">
                   {/* Top Row: Type & Verification Badge */}
-                  <div className="flex items-center justify-between gap-2">
-                    <div className="flex items-center gap-1.5 px-2 py-0.5 rounded-md text-[11px] font-medium bg-gray-100 text-gray-700 border border-gray-200">
+                  <div className="flex items-center justify-between gap-2 min-w-0">
+                    <div className="flex items-center gap-1.5 px-2 py-0.5 rounded-md text-[11px] font-medium bg-gray-100 text-gray-700 border border-gray-200 shrink-0">
                       {renderTypeIcon(item.type)}
                       <span>{renderTypeBadge(item.type)}</span>
                     </div>
 
                     {item.verification_status === 'OFFICIAL' ? (
-                      <span className="inline-flex items-center gap-1 text-[11px] font-medium text-[#6D4AFF] bg-purple-50 px-2 py-0.5 rounded-full border border-purple-100">
+                      <span className="inline-flex items-center gap-1 text-[11px] font-medium text-[#6D4AFF] bg-purple-50 px-2 py-0.5 rounded-full border border-purple-100 shrink-0">
                         <ShieldCheck className="w-3 h-3" />
                         Official
                       </span>
                     ) : item.verification_status === 'VERIFIED' ? (
-                      <span className="inline-flex items-center gap-1 text-[11px] font-medium text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-100">
+                      <span className="inline-flex items-center gap-1 text-[11px] font-medium text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-100 shrink-0">
                         <CheckCircle2 className="w-3 h-3" />
                         Verified
                       </span>
                     ) : (
-                      <span className="text-[11px] text-gray-400 font-mono">v{item.version}</span>
+                      <span className="text-[11px] text-gray-400 font-mono shrink-0">v{item.version}</span>
                     )}
                   </div>
 
                   {/* Title & Publisher */}
-                  <div>
+                  <div className="min-w-0">
                     <Link
                       to={`/explore/${item.slug}`}
-                      className="text-base font-semibold text-gray-950 hover:text-[#6D4AFF] transition-colors line-clamp-1"
+                      className="text-base font-semibold text-gray-950 hover:text-[#6D4AFF] transition-colors truncate block"
                     >
                       {item.name}
                     </Link>
-                    <p className="text-[11px] text-gray-500 pt-0.5">
+                    <p className="text-[11px] text-gray-500 pt-0.5 truncate">
                       by{' '}
                       <span className="font-medium text-gray-700">
                         {item.publisher?.name || 'NEXUS Community'}
@@ -351,7 +351,7 @@ export const ExplorePage: React.FC = () => {
                   </div>
 
                   {/* Summary */}
-                  <p className="text-xs text-gray-600 line-clamp-2 leading-relaxed">
+                  <p className="text-xs text-gray-600 line-clamp-2 leading-relaxed break-words">
                     {item.summary}
                   </p>
 
@@ -362,7 +362,7 @@ export const ExplorePage: React.FC = () => {
                       {item.required_connectors.map((c) => (
                         <span
                           key={c}
-                          className="px-1.5 py-0.5 rounded text-[10px] font-mono bg-amber-50 text-amber-800 border border-amber-200/60"
+                          className="px-1.5 py-0.5 rounded text-[10px] font-mono bg-amber-50 text-amber-800 border border-amber-200/60 break-words"
                         >
                           {c}
                         </span>
@@ -372,11 +372,11 @@ export const ExplorePage: React.FC = () => {
 
                   {/* Tags */}
                   {item.tags.length > 0 && (
-                    <div className="flex flex-wrap gap-1">
+                    <div className="flex flex-wrap gap-1 mt-auto pt-1">
                       {item.tags.slice(0, 3).map((tag) => (
                         <span
                           key={tag}
-                          className="px-2 py-0.5 rounded-md text-[10px] bg-gray-100 text-gray-600"
+                          className="px-2 py-0.5 rounded-md text-[10px] bg-gray-100 text-gray-600 break-words"
                         >
                           #{tag}
                         </span>
@@ -386,13 +386,13 @@ export const ExplorePage: React.FC = () => {
                 </div>
 
                 {/* Card Footer: Installs and Actions */}
-                <div className="pt-4 mt-4 border-t border-gray-100 flex items-center justify-between">
-                  <div className="text-[11px] text-gray-500">
+                <div className="pt-4 mt-4 border-t border-gray-100 flex items-center justify-between gap-2">
+                  <div className="text-[11px] text-gray-500 truncate">
                     <span className="font-mono font-medium text-gray-800">{item.install_count}</span>{' '}
                     install{item.install_count === 1 ? '' : 's'}
                   </div>
 
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-2 shrink-0">
                     <Link
                       to={`/explore/${item.slug}`}
                       className="px-3 py-1.5 text-xs font-medium text-gray-600 hover:text-gray-900 rounded-lg hover:bg-gray-100 transition-colors"
@@ -401,7 +401,7 @@ export const ExplorePage: React.FC = () => {
                     </Link>
                     <button
                       onClick={() => setInstallTarget(item)}
-                      className="px-3.5 py-1.5 text-xs font-medium bg-gray-950 hover:bg-gray-800 text-white rounded-lg shadow-sm hover:shadow transition-all flex items-center gap-1.5"
+                      className="px-3.5 py-1.5 text-xs font-medium bg-gray-950 hover:bg-gray-800 text-white rounded-lg shadow-sm hover:shadow transition-all flex items-center gap-1.5 cursor-pointer"
                     >
                       <Download className="w-3 h-3" />
                       <span>Install</span>

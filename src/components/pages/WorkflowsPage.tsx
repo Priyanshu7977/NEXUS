@@ -162,19 +162,19 @@ export const WorkflowsPage: React.FC = () => {
           </div>
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 items-stretch">
           {filtered.map((wf) => (
             <div
               key={wf.id}
               onClick={() => navigate(`/app/workflows/${wf.id}`)}
-              className="p-6 rounded-2xl bg-white border border-[#E5E5E2] hover:border-[#D4D4CE] hover:shadow-[0_4px_16px_rgba(0,0,0,0.04)] transition-all cursor-pointer flex flex-col justify-between group"
+              className="p-6 rounded-2xl bg-white border border-[#E5E5E2] hover:border-[#D4D4CE] hover:shadow-[0_4px_16px_rgba(0,0,0,0.04)] transition-all cursor-pointer h-full min-w-0 flex flex-col justify-between group"
             >
-              <div>
-                <div className="flex items-start justify-between mb-3.5">
-                  <div className="w-10 h-10 rounded-xl bg-purple-50 text-[#6D4AFF] border border-purple-100 flex items-center justify-center">
+              <div className="flex-1 flex flex-col min-w-0">
+                <div className="flex items-start justify-between mb-3.5 gap-2">
+                  <div className="w-10 h-10 rounded-xl bg-purple-50 text-[#6D4AFF] border border-purple-100 flex items-center justify-center shrink-0">
                     <Network className="w-5 h-5" />
                   </div>
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-2 shrink-0">
                     <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-50 text-emerald-700 border border-emerald-200 uppercase font-semibold">
                       {wf.status}
                     </span>
@@ -185,21 +185,21 @@ export const WorkflowsPage: React.FC = () => {
                   </div>
                 </div>
 
-                <h3 className="text-base font-bold text-[#111318] mb-1.5 flex items-center justify-between">
-                  <span>{wf.name}</span>
-                  <ArrowUpRight className="w-4 h-4 text-[#8B919B] group-hover:text-[#111318] transition-colors" />
+                <h3 className="text-base font-bold text-[#111318] mb-1.5 flex items-center justify-between gap-2 min-w-0">
+                  <span className="truncate">{wf.name}</span>
+                  <ArrowUpRight className="w-4 h-4 text-[#8B919B] group-hover:text-[#111318] transition-colors shrink-0" />
                 </h3>
-                <p className="text-xs text-[#626873] leading-relaxed line-clamp-2 mb-4">
+                <p className="text-xs text-[#626873] leading-relaxed line-clamp-2 mb-4 break-words">
                   {wf.description || 'Configurable multi-agent pipeline.'}
                 </p>
               </div>
 
-              <div className="pt-4 mt-2 border-t border-[#EFEFEA] flex items-center justify-between text-xs">
-                <span className="text-[#8B919B] font-mono text-[11px]">
+              <div className="pt-4 mt-auto border-t border-[#EFEFEA] flex items-center justify-between text-xs gap-2">
+                <span className="text-[#8B919B] font-mono text-[11px] truncate">
                   Trigger: {wf.trigger_type}
                 </span>
 
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2 shrink-0">
                   <button
                     onClick={(e) => {
                       e.stopPropagation();

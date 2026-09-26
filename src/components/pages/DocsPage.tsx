@@ -125,7 +125,7 @@ export const DocsPage: React.FC = () => {
         </div>
 
         {/* Right Content Canvas */}
-        <div className="lg:col-span-3 space-y-8">
+        <div className="lg:col-span-3 space-y-8 min-w-0">
           {/* CHAPTER 1: INTRO */}
           {activeDocId === 'intro' && (
             <div className="space-y-6">

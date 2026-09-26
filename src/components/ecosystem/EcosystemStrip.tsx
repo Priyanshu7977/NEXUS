@@ -35,7 +35,7 @@ export const EcosystemStrip: React.FC = () => {
         </div>
 
         {/* Clean Logo Wall */}
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-3 sm:gap-4 max-w-5xl mx-auto">
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-3 sm:gap-4 max-w-5xl mx-auto items-stretch">
           {brands.map((b) => {
             const isHovered = hoveredBrand === b.id;
             return (
@@ -43,19 +43,19 @@ export const EcosystemStrip: React.FC = () => {
                 key={b.id}
                 onMouseEnter={() => setHoveredBrand(b.id)}
                 onMouseLeave={() => setHoveredBrand(null)}
-                className={`p-3.5 sm:p-4 rounded-xl border transition-all duration-200 flex flex-col items-center justify-center text-center cursor-pointer ${
+                className={`h-full min-h-[96px] p-3.5 sm:p-4 rounded-xl border transition-all duration-200 flex flex-col items-center justify-center text-center cursor-pointer min-w-0 ${
                   isHovered
                     ? 'bg-white border-[#D4D4CE] shadow-[0_4px_16px_rgba(0,0,0,0.05)] -translate-y-0.5'
                     : 'bg-white/60 border-[#E5E5E2] hover:bg-white hover:border-[#D4D4CE]'
                 }`}
               >
-                <div className="h-7 flex items-center justify-center mb-2">
+                <div className="h-7 flex items-center justify-center mb-2 shrink-0">
                   <BrandLogo brand={b.name} size={22} monochrome={!isHovered} />
                 </div>
-                <div className="text-xs font-semibold text-[#111318] tracking-tight truncate w-full">
+                <div className="text-xs font-semibold text-[#111318] tracking-tight truncate w-full px-1">
                   {b.name}
                 </div>
-                <div className="text-[10px] text-[#8B919B] truncate w-full mt-0.5">
+                <div className="text-[10px] text-[#8B919B] truncate w-full mt-0.5 px-1">
                   {b.category}
                 </div>
               </div>

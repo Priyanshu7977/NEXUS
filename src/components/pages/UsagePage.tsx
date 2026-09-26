@@ -100,18 +100,18 @@ export const UsagePage: React.FC = () => {
       </div>
 
       {/* Primary Execution Metrics Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 items-stretch">
         {/* Workflow Executions (Prompt Section 34) */}
-        <div className="p-5 rounded-2xl bg-white border border-[#E5E5E2] shadow-sm flex flex-col justify-between">
-          <div>
+        <div className="p-5 rounded-2xl bg-white border border-[#E5E5E2] shadow-sm h-full min-w-0 flex flex-col justify-between">
+          <div className="flex-1 flex flex-col min-w-0">
             <div className="flex items-center justify-between mb-2">
               <span className="text-xs font-semibold text-[#8B919B] uppercase">Workflow Runs</span>
-              <Network className="w-4 h-4 text-emerald-600" />
+              <Network className="w-4 h-4 text-emerald-600 shrink-0" />
             </div>
             <div className="text-2xl font-bold text-[#111318] mb-1">
               {metrics?.total_workflow_runs ?? 0}
             </div>
-            <div className="text-[11px] text-[#626873]">
+            <div className="text-[11px] text-[#626873] break-words">
               {metrics && metrics.total_workflow_runs > 0 ? (
                 <span>
                   {metrics.successful_workflow_runs} completed • {metrics.failed_workflow_runs} failed
@@ -121,22 +121,22 @@ export const UsagePage: React.FC = () => {
               )}
             </div>
           </div>
-          <div className="pt-3 border-t border-[#EFEFEA] text-[10px] font-mono text-[#8B919B]">
+          <div className="pt-3 border-t border-[#EFEFEA] text-[10px] font-mono text-[#8B919B] mt-auto">
             Avg: {avgWfDuration ? `${avgWfDuration}s per run` : '—'}
           </div>
         </div>
 
         {/* Agent Executions (Prompt Section 35) */}
-        <div className="p-5 rounded-2xl bg-white border border-[#E5E5E2] shadow-sm flex flex-col justify-between">
-          <div>
+        <div className="p-5 rounded-2xl bg-white border border-[#E5E5E2] shadow-sm h-full min-w-0 flex flex-col justify-between">
+          <div className="flex-1 flex flex-col min-w-0">
             <div className="flex items-center justify-between mb-2">
               <span className="text-xs font-semibold text-[#8B919B] uppercase">Agent Runs</span>
-              <Bot className="w-4 h-4 text-[#6D4AFF]" />
+              <Bot className="w-4 h-4 text-[#6D4AFF] shrink-0" />
             </div>
             <div className="text-2xl font-bold text-[#111318] mb-1">
               {metrics?.total_agent_runs ?? 0}
             </div>
-            <div className="text-[11px] text-[#626873]">
+            <div className="text-[11px] text-[#626873] break-words">
               {metrics && metrics.total_agent_runs > 0 ? (
                 <span>
                   {metrics.successful_agent_runs} completed • {metrics.failed_agent_runs} failed
@@ -146,51 +146,51 @@ export const UsagePage: React.FC = () => {
               )}
             </div>
           </div>
-          <div className="pt-3 border-t border-[#EFEFEA] text-[10px] font-mono text-[#8B919B]">
+          <div className="pt-3 border-t border-[#EFEFEA] text-[10px] font-mono text-[#8B919B] mt-auto">
             {metrics?.total_tool_calls || 0} tool calls executed
           </div>
         </div>
 
         {/* Compute Duration */}
-        <div className="p-5 rounded-2xl bg-white border border-[#E5E5E2] shadow-sm flex flex-col justify-between">
-          <div>
+        <div className="p-5 rounded-2xl bg-white border border-[#E5E5E2] shadow-sm h-full min-w-0 flex flex-col justify-between">
+          <div className="flex-1 flex flex-col min-w-0">
             <div className="flex items-center justify-between mb-2">
               <span className="text-xs font-semibold text-[#8B919B] uppercase">Total Runtime</span>
-              <Clock className="w-4 h-4 text-amber-600" />
+              <Clock className="w-4 h-4 text-amber-600 shrink-0" />
             </div>
             <div className="text-2xl font-bold text-[#111318] mb-1 font-mono">
               {metrics && metrics.total_duration_ms > 0
                 ? `${(metrics.total_duration_ms / 1000).toFixed(1)}s`
                 : '0.0s'}
             </div>
-            <div className="text-[11px] text-[#626873]">
+            <div className="text-[11px] text-[#626873] break-words">
               Cumulative execution time
             </div>
           </div>
-          <div className="pt-3 border-t border-[#EFEFEA] text-[10px] font-mono text-[#8B919B]">
+          <div className="pt-3 border-t border-[#EFEFEA] text-[10px] font-mono text-[#8B919B] mt-auto">
             Across {totalRuns} total runs
           </div>
         </div>
 
         {/* Model Tokens (Prompt Section 32 & 36: No fake tokens!) */}
-        <div className="p-5 rounded-2xl bg-white border border-[#E5E5E2] shadow-sm flex flex-col justify-between">
-          <div>
+        <div className="p-5 rounded-2xl bg-white border border-[#E5E5E2] shadow-sm h-full min-w-0 flex flex-col justify-between">
+          <div className="flex-1 flex flex-col min-w-0">
             <div className="flex items-center justify-between mb-2">
               <span className="text-xs font-semibold text-[#8B919B] uppercase">Token Telemetry</span>
-              <Sparkles className="w-4 h-4 text-[#3B82F6]" />
+              <Sparkles className="w-4 h-4 text-[#3B82F6] shrink-0" />
             </div>
             <div className="text-2xl font-bold text-[#111318] mb-1 font-mono">
               {metrics?.has_real_token_data && metrics.tokens_used
                 ? metrics.tokens_used.toLocaleString()
                 : 'Usage unavailable'}
             </div>
-            <div className="text-[11px] text-[#626873]">
+            <div className="text-[11px] text-[#626873] break-words">
               {metrics?.has_real_token_data
                 ? 'Measured from provider telemetry'
                 : 'Provider token counts not emitted'}
             </div>
           </div>
-          <div className="pt-3 border-t border-[#EFEFEA] text-[10px] font-mono text-[#8B919B]">
+          <div className="pt-3 border-t border-[#EFEFEA] text-[10px] font-mono text-[#8B919B] mt-auto">
             Zero fabricated estimation
           </div>
         </div>
@@ -206,17 +206,17 @@ export const UsagePage: React.FC = () => {
         </p>
 
         {metrics && Object.keys(metrics.models_used).length > 0 ? (
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 items-stretch">
             {Object.entries(metrics.models_used).map(([modelName, count]) => (
               <div
                 key={modelName}
-                className="p-3.5 rounded-xl border border-[#E5E5E2] bg-[#FAFAF8] text-xs flex items-center justify-between"
+                className="p-3.5 rounded-xl border border-[#E5E5E2] bg-[#FAFAF8] text-xs flex items-center justify-between min-w-0 h-full gap-2"
               >
-                <div>
+                <div className="min-w-0 flex-1">
                   <div className="font-bold text-[#111318] truncate">{modelName}</div>
-                  <div className="text-[11px] font-mono text-[#8B919B]">Active Agent Worker</div>
+                  <div className="text-[11px] font-mono text-[#8B919B] truncate">Active Agent Worker</div>
                 </div>
-                <div className="text-right font-mono font-bold text-[#111318]">
+                <div className="text-right font-mono font-bold text-[#111318] shrink-0">
                   {count} {count === 1 ? 'run' : 'runs'}
                 </div>
               </div>

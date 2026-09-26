@@ -22,7 +22,7 @@ export const AppLayout: React.FC = () => {
         <AppHeader
           onOpenMobileSidebar={() => setMobileSidebarOpen(true)}
         />
-        <main className={`flex-1 ${isFullScreenCanvas ? 'p-0 flex flex-col' : 'p-4 sm:p-8 max-w-7xl w-full mx-auto'}`}>
+        <main className={`flex-1 min-w-0 ${isFullScreenCanvas ? 'p-0 flex flex-col' : 'p-4 sm:p-8 max-w-7xl w-full mx-auto'}`}>
           <Outlet />
         </main>
       </div>

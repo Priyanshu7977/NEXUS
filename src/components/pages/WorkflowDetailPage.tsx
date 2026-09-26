@@ -194,22 +194,22 @@ export const WorkflowDetailPage: React.FC = () => {
             </Button>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 items-stretch">
             {workflow.nodes.map((node, i) => (
               <div
                 key={node.node_key || i}
-                className="p-4 rounded-xl bg-[#161922] border border-[#252836] flex flex-col justify-between text-left"
+                className="p-4 rounded-xl bg-[#161922] border border-[#252836] flex flex-col justify-between text-left h-full min-w-0"
               >
-                <div>
-                  <div className="flex items-center justify-between mb-2">
-                    <span className="text-[9px] font-mono text-[#8B919B] uppercase px-1.5 py-0.5 rounded bg-black/40">
+                <div className="flex-1 flex flex-col min-w-0">
+                  <div className="flex items-center justify-between mb-2 gap-2">
+                    <span className="text-[9px] font-mono text-[#8B919B] uppercase px-1.5 py-0.5 rounded bg-black/40 shrink-0">
                       Step {i + 1} · {node.node_type}
                     </span>
-                    <span className="text-[10px] font-mono text-emerald-400">
+                    <span className="text-[10px] font-mono text-emerald-400 shrink-0">
                       Configured
                     </span>
                   </div>
-                  <h4 className="text-xs font-bold text-white mb-1">
+                  <h4 className="text-xs font-bold text-white mb-1 truncate">
                     {node.name}
                   </h4>
                   <p className="text-[11px] font-mono text-[#8B919B] truncate">

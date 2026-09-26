@@ -218,14 +218,14 @@ export const ChangelogPage: React.FC = () => {
           <p className="text-xs text-[#626873] max-w-md mx-auto mb-5 leading-relaxed">
             We are designing the platform with an open architecture to accommodate the tools engineers use every day.
           </p>
-          <div className="flex items-center justify-center gap-3">
-            <Link to="/explore">
-              <Button variant="secondary" size="sm">
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
+            <Link to="/explore" className="w-full sm:w-auto">
+              <Button variant="secondary" size="sm" className="w-full sm:w-auto justify-center">
                 Explore Ecosystem
               </Button>
             </Link>
-            <Link to="/signup">
-              <Button size="sm" withArrow>
+            <Link to="/signup" className="w-full sm:w-auto">
+              <Button size="sm" withArrow className="w-full sm:w-auto justify-center">
                 Join Developer Preview
               </Button>
             </Link>

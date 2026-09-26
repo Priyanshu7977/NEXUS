@@ -169,35 +169,41 @@ export const DevelopersPage: React.FC = () => {
             </div>
 
             {/* 3 Integration Pillars */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-              <div className="p-6 rounded-2xl bg-white border border-[#E5E5E2] shadow-2xs">
-                <div className="w-10 h-10 rounded-xl bg-purple-50 text-[#6D4AFF] border border-purple-100 flex items-center justify-center mb-4">
-                  <Terminal className="w-5 h-5" />
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-5 items-stretch">
+              <div className="h-full p-6 rounded-2xl bg-white border border-[#E5E5E2] shadow-2xs flex flex-col justify-between min-w-0">
+                <div className="flex-1">
+                  <div className="w-10 h-10 rounded-xl bg-purple-50 text-[#6D4AFF] border border-purple-100 flex items-center justify-center mb-4 shrink-0">
+                    <Terminal className="w-5 h-5" />
+                  </div>
+                  <h3 className="text-sm font-bold text-[#111318] mb-1 truncate">1. REST API (/api/v1)</h3>
+                  <p className="text-xs text-[#626873] leading-relaxed break-words">
+                    Predictable JSON endpoints for programmatic agent invocation, DAG workflow dispatch, execution status polling, and connector inspection.
+                  </p>
                 </div>
-                <h3 className="text-sm font-bold text-[#111318] mb-1">1. REST API (/api/v1)</h3>
-                <p className="text-xs text-[#626873] leading-relaxed">
-                  Predictable JSON endpoints for programmatic agent invocation, DAG workflow dispatch, execution status polling, and connector inspection.
-                </p>
               </div>
 
-              <div className="p-6 rounded-2xl bg-white border border-[#E5E5E2] shadow-2xs">
-                <div className="w-10 h-10 rounded-xl bg-blue-50 text-blue-600 border border-blue-100 flex items-center justify-center mb-4">
-                  <Package className="w-5 h-5" />
+              <div className="h-full p-6 rounded-2xl bg-white border border-[#E5E5E2] shadow-2xs flex flex-col justify-between min-w-0">
+                <div className="flex-1">
+                  <div className="w-10 h-10 rounded-xl bg-blue-50 text-blue-600 border border-blue-100 flex items-center justify-center mb-4 shrink-0">
+                    <Package className="w-5 h-5" />
+                  </div>
+                  <h3 className="text-sm font-bold text-[#111318] mb-1 truncate">2. TypeScript SDK</h3>
+                  <p className="text-xs text-[#626873] leading-relaxed break-words">
+                    Strongly-typed client package with built-in pollers (<code className="font-mono text-[11px] bg-neutral-100 px-1 py-0.5 rounded break-all">waitForCompletion</code>), error hierarchies, and custom tool/connector factories.
+                  </p>
                 </div>
-                <h3 className="text-sm font-bold text-[#111318] mb-1">2. TypeScript SDK</h3>
-                <p className="text-xs text-[#626873] leading-relaxed">
-                  Strongly-typed client package with built-in pollers (<code className="font-mono text-[11px] bg-neutral-100 px-1 py-0.5 rounded">waitForCompletion</code>), error hierarchies, and custom tool/connector factories.
-                </p>
               </div>
 
-              <div className="p-6 rounded-2xl bg-white border border-[#E5E5E2] shadow-2xs">
-                <div className="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 border border-emerald-100 flex items-center justify-center mb-4">
-                  <Webhook className="w-5 h-5" />
+              <div className="h-full p-6 rounded-2xl bg-white border border-[#E5E5E2] shadow-2xs flex flex-col justify-between min-w-0">
+                <div className="flex-1">
+                  <div className="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 border border-emerald-100 flex items-center justify-center mb-4 shrink-0">
+                    <Webhook className="w-5 h-5" />
+                  </div>
+                  <h3 className="text-sm font-bold text-[#111318] mb-1 truncate">3. Developer Webhooks</h3>
+                  <p className="text-xs text-[#626873] leading-relaxed break-words">
+                    Real-time events delivered directly to your server with HMAC-SHA256 signature verification and automatic exponential backoff retries.
+                  </p>
                 </div>
-                <h3 className="text-sm font-bold text-[#111318] mb-1">3. Developer Webhooks</h3>
-                <p className="text-xs text-[#626873] leading-relaxed">
-                  Real-time events delivered directly to your server with HMAC-SHA256 signature verification and automatic exponential backoff retries.
-                </p>
               </div>
             </div>
           </div>

@@ -97,17 +97,17 @@ export const AboutPage: React.FC = () => {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-5 items-stretch">
             {PRINCIPLES.map((principle) => {
               const Icon = principle.icon;
               return (
                 <div
                   key={principle.number}
-                  className="p-6 rounded-2xl bg-white border border-[#E5E5E2] hover:border-[#D4D4CE] transition-all shadow-sm flex flex-col justify-between"
+                  className="h-full p-6 rounded-2xl bg-white border border-[#E5E5E2] hover:border-[#D4D4CE] transition-all shadow-sm flex flex-col justify-between min-w-0"
                 >
-                  <div>
+                  <div className="flex-1 flex flex-col">
                     <div className="flex items-center justify-between mb-4">
-                      <div className={`w-10 h-10 rounded-xl ${principle.bg} ${principle.color} border flex items-center justify-center`}>
+                      <div className={`w-10 h-10 rounded-xl ${principle.bg} ${principle.color} border flex items-center justify-center shrink-0`}>
                         <Icon className="w-5 h-5" />
                       </div>
                       <span className="text-xs font-mono font-bold text-[#8B919B]">
@@ -115,11 +115,11 @@ export const AboutPage: React.FC = () => {
                       </span>
                     </div>
 
-                    <h4 className="text-base font-bold text-[#111318] mb-2">
+                    <h4 className="text-base font-bold text-[#111318] mb-2 truncate">
                       {principle.title}
                     </h4>
 
-                    <p className="text-xs text-[#626873] leading-relaxed">
+                    <p className="text-xs text-[#626873] leading-relaxed break-words flex-1">
                       {principle.description}
                     </p>
                   </div>
@@ -138,8 +138,8 @@ export const AboutPage: React.FC = () => {
             Join developers building autonomous, permissioned, and verifiable multi-agent systems on NEXUS.
           </p>
           <div className="flex items-center justify-center gap-3">
-            <Link to="/signup">
-              <Button size="md" withArrow>
+            <Link to="/signup" className="w-full sm:w-auto">
+              <Button size="md" withArrow className="w-full sm:w-auto justify-center">
                 Start Free Today
               </Button>
             </Link>

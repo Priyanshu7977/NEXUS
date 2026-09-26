@@ -259,19 +259,19 @@ export const AgentDetailPage: React.FC = () => {
                   No tools currently permitted. This agent will operate in pure reasoning mode.
                 </div>
               ) : (
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 items-stretch">
                   {(agent.tools || []).map((t) => (
                     <div
                       key={t.capability}
-                      className="p-3 rounded-xl bg-[#FAFAF8] border border-[#E5E5E2] flex items-center justify-between text-xs"
+                      className="p-3 rounded-xl bg-[#FAFAF8] border border-[#E5E5E2] flex items-center justify-between text-xs min-w-0 h-full gap-2"
                     >
-                      <div className="flex items-center gap-2">
-                        <Wrench className="w-3.5 h-3.5 text-[#6D4AFF]" />
-                        <span className="font-semibold text-[#111318] font-mono text-[11px]">
+                      <div className="flex items-center gap-2 min-w-0 flex-1">
+                        <Wrench className="w-3.5 h-3.5 text-[#6D4AFF] shrink-0" />
+                        <span className="font-semibold text-[#111318] font-mono text-[11px] truncate">
                           {t.capability}
                         </span>
                       </div>
-                      <span className="text-[10px] font-mono text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">
+                      <span className="text-[10px] font-mono text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200 shrink-0">
                         Authorized
                       </span>
                     </div>

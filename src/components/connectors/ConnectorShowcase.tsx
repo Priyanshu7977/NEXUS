@@ -45,37 +45,37 @@ export const ConnectorShowcase: React.FC = () => {
         </div>
 
         {/* Connector Cards Grid with Real Brand Logos */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5 items-stretch">
           {filteredConnectors.map((item) => (
             <div
               key={item.id}
-              className="p-5 rounded-xl bg-white border border-[#E5E5E2] hover:border-[#D4D4CE] hover:shadow-[0_4px_16px_rgba(0,0,0,0.04)] transition-all duration-200 flex flex-col justify-between group"
+              className="h-full p-5 rounded-xl bg-white border border-[#E5E5E2] hover:border-[#D4D4CE] hover:shadow-[0_4px_16px_rgba(0,0,0,0.04)] transition-all duration-200 flex flex-col justify-between group min-w-0"
             >
-              <div>
+              <div className="flex-1 flex flex-col">
                 <div className="flex items-start justify-between mb-3.5">
-                  <div className="w-10 h-10 rounded-lg bg-[#FAFAF8] border border-[#E5E5E2] flex items-center justify-center group-hover:scale-105 transition-transform duration-200">
+                  <div className="w-10 h-10 rounded-lg bg-[#FAFAF8] border border-[#E5E5E2] flex items-center justify-center group-hover:scale-105 transition-transform duration-200 shrink-0">
                     <BrandLogo brand={item.id} size={22} />
                   </div>
-                  <span className="text-[11px] font-mono text-[#8B919B] bg-[#FAFAF8] px-2 py-0.5 rounded border border-[#EFEFEA]">
+                  <span className="text-[11px] font-mono text-[#8B919B] bg-[#FAFAF8] px-2 py-0.5 rounded border border-[#EFEFEA] shrink-0">
                     {item.category}
                   </span>
                 </div>
 
-                <h3 className="text-sm font-bold text-[#111318] mb-1 flex items-center justify-between">
-                  <span>{item.name}</span>
-                  <ArrowUpRight className="w-3.5 h-3.5 text-[#8B919B] opacity-0 group-hover:opacity-100 transition-opacity" />
+                <h3 className="text-sm font-bold text-[#111318] mb-1.5 flex items-center justify-between gap-2 min-w-0">
+                  <span className="truncate">{item.name}</span>
+                  <ArrowUpRight className="w-3.5 h-3.5 text-[#8B919B] opacity-0 group-hover:opacity-100 transition-opacity shrink-0" />
                 </h3>
 
-                <p className="text-xs text-[#626873] leading-relaxed mb-4">
+                <p className="text-xs text-[#626873] leading-relaxed mb-4 break-words flex-1">
                   {item.description}
                 </p>
               </div>
 
-              <div className="pt-3 border-t border-[#EFEFEA] flex flex-wrap gap-1.5">
+              <div className="pt-3 border-t border-[#EFEFEA] flex flex-wrap gap-1.5 mt-auto">
                 {item.features.map((feature) => (
                   <span
                     key={feature}
-                    className="text-[10px] text-[#626873] bg-[#FAFAF8] px-2 py-0.5 rounded border border-[#E5E5E2]"
+                    className="text-[10px] text-[#626873] bg-[#FAFAF8] px-2 py-0.5 rounded border border-[#E5E5E2] break-words"
                   >
                     {feature}
                   </span>

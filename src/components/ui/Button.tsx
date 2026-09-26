@@ -18,9 +18,9 @@ export const Button: React.FC<ButtonProps> = ({
   ...props
 }) => {
   const sizeClasses = {
-    sm: 'h-9 px-3.5 text-xs font-medium gap-1.5 rounded-lg',
-    md: 'h-10.5 px-5 text-sm font-medium gap-2 rounded-lg',
-    lg: 'h-12 px-6.5 text-base font-medium gap-2.5 rounded-xl',
+    sm: 'h-9 px-3.5 text-xs font-medium gap-1.5 rounded-lg whitespace-nowrap',
+    md: 'h-10 px-5 text-sm font-medium gap-2 rounded-lg whitespace-nowrap',
+    lg: 'h-12 px-6 text-base font-medium gap-2.5 rounded-xl whitespace-nowrap',
   };
 
   const variantClasses = {
@@ -41,9 +41,9 @@ export const Button: React.FC<ButtonProps> = ({
       className={`inline-flex items-center justify-center font-sans tracking-tight transition-all duration-150 outline-none focus-visible:ring-2 focus-visible:ring-[#6D4AFF] focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none select-none cursor-pointer ${sizeClasses[size]} ${variantClasses[variant]} ${className}`}
       {...props}
     >
-      <span className="flex items-center">{children}</span>
+      <span className="flex items-center whitespace-nowrap shrink-0">{children}</span>
       {withArrow && (
-        <ArrowRight className="w-3.5 h-3.5 transition-transform duration-200 group-hover:translate-x-1" />
+        <ArrowRight className="w-3.5 h-3.5 transition-transform duration-200 group-hover:translate-x-1 shrink-0 ml-0.5" />
       )}
     </button>
   );

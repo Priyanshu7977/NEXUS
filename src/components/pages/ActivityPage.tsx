@@ -304,7 +304,7 @@ export const ActivityPage: React.FC = () => {
                             {row.type}
                           </span>
                         </td>
-                        <td className="py-3.5 px-4 font-semibold text-[#111318]">
+                        <td className="py-3.5 px-4 font-semibold text-[#111318] max-w-[220px] truncate" title={row.name}>
                           {row.name}
                         </td>
                         <td className="py-3.5 px-4 whitespace-nowrap">

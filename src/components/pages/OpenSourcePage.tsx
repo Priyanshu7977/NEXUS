@@ -25,12 +25,12 @@ export const OpenSourcePage: React.FC = () => {
 
       <div className="max-w-6xl mx-auto">
         {/* Core vs Cloud Visual Comparison */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-20">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-20 items-stretch">
           {/* NEXUS CORE */}
-          <div className="p-6 sm:p-8 rounded-2xl bg-white border border-[#E5E5E2] shadow-sm flex flex-col justify-between">
-            <div>
+          <div className="h-full p-6 sm:p-8 rounded-2xl bg-white border border-[#E5E5E2] shadow-sm flex flex-col justify-between min-w-0">
+            <div className="flex-1 flex flex-col">
               <div className="flex items-center justify-between mb-4">
-                <div className="w-10 h-10 rounded-xl bg-purple-50 text-[#6D4AFF] border border-purple-100 flex items-center justify-center">
+                <div className="w-10 h-10 rounded-xl bg-purple-50 text-[#6D4AFF] border border-purple-100 flex items-center justify-center shrink-0">
                   <Cpu className="w-5 h-5" />
                 </div>
                 <span className="px-2.5 py-1 rounded-full bg-[#FAFAF8] border border-[#E5E5E2] text-[10px] font-mono text-[#626873] uppercase tracking-wider font-semibold">
@@ -41,11 +41,11 @@ export const OpenSourcePage: React.FC = () => {
               <h3 className="text-xl font-bold text-[#111318] mb-1">
                 NEXUS Core
               </h3>
-              <p className="text-xs text-[#626873] leading-relaxed mb-6">
+              <p className="text-xs text-[#626873] leading-relaxed mb-6 break-words">
                 The open-source agent runtime, DAG orchestrator, and connector interfaces. Free to inspect, modify, and host on your own infrastructure.
               </p>
 
-              <div className="space-y-3 pt-6 border-t border-[#EFEFEA] mb-8">
+              <div className="space-y-3 pt-6 border-t border-[#EFEFEA] mb-8 flex-1">
                 <div className="text-[10px] uppercase tracking-wider text-[#8B919B] font-mono font-semibold">
                   Core Attributes:
                 </div>
@@ -57,17 +57,17 @@ export const OpenSourcePage: React.FC = () => {
                   'Extensible LLM adapters (Ollama, vLLM, API providers)',
                   'Zero telemetry lock-in or proprietary protocols'
                 ].map((item) => (
-                  <div key={item} className="flex items-center gap-2.5 text-xs text-[#111318]">
-                    <div className="w-4 h-4 rounded-full bg-purple-50 text-[#6D4AFF] flex items-center justify-center flex-shrink-0">
+                  <div key={item} className="flex items-start gap-2.5 text-xs text-[#111318] min-w-0">
+                    <div className="w-4 h-4 rounded-full bg-purple-50 text-[#6D4AFF] flex items-center justify-center shrink-0 mt-0.5">
                       <Check className="w-3 h-3" />
                     </div>
-                    <span>{item}</span>
+                    <span className="break-words flex-1">{item}</span>
                   </div>
                 ))}
               </div>
             </div>
 
-            <div className="p-4 rounded-xl bg-[#FAFAF8] border border-[#E5E5E2] flex items-center justify-between">
+            <div className="p-4 rounded-xl bg-[#FAFAF8] border border-[#E5E5E2] flex items-center justify-between mt-auto">
               <div className="flex items-center gap-2">
                 <BrandLogo brand="github" size={18} />
                 <span className="text-xs font-semibold text-[#111318]">GitHub Repository</span>
@@ -77,10 +77,10 @@ export const OpenSourcePage: React.FC = () => {
           </div>
 
           {/* NEXUS CLOUD */}
-          <div className="p-6 sm:p-8 rounded-2xl bg-white border border-[#E5E5E2] shadow-sm flex flex-col justify-between">
-            <div>
+          <div className="h-full p-6 sm:p-8 rounded-2xl bg-white border border-[#E5E5E2] shadow-sm flex flex-col justify-between min-w-0">
+            <div className="flex-1 flex flex-col">
               <div className="flex items-center justify-between mb-4">
-                <div className="w-10 h-10 rounded-xl bg-blue-50 text-[#3B82F6] border border-blue-100 flex items-center justify-center">
+                <div className="w-10 h-10 rounded-xl bg-blue-50 text-[#3B82F6] border border-blue-100 flex items-center justify-center shrink-0">
                   <Cloud className="w-5 h-5" />
                 </div>
                 <span className="px-2.5 py-1 rounded-full bg-blue-50 border border-blue-200 text-[10px] font-mono text-blue-700 uppercase tracking-wider font-semibold">
@@ -91,11 +91,11 @@ export const OpenSourcePage: React.FC = () => {
               <h3 className="text-xl font-bold text-[#111318] mb-1">
                 NEXUS Cloud
               </h3>
-              <p className="text-xs text-[#626873] leading-relaxed mb-6">
+              <p className="text-xs text-[#626873] leading-relaxed mb-6 break-words">
                 Fully managed orchestration infrastructure with automated OAuth key handling, multi-user workspaces, high-throughput queues, and live observability.
               </p>
 
-              <div className="space-y-3 pt-6 border-t border-[#EFEFEA] mb-8">
+              <div className="space-y-3 pt-6 border-t border-[#EFEFEA] mb-8 flex-1">
                 <div className="text-[10px] uppercase tracking-wider text-[#8B919B] font-mono font-semibold">
                   Platform Features:
                 </div>
@@ -107,21 +107,23 @@ export const OpenSourcePage: React.FC = () => {
                   'Real-time execution telemetry and trace history',
                   'Instant webhooks & trigger ingress endpoints'
                 ].map((item) => (
-                  <div key={item} className="flex items-center gap-2.5 text-xs text-[#111318]">
-                    <div className="w-4 h-4 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center flex-shrink-0">
+                  <div key={item} className="flex items-start gap-2.5 text-xs text-[#111318] min-w-0">
+                    <div className="w-4 h-4 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center shrink-0 mt-0.5">
                       <Check className="w-3 h-3" />
                     </div>
-                    <span>{item}</span>
+                    <span className="break-words flex-1">{item}</span>
                   </div>
                 ))}
               </div>
             </div>
 
-            <Link to="/signup" className="w-full">
-              <Button size="md" className="w-full justify-center" withArrow>
-                Start on NEXUS Cloud
-              </Button>
-            </Link>
+            <div className="mt-auto">
+              <Link to="/signup" className="w-full block">
+                <Button size="md" className="w-full justify-center" withArrow>
+                  Start on NEXUS Cloud
+                </Button>
+              </Link>
+            </div>
           </div>
         </div>
 
@@ -172,14 +174,14 @@ export const OpenSourcePage: React.FC = () => {
           <p className="text-xs text-[#626873] mb-6">
             Get early access to our architecture discussions and developer preview builds.
           </p>
-          <div className="flex items-center justify-center gap-3">
-            <Link to="/developers">
-              <Button variant="secondary" size="md">
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
+            <Link to="/developers" className="w-full sm:w-auto">
+              <Button variant="secondary" size="md" className="w-full sm:w-auto justify-center">
                 Developer Overview
               </Button>
             </Link>
-            <Link to="/signup">
-              <Button size="md" withArrow>
+            <Link to="/signup" className="w-full sm:w-auto">
+              <Button size="md" withArrow className="w-full sm:w-auto justify-center">
                 Create Free Account
               </Button>
             </Link>

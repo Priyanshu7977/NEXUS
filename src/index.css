@@ -22,6 +22,12 @@
     font-feature-settings: "cv02", "cv03", "cv04", "cv11";
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    overflow-x: hidden;
+  }
+
+  /* Universal text wrapping safeguard: prevent words from bursting out of containers */
+  p, h1, h2, h3, h4, h5, h6, span, a, li, td, th, div {
+    overflow-wrap: break-word;
   }
 
   /* Custom subtle light scrollbar */

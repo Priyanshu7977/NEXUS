@@ -143,25 +143,25 @@ export const DashboardPage: React.FC = () => {
             <span className="text-[11px] font-mono text-[#6D4AFF]">Live Streaming</span>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 items-stretch">
             {activeExecutions.map((exec) => {
               const isWaiting = exec.status === 'waiting_for_approval';
               return (
                 <div
                   key={exec.execution_id}
-                  className={`p-5 rounded-2xl bg-white border transition-all shadow-sm flex flex-col justify-between ${
+                  className={`h-full p-5 rounded-2xl bg-white border transition-all shadow-sm flex flex-col justify-between min-w-0 ${
                     isWaiting
                       ? 'border-amber-300 ring-2 ring-amber-300/20'
                       : 'border-purple-300 ring-2 ring-[#6D4AFF]/20'
                   }`}
                 >
-                  <div>
-                    <div className="flex items-center justify-between gap-2 mb-2">
-                      <span className="text-xs font-mono text-[#8B919B]">
+                  <div className="flex-1 flex flex-col">
+                    <div className="flex items-center justify-between gap-2 mb-2 min-w-0">
+                      <span className="text-xs font-mono text-[#8B919B] truncate">
                         ID: {exec.execution_id.slice(0, 8)}...
                       </span>
                       <span
-                        className={`inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-mono font-bold uppercase border ${
+                        className={`inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-mono font-bold uppercase border shrink-0 ${
                           isWaiting
                             ? 'bg-amber-50 text-amber-700 border-amber-200 animate-pulse'
                             : 'bg-purple-50 text-[#6D4AFF] border-purple-200 animate-pulse'
@@ -176,25 +176,25 @@ export const DashboardPage: React.FC = () => {
                       </span>
                     </div>
 
-                    <h4 className="text-sm font-bold text-[#111318] mb-1">
+                    <h4 className="text-sm font-bold text-[#111318] mb-1 truncate">
                       {exec.workflow_name || 'Workflow Pipeline'}
                     </h4>
 
-                    <p className="text-xs text-[#626873] line-clamp-1 mb-4">
+                    <p className="text-xs text-[#626873] line-clamp-2 mb-4 break-words flex-1">
                       {isWaiting
                         ? 'Paused on human approval gate. Review required before proceeding.'
                         : `Current node: ${exec.current_node_key || 'processing...'}`}
                     </p>
                   </div>
 
-                  <div className="pt-3 border-t border-[#EFEFEA] flex items-center justify-between text-xs">
+                  <div className="pt-3 border-t border-[#EFEFEA] flex items-center justify-between text-xs mt-auto">
                     <span className="font-mono text-[#8B919B]">
                       {(exec.duration_ms / 1000).toFixed(1)}s elapsed
                     </span>
                     <Button
                       size="sm"
                       onClick={() => setLiveModalExecutionId(exec.execution_id)}
-                      className={isWaiting ? 'bg-amber-600 hover:bg-amber-700 text-white' : ''}
+                      className={isWaiting ? 'bg-amber-600 hover:bg-amber-700 text-white shrink-0' : 'shrink-0'}
                     >
                       {isWaiting ? 'Review Gate →' : 'Watch Live →'}
                     </Button>
@@ -239,23 +239,23 @@ export const DashboardPage: React.FC = () => {
           Workspace Telemetry
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 items-stretch">
           {/* Connectors */}
-          <div className="p-5 rounded-2xl bg-white border border-[#E5E5E2] shadow-sm flex flex-col justify-between">
-            <div>
+          <div className="h-full p-5 rounded-2xl bg-white border border-[#E5E5E2] shadow-sm flex flex-col justify-between min-w-0">
+            <div className="flex-1">
               <div className="flex items-center justify-between mb-2">
                 <span className="text-xs font-medium text-[#626873]">Connectors</span>
-                <Cable className="w-4 h-4 text-[#3B82F6]" />
+                <Cable className="w-4 h-4 text-[#3B82F6] shrink-0" />
               </div>
-              <div className="text-2xl font-bold text-[#111318] mb-1">
+              <div className="text-2xl font-bold text-[#111318] mb-1 truncate">
                 {connectedCount} Connected
               </div>
             </div>
-            <div className="text-[11px] text-[#8B919B] pt-3 border-t border-[#EFEFEA] flex items-center justify-between">
-              <span>{connections.length} total integrated</span>
+            <div className="text-[11px] text-[#8B919B] pt-3 border-t border-[#EFEFEA] flex items-center justify-between mt-auto">
+              <span className="truncate">{connections.length} total integrated</span>
               <button
                 onClick={() => navigate('/app/connectors')}
-                className="text-[#6D4AFF] hover:underline font-medium cursor-pointer"
+                className="text-[#6D4AFF] hover:underline font-medium cursor-pointer shrink-0 ml-1"
               >
                 Manage →
               </button>
@@ -263,21 +263,21 @@ export const DashboardPage: React.FC = () => {
           </div>
 
           {/* Agents */}
-          <div className="p-5 rounded-2xl bg-white border border-[#E5E5E2] shadow-sm flex flex-col justify-between">
-            <div>
+          <div className="h-full p-5 rounded-2xl bg-white border border-[#E5E5E2] shadow-sm flex flex-col justify-between min-w-0">
+            <div className="flex-1">
               <div className="flex items-center justify-between mb-2">
                 <span className="text-xs font-medium text-[#626873]">AI Agents</span>
-                <Bot className="w-4 h-4 text-[#6D4AFF]" />
+                <Bot className="w-4 h-4 text-[#6D4AFF] shrink-0" />
               </div>
-              <div className="text-2xl font-bold text-[#111318] mb-1">
+              <div className="text-2xl font-bold text-[#111318] mb-1 truncate">
                 {agents.length} Configured
               </div>
             </div>
-            <div className="text-[11px] text-[#8B919B] pt-3 border-t border-[#EFEFEA] flex items-center justify-between">
-              <span>{agents.filter((a) => a.status === 'active').length} active workers</span>
+            <div className="text-[11px] text-[#8B919B] pt-3 border-t border-[#EFEFEA] flex items-center justify-between mt-auto">
+              <span className="truncate">{agents.filter((a) => a.status === 'active').length} active workers</span>
               <button
                 onClick={() => navigate('/app/agents')}
-                className="text-[#6D4AFF] hover:underline font-medium cursor-pointer"
+                className="text-[#6D4AFF] hover:underline font-medium cursor-pointer shrink-0 ml-1"
               >
                 View →
               </button>
@@ -285,21 +285,21 @@ export const DashboardPage: React.FC = () => {
           </div>
 
           {/* Workflows */}
-          <div className="p-5 rounded-2xl bg-white border border-[#E5E5E2] shadow-sm flex flex-col justify-between">
-            <div>
+          <div className="h-full p-5 rounded-2xl bg-white border border-[#E5E5E2] shadow-sm flex flex-col justify-between min-w-0">
+            <div className="flex-1">
               <div className="flex items-center justify-between mb-2">
                 <span className="text-xs font-medium text-[#626873]">Workflows</span>
                 <Network className="w-4 h-4 text-emerald-600" />
               </div>
-              <div className="text-2xl font-bold text-[#111318] mb-1">
+              <div className="text-2xl font-bold text-[#111318] mb-1 truncate">
                 {workflows.length} Pipelines
               </div>
             </div>
-            <div className="text-[11px] text-[#8B919B] pt-3 border-t border-[#EFEFEA] flex items-center justify-between">
-              <span>{workflows.filter((w) => w.status === 'active').length} ready</span>
+            <div className="text-[11px] text-[#8B919B] pt-3 border-t border-[#EFEFEA] flex items-center justify-between mt-auto">
+              <span className="truncate">{workflows.filter((w) => w.status === 'active').length} ready</span>
               <button
                 onClick={() => navigate('/app/workflows')}
-                className="text-[#6D4AFF] hover:underline font-medium cursor-pointer"
+                className="text-[#6D4AFF] hover:underline font-medium cursor-pointer shrink-0 ml-1"
               >
                 Build →
               </button>
@@ -307,21 +307,21 @@ export const DashboardPage: React.FC = () => {
           </div>
 
           {/* Executions */}
-          <div className="p-5 rounded-2xl bg-white border border-[#E5E5E2] shadow-sm flex flex-col justify-between">
-            <div>
+          <div className="h-full p-5 rounded-2xl bg-white border border-[#E5E5E2] shadow-sm flex flex-col justify-between min-w-0">
+            <div className="flex-1">
               <div className="flex items-center justify-between mb-2">
                 <span className="text-xs font-medium text-[#626873]">Recent Executions</span>
                 <Activity className="w-4 h-4 text-amber-600" />
               </div>
-              <div className="text-2xl font-bold text-[#111318] mb-1">
+              <div className="text-2xl font-bold text-[#111318] mb-1 truncate">
                 {recentExecutions.length > 0 ? recentExecutions.length : '0'} Recorded
               </div>
             </div>
-            <div className="text-[11px] text-[#8B919B] pt-3 border-t border-[#EFEFEA] flex items-center justify-between">
-              <span>{recentExecutions.filter((e) => e.status === 'completed').length} completed</span>
+            <div className="text-[11px] text-[#8B919B] pt-3 border-t border-[#EFEFEA] flex items-center justify-between mt-auto">
+              <span className="truncate">{recentExecutions.filter((e) => e.status === 'completed').length} completed</span>
               <button
                 onClick={() => navigate('/app/activity')}
-                className="text-[#6D4AFF] hover:underline font-medium cursor-pointer"
+                className="text-[#6D4AFF] hover:underline font-medium cursor-pointer shrink-0 ml-1"
               >
                 Inspect →
               </button>
@@ -333,7 +333,7 @@ export const DashboardPage: React.FC = () => {
       {/* SECTION 4: SYSTEM HEALTH VIEW (Prompt Section 29, 30, 31) */}
       {systemHealth && (
         <div className="p-6 rounded-2xl bg-white border border-[#E5E5E2] shadow-sm">
-          <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center justify-between mb-4 gap-2 flex-wrap">
             <div>
               <h3 className="text-sm font-bold text-[#111318]">System Operational Health</h3>
               <p className="text-xs text-[#626873]">
@@ -341,7 +341,7 @@ export const DashboardPage: React.FC = () => {
               </p>
             </div>
             <span
-              className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded text-[11px] font-mono font-bold uppercase ${
+              className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded text-[11px] font-mono font-bold uppercase shrink-0 ${
                 systemHealth.status === 'healthy'
                   ? 'bg-emerald-50 text-emerald-700 border border-emerald-200'
                   : 'bg-amber-50 text-amber-700 border border-amber-200'
@@ -352,13 +352,13 @@ export const DashboardPage: React.FC = () => {
             </span>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 items-stretch">
             {systemHealth.checks.map((check) => (
               <div
                 key={check.id}
-                className="p-3.5 rounded-xl border border-[#E5E5E2] bg-[#FAFAF8] text-xs flex flex-col justify-between"
+                className="h-full p-3.5 rounded-xl border border-[#E5E5E2] bg-[#FAFAF8] text-xs flex flex-col justify-between min-w-0"
               >
-                <div className="flex items-center justify-between gap-2 mb-1.5">
+                <div className="flex items-center justify-between gap-2 mb-1.5 min-w-0">
                   <span className="font-bold text-[#111318] truncate">{check.name}</span>
                   <span
                     className={`w-2 h-2 rounded-full shrink-0 ${
@@ -370,7 +370,7 @@ export const DashboardPage: React.FC = () => {
                     }`}
                   />
                 </div>
-                <p className="text-[11px] text-[#626873] leading-relaxed truncate" title={check.message}>
+                <p className="text-[11px] text-[#626873] leading-relaxed break-words" title={check.message}>
                   {check.message}
                 </p>
               </div>

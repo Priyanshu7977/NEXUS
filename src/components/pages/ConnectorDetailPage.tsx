@@ -248,10 +248,10 @@ export const ConnectorDetailPage: React.FC = () => {
       )}
 
       {/* Capabilities & Permissions Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-stretch">
         {/* Capabilities */}
-        <div className="p-6 sm:p-8 rounded-2xl bg-white border border-[#E5E5E2] shadow-sm flex flex-col justify-between">
-          <div>
+        <div className="p-6 sm:p-8 rounded-2xl bg-white border border-[#E5E5E2] shadow-sm flex flex-col justify-between h-full min-w-0">
+          <div className="flex-1 flex flex-col min-w-0">
             <h3 className="text-base font-bold text-[#111318] mb-1">
               Connector Capabilities
             </h3>
@@ -263,13 +263,13 @@ export const ConnectorDetailPage: React.FC = () => {
               {connector.capabilities.map((cap) => (
                 <div
                   key={cap.name}
-                  className="p-3.5 rounded-xl bg-[#FAFAF8] border border-[#E5E5E2] flex items-center justify-between"
+                  className="p-3.5 rounded-xl bg-[#FAFAF8] border border-[#E5E5E2] flex items-center justify-between min-w-0 gap-2"
                 >
-                  <div>
-                    <div className="text-xs font-bold text-[#111318] mb-0.5">
+                  <div className="min-w-0 flex-1">
+                    <div className="text-xs font-bold text-[#111318] mb-0.5 truncate">
                       {cap.name}
                     </div>
-                    <div className="text-[11px] text-[#626873]">
+                    <div className="text-[11px] text-[#626873] break-words">
                       {cap.description}
                     </div>
                   </div>
@@ -289,11 +289,11 @@ export const ConnectorDetailPage: React.FC = () => {
         </div>
 
         {/* Security & Scopes */}
-        <div className="p-6 sm:p-8 rounded-2xl bg-white border border-[#E5E5E2] shadow-sm flex flex-col justify-between">
-          <div>
+        <div className="p-6 sm:p-8 rounded-2xl bg-white border border-[#E5E5E2] shadow-sm flex flex-col justify-between h-full min-w-0">
+          <div className="flex-1 flex flex-col min-w-0">
             <div className="flex items-center gap-2 mb-1">
-              <Shield className="w-4 h-4 text-[#6D4AFF]" />
-              <h3 className="text-base font-bold text-[#111318]">
+              <Shield className="w-4 h-4 text-[#6D4AFF] shrink-0" />
+              <h3 className="text-base font-bold text-[#111318] truncate">
                 Security & Scopes
               </h3>
             </div>
@@ -305,10 +305,10 @@ export const ConnectorDetailPage: React.FC = () => {
               {connector.requiredScopes.map((scope) => (
                 <div
                   key={scope}
-                  className="p-3.5 rounded-xl bg-[#FAFAF8] border border-[#E5E5E2] flex items-center justify-between"
+                  className="p-3.5 rounded-xl bg-[#FAFAF8] border border-[#E5E5E2] flex items-center justify-between min-w-0 gap-2"
                 >
-                  <span className="font-mono text-xs text-[#111318] font-semibold">{scope}</span>
-                  <span className="text-[10px] font-mono text-[#6D4AFF] bg-purple-50 px-2 py-0.5 rounded border border-purple-200">
+                  <span className="font-mono text-xs text-[#111318] font-semibold truncate">{scope}</span>
+                  <span className="text-[10px] font-mono text-[#6D4AFF] bg-purple-50 px-2 py-0.5 rounded border border-purple-200 shrink-0">
                     Required Scope
                   </span>
                 </div>
@@ -316,7 +316,7 @@ export const ConnectorDetailPage: React.FC = () => {
             </div>
           </div>
 
-          <div className="pt-4 mt-6 border-t border-[#EFEFEA] text-[11px] text-[#8B919B] leading-relaxed">
+          <div className="pt-4 mt-auto border-t border-[#EFEFEA] text-[11px] text-[#8B919B] leading-relaxed break-words">
             NEXUS will only use granted scopes to fulfill instructions explicitly delegated by authorized agents in your workspace.
           </div>
         </div>
