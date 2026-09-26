@@ -31,7 +31,7 @@ export const FinalCTA: React.FC = () => {
               Connect your tools. Compose your agents. Turn complex engineering tasks into deterministic workflows.
             </p>
 
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-3.5 mb-10">
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-center gap-3.5 mb-10 max-w-md sm:max-w-none mx-auto">
               <Link to="/signup" className="w-full sm:w-auto inline-flex">
                 <Button size="lg" withArrow className="w-full sm:w-52 sm:min-w-[200px] h-12 justify-center text-center">
                   Start Building
@@ -52,9 +52,9 @@ export const FinalCTA: React.FC = () => {
             </div>
 
             {/* CLI Snippet */}
-            <div className="inline-flex items-center gap-3 px-4 py-2.5 rounded-xl bg-[#181A21] border border-white/10 text-xs font-mono text-[#9BA3AF] shadow-sm">
-              <Terminal className="w-3.5 h-3.5 text-[#6D4AFF]" />
-              <span className="text-white">{command}</span>
+            <div className="inline-flex items-center gap-2 sm:gap-3 px-3.5 sm:px-4 py-2 sm:py-2.5 rounded-xl bg-[#181A21] border border-white/10 text-[11px] sm:text-xs font-mono text-[#9BA3AF] shadow-sm max-w-full overflow-x-auto">
+              <Terminal className="w-3.5 h-3.5 text-[#6D4AFF] shrink-0" />
+              <span className="text-white truncate">{command}</span>
               <button
                 onClick={handleCopy}
                 className="p-1 hover:text-white transition-colors rounded hover:bg-white/5 cursor-pointer ml-1"

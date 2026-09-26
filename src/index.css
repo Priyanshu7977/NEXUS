@@ -16,6 +16,11 @@
     --nexus-cyan: #22C7E8;
   }
 
+  html {
+    -webkit-text-size-adjust: 100%;
+    touch-action: manipulation;
+  }
+
   body {
     background-color: #F6F6F3;
     color: #111318;
@@ -23,11 +28,13 @@
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     overflow-x: hidden;
+    -webkit-tap-highlight-color: transparent;
   }
 
   /* Universal text wrapping safeguard: prevent words from bursting out of containers */
   p, h1, h2, h3, h4, h5, h6, span, a, li, td, th, div {
     overflow-wrap: break-word;
+    word-break: break-word;
   }
 
   /* Custom subtle light scrollbar */

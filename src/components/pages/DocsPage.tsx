@@ -75,10 +75,32 @@ export const DocsPage: React.FC = () => {
         </div>
       </div>
 
+      {/* Mobile Chapter Selector (Visible only on < lg) */}
+      <div className="lg:hidden mb-6 p-3 rounded-xl bg-white border border-[#E5E5E2] shadow-2xs">
+        <label className="block text-[10px] font-mono uppercase tracking-wider text-[#8B919B] font-semibold mb-1.5">
+          Jump to Documentation Chapter:
+        </label>
+        <select
+          value={activeDocId}
+          onChange={(e) => setActiveDocId(e.target.value)}
+          className="w-full h-10 px-3 rounded-lg bg-[#FAFAF8] border border-[#E5E5E2] text-xs font-semibold text-[#111318] focus:border-[#6D4AFF] outline-none cursor-pointer"
+        >
+          {DOC_SECTIONS.map((sec) => (
+            <optgroup key={sec.category} label={sec.category}>
+              {sec.items.map((i) => (
+                <option key={i.id} value={i.id}>
+                  {i.title}
+                </option>
+              ))}
+            </optgroup>
+          ))}
+        </select>
+      </div>
+
       {/* Main Two-Column Layout */}
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
-        {/* Left Sidebar */}
-        <div className="lg:col-span-1 space-y-6">
+        {/* Left Sidebar (Desktop / Laptop) */}
+        <div className="hidden lg:block lg:col-span-1 space-y-6">
           {DOC_SECTIONS.map((section) => {
             const filteredItems = section.items.filter((i) =>
               i.title.toLowerCase().includes(searchFilter.toLowerCase())

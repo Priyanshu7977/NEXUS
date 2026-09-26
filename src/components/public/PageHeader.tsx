@@ -30,7 +30,7 @@ export const PageHeader: React.FC<PageHeaderProps> = ({
         </div>
       )}
 
-      <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight text-[#111318] leading-[1.15] mb-4">
+      <h1 className="text-2xl xs:text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight text-[#111318] leading-[1.15] mb-3 sm:mb-4">
         {title}
         {highlightedTitle && (
           <span className="text-[#6D4AFF] block sm:inline sm:ml-2">
@@ -39,7 +39,7 @@ export const PageHeader: React.FC<PageHeaderProps> = ({
         )}
       </h1>
 
-      <p className="text-base sm:text-lg text-[#626873] leading-relaxed max-w-2xl mx-auto">
+      <p className="text-sm sm:text-base md:text-lg text-[#626873] leading-relaxed max-w-2xl mx-auto">
         {description}
       </p>
     </div>

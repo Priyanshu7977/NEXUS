@@ -269,8 +269,14 @@ export const PricingPage: React.FC = () => {
             </p>
           </div>
 
-          <div className="overflow-x-auto rounded-2xl border border-[#E5E5E2] bg-white shadow-sm">
-            <table className="w-full text-left text-xs">
+          <div className="overflow-x-auto rounded-2xl border border-[#E5E5E2] bg-white shadow-sm touch-pan-x overscroll-x-contain">
+            {/* Mobile Scroll Hint */}
+            <div className="sm:hidden flex items-center justify-between px-4 py-2 bg-[#FAFAF8] border-b border-[#EFEFEA] text-[10px] font-mono text-[#8B919B]">
+              <span>Feature Comparison</span>
+              <span className="text-[#6D4AFF]">← Scroll table horizontally →</span>
+            </div>
+
+            <table className="w-full min-w-[540px] text-left text-xs">
               <thead>
                 <tr className="border-b border-[#E5E5E2] bg-[#FAFAF8]">
                   <th className="py-4 px-6 font-semibold text-[#111318] w-1/3">Feature</th>

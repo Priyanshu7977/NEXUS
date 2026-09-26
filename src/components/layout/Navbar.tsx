@@ -93,6 +93,18 @@ export const Navbar: React.FC = () => {
     setProductDropdownOpen(false);
   }, [location.pathname]);
 
+  // Lock body scroll when mobile menu is open
+  useEffect(() => {
+    if (mobileMenuOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [mobileMenuOpen]);
+
   const productItems = [
     {
       title: 'Agents',
@@ -291,7 +303,7 @@ export const Navbar: React.FC = () => {
 
       {/* Mobile Drawer */}
       {mobileMenuOpen && (
-        <div className="fixed inset-0 z-40 md:hidden bg-[#F6F6F3]/98 backdrop-blur-2xl pt-24 px-6 flex flex-col justify-between pb-8 overflow-y-auto">
+        <div className="fixed inset-0 h-[100dvh] z-40 md:hidden bg-[#F6F6F3]/98 backdrop-blur-2xl pt-20 px-5 flex flex-col justify-between pb-[max(1.5rem,env(safe-area-inset-bottom))] overflow-y-auto overscroll-contain">
           <div className="flex flex-col gap-1">
             <div className="text-xs uppercase tracking-wider text-[#8B919B] font-mono mb-2 px-3">
               Public Navigation
@@ -300,7 +312,7 @@ export const Navbar: React.FC = () => {
             <Link
               to="/"
               onClick={() => setMobileMenuOpen(false)}
-              className="flex items-center justify-between px-3 py-2.5 text-sm text-[#111318] font-medium border-b border-[#E5E5E2] hover:bg-black/[0.02] rounded-lg text-left w-full"
+              className="flex items-center justify-between px-3 py-3 min-h-[44px] text-sm text-[#111318] font-medium border-b border-[#E5E5E2] hover:bg-black/[0.02] rounded-lg text-left w-full"
             >
               <span>Home</span>
               <ChevronRight className="w-4 h-4 text-[#8B919B]" />

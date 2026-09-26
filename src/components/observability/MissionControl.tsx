@@ -124,9 +124,15 @@ export const MissionControl: React.FC = () => {
             </div>
           </div>
 
+          {/* Mobile Table Scroll Guidance Banner */}
+          <div className="sm:hidden flex items-center justify-between px-4 py-2 bg-[#FAFAF8] border-b border-[#EFEFEA] text-[10px] font-mono text-[#8B919B]">
+            <span>Telemetry Stream</span>
+            <span className="text-[#6D4AFF]">← Scroll table horizontally →</span>
+          </div>
+
           {/* Trace Rows Table */}
-          <div className="overflow-x-auto">
-            <table className="w-full text-left border-collapse">
+          <div className="overflow-x-auto touch-pan-x overscroll-x-contain">
+            <table className="w-full min-w-[620px] text-left border-collapse">
               <thead>
                 <tr className="border-b border-[#EFEFEA] text-[11px] font-mono text-[#8B919B] uppercase tracking-wider bg-[#FAFAF8]/50">
                   <th className="py-3 px-6 font-semibold">Step / Agent</th>

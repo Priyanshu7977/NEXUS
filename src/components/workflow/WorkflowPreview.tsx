@@ -147,8 +147,14 @@ export const WorkflowPreview: React.FC = () => {
             </div>
           </div>
 
+          {/* Mobile Swipe Guidance Banner */}
+          <div className="sm:hidden flex items-center justify-between px-4 py-2 bg-[#181A21] border-b border-white/[0.08] text-[10px] font-mono text-[#9BA3AF]">
+            <span>DAG Pipeline Canvas</span>
+            <span className="text-[#6D4AFF]">← Swipe horizontally →</span>
+          </div>
+
           {/* Canvas Viewport */}
-          <div className="relative min-h-[420px] p-6 sm:p-10 overflow-x-auto bg-grid-dark bg-[#111318]">
+          <div className="relative min-h-[380px] sm:min-h-[420px] p-4 sm:p-10 overflow-x-auto touch-pan-x overscroll-x-contain bg-grid-dark bg-[#111318]">
             {/* Zoom Controls HUD */}
             <div className="absolute bottom-4 right-4 flex items-center gap-1 bg-[#181A21]/90 border border-white/10 p-1 rounded-lg backdrop-blur-md z-20 text-[#9BA3AF]">
               <button

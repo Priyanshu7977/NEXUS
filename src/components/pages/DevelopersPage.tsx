@@ -98,8 +98,26 @@ export const DevelopersPage: React.FC = () => {
         </div>
       </div>
 
+      {/* Mobile Topic Selector (Visible on < sm) */}
+      <div className="sm:hidden mb-6 p-3 rounded-xl bg-white border border-[#E5E5E2] shadow-2xs">
+        <label className="block text-[10px] font-mono uppercase tracking-wider text-[#8B919B] font-semibold mb-1.5">
+          Select Topic:
+        </label>
+        <select
+          value={activeSection}
+          onChange={(e) => setActiveSection(e.target.value as SectionId)}
+          className="w-full h-10 px-3 rounded-lg bg-[#FAFAF8] border border-[#E5E5E2] text-xs font-semibold text-[#111318] focus:border-[#6D4AFF] outline-none cursor-pointer"
+        >
+          {SECTIONS.map((sec) => (
+            <option key={sec.id} value={sec.id}>
+              {sec.label}
+            </option>
+          ))}
+        </select>
+      </div>
+
       {/* Navigation Tabs Bar */}
-      <div className="flex items-center gap-1 overflow-x-auto pb-2 border-b border-[#E5E5E2] mb-8 scrollbar-none">
+      <div className="hidden sm:flex items-center gap-1 overflow-x-auto pb-2 border-b border-[#E5E5E2] mb-8 scrollbar-none touch-pan-x overscroll-x-contain">
         {SECTIONS.map((sec) => {
           const isActive = activeSection === sec.id;
           return (
