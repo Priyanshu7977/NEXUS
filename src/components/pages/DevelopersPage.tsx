@@ -160,8 +160,8 @@ export const DevelopersPage: React.FC = () => {
                                            v
 +-----------------------------------------------------------------------------------+
 |                           NEXUS PUBLIC API GATEWAY (/api/v1)                      |
-|  * SHA-256 Auth Check    * Rate Limiter (120 req/m)    * Idempotency-Key Cache    |
-|  * Scopes Verification   * SSRF Protection Validator   * Audit Activity Logger    |
+|   SHA-256 Auth Check      Rate Limiter (120 req/m)      Idempotency-Key Cache     |
+|   Scopes Verification     SSRF Protection Validator     Audit Activity Logger     |
 +------------------------------------------+----------------------------------------+
                                            |
                    +-----------------------+-----------------------+
@@ -169,9 +169,9 @@ export const DevelopersPage: React.FC = () => {
                    v                                               v
 +--------------------------------------+       +------------------------------------+
 |         AGENT RUNTIME ENGINE         |       |      MULTI-AGENT WORKFLOW DAG      |
-|  * Tool calling & sandbox execution  |       |  * Parallel branching nodes        |
-|  * Streaming reasoning loop          |       |  * Human approval checkpoints      |
-|  * Connectors (GitHub, Vercel, MCP)  |       |  * Checkpoint state store          |
+|   Tool calling & sandbox execution   |       |   Parallel branching nodes         |
+|   Streaming reasoning loop           |       |   Human approval checkpoints       |
+|   Connectors (GitHub, Vercel, MCP)   |       |   Checkpoint state store           |
 +--------------------------------------+       +------------------------------------+
                    |                                               |
                    +-----------------------+-----------------------+
@@ -179,8 +179,8 @@ export const DevelopersPage: React.FC = () => {
                                            v
 +-----------------------------------------------------------------------------------+
 |                       HMAC-SHA256 WEBHOOK DISPATCH ENGINE                         |
-|  * Signed payloads: t=...,v1=...      * SSRF Assertion (Blocks 127.0.0.1, VPC)    |
-|  * Exponential backoff retry queue    * Delivery status audit logs                |
+|   Signed payloads: t=...,v1=...       SSRF Assertion (Blocks 127.0.0.1, VPC)      |
+|   Exponential backoff retry queue     Delivery status audit logs                  |
 +-----------------------------------------------------------------------------------+`}
                 </pre>
               </div>
