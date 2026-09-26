@@ -12,11 +12,11 @@ export const ConnectorShowcase: React.FC = () => {
     : CONNECTORS_DATA.filter((c) => c.category === selectedCategory);
 
   return (
-    <section id="connectors" className="relative py-20 sm:py-28 px-4 sm:px-6 lg:px-8 bg-[#F6F6F3]">
+    <section id="connectors" className="relative py-14 sm:py-18 lg:py-20 px-4 sm:px-6 lg:px-8 bg-[#F6F6F3]">
       <div className="max-w-7xl mx-auto">
         {/* Section Header */}
         <div className="max-w-3xl mb-10 text-left">
-          <h2 className="text-3xl sm:text-5xl font-bold tracking-tight text-[#111318] leading-[1.1] mb-4">
+          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-[#111318] leading-[1.1] mb-4">
             Your stack, connected.
           </h2>
           <p className="text-base sm:text-lg text-[#626873] leading-relaxed">

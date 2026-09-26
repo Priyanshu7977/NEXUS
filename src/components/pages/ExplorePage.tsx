@@ -147,10 +147,10 @@ export const ExplorePage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#F6F6F3] text-gray-900 pb-32">
+    <div className="min-h-[calc(100vh-4rem)] flex flex-col bg-[#F6F6F3] text-gray-900 pb-28">
       {/* Top Banner Header */}
-      <div className="border-b border-gray-200/80 bg-white pt-24 pb-8 sm:pt-28 sm:pb-10 px-4 sm:px-6">
-        <div className="max-w-6xl mx-auto flex flex-col md:flex-row md:items-center justify-between gap-6">
+      <div className="border-b border-gray-200/80 bg-white pt-20 pb-6 sm:pt-24 sm:pb-8 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto flex flex-col md:flex-row md:items-center justify-between gap-6">
           <div className="space-y-2">
             <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-medium bg-purple-50 text-[#6D4AFF] border border-purple-200/70">
               <Sparkles className="w-3.5 h-3.5" />

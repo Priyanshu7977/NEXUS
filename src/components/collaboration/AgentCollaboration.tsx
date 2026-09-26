@@ -25,11 +25,11 @@ export const AgentCollaboration: React.FC = () => {
   ];
 
   return (
-    <section id="collaboration" className="relative py-20 sm:py-28 px-4 sm:px-6 lg:px-8 bg-[#FAFAF8] border-y border-[#E5E5E2]">
+    <section id="collaboration" className="relative py-14 sm:py-18 lg:py-20 px-4 sm:px-6 lg:px-8 bg-[#FAFAF8] border-y border-[#E5E5E2]">
       <div className="max-w-7xl mx-auto">
         {/* Section Header */}
-        <div className="max-w-3xl mb-14 text-left">
-          <h2 className="text-3xl sm:text-5xl font-bold tracking-tight text-[#111318] leading-[1.1] mb-4">
+        <div className="max-w-3xl mb-10 lg:mb-12 text-left">
+          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-[#111318] leading-[1.1] mb-4">
             One task.<br />
             A team of agents.
           </h2>

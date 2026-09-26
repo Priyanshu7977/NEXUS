@@ -59,7 +59,7 @@ export const OrchestrationGraph: React.FC = () => {
   const centerY = 48;
 
   return (
-    <div className="relative w-full aspect-[4/3] sm:aspect-[16/11] min-h-[360px] sm:min-h-[420px] max-h-[500px] rounded-2xl bg-white border border-[#E5E5E2] shadow-[0_4px_24px_rgba(0,0,0,0.04)] overflow-hidden p-4 sm:p-6 select-none">
+    <div className="relative w-full aspect-[4/3] sm:aspect-[16/11] lg:aspect-[16/10] min-h-[320px] sm:min-h-[360px] lg:min-h-[340px] xl:min-h-[390px] max-h-[440px] rounded-2xl bg-white border border-[#E5E5E2] shadow-[0_4px_24px_rgba(0,0,0,0.04)] overflow-hidden p-3.5 sm:p-5 select-none">
       {/* Background Dots Pattern */}
       <div className="absolute inset-0 bg-dots-light opacity-80 pointer-events-none" />
 
@@ -110,7 +110,7 @@ export const OrchestrationGraph: React.FC = () => {
         onMouseLeave={() => setHoveredNode(null)}
         className="absolute -translate-x-1/2 -translate-y-1/2 z-20 cursor-pointer group"
       >
-        <div className="flex items-center gap-2 sm:gap-2.5 px-3 py-2 sm:px-4 sm:py-2.5 rounded-xl bg-[#111318] text-white border border-[#22262F] shadow-[0_8px_20px_rgba(0,0,0,0.25)] transition-all duration-200 group-hover:border-[#6D4AFF]/60 group-hover:shadow-[0_8px_24px_rgba(109,74,255,0.25)]">
+        <div className="flex items-center gap-2 sm:gap-2.5 px-3 py-2 sm:px-3.5 sm:py-2 rounded-xl bg-[#111318] text-white border border-[#22262F] shadow-[0_8px_20px_rgba(0,0,0,0.25)] transition-all duration-200 group-hover:border-[#6D4AFF]/60 group-hover:shadow-[0_8px_24px_rgba(109,74,255,0.25)]">
           <NexusLogo size={18} dark />
           <div className="flex flex-col text-left">
             <span className="text-[11px] sm:text-xs font-semibold tracking-tight text-white whitespace-nowrap">NEXUS Core</span>
@@ -132,24 +132,24 @@ export const OrchestrationGraph: React.FC = () => {
             className="absolute -translate-x-1/2 -translate-y-1/2 z-10 cursor-pointer"
           >
             <div
-              className={`flex items-center gap-2.5 sm:gap-3 p-2.5 sm:p-3 rounded-xl bg-white border transition-all duration-200 shadow-sm w-48 xs:w-52 sm:w-56 md:w-60 text-left ${
+              className={`flex items-center gap-2 sm:gap-2.5 p-2 sm:p-2.5 rounded-xl bg-white border transition-all duration-200 shadow-sm w-44 xs:w-48 sm:w-50 md:w-52 lg:w-44 xl:w-52 2xl:w-56 text-left ${
                 isHovered
                   ? 'border-[#6D4AFF] shadow-[0_6px_20px_rgba(109,74,255,0.12)] -translate-y-0.5'
                   : 'border-[#E5E5E2] hover:border-[#D4D4CE]'
               }`}
             >
               {node.brand && (
-                <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-[#FAFAF8] border border-[#E5E5E2] flex items-center justify-center shrink-0 text-[#111318]">
-                  <BrandLogo brand={node.brand} size={18} />
+                <div className="w-7 h-7 sm:w-7.5 sm:h-7.5 rounded-lg bg-[#FAFAF8] border border-[#E5E5E2] flex items-center justify-center shrink-0 text-[#111318]">
+                  <BrandLogo brand={node.brand} size={16} />
                 </div>
               )}
 
               <div className="flex-1 min-w-0">
                 <div className="flex items-center justify-between gap-1 mb-0.5">
-                  <span className="text-xs sm:text-[13px] font-semibold text-[#111318] truncate">{node.name}</span>
+                  <span className="text-xs font-semibold text-[#111318] truncate">{node.name}</span>
                   {isHovered && <ArrowUpRight className="w-3.5 h-3.5 text-[#6D4AFF] shrink-0" />}
                 </div>
-                <div className="text-[10px] sm:text-[11px] text-[#626873] leading-snug break-words line-clamp-2">{node.role}</div>
+                <div className="text-[10px] text-[#626873] leading-snug break-words line-clamp-2">{node.role}</div>
               </div>
             </div>
           </div>

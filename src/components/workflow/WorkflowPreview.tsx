@@ -93,14 +93,14 @@ export const WorkflowPreview: React.FC = () => {
   const activeNode = nodes.find((n) => n.id === activeNodeId) || nodes[1];
 
   return (
-    <section id="workflow" className="relative py-24 sm:py-32 px-4 sm:px-6 lg:px-8 bg-[#111318] text-[#F5F7FA]">
+    <section id="workflow" className="relative py-14 sm:py-18 lg:py-20 px-4 sm:px-6 lg:px-8 bg-[#111318] text-[#F5F7FA]">
       <div className="max-w-7xl mx-auto">
         {/* Section Header */}
-        <div className="max-w-3xl mb-12 sm:mb-16 text-left">
+        <div className="max-w-3xl mb-10 lg:mb-12 text-left">
           <span className="text-xs font-mono uppercase tracking-wider text-[#6D4AFF] block mb-2 font-semibold">
             Workflow Builder
           </span>
-          <h2 className="text-3xl sm:text-5xl font-bold tracking-tight text-white leading-[1.1] mb-4">
+          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-white leading-[1.1] mb-4">
             Build workflows visually.
           </h2>
           <p className="text-base sm:text-lg text-[#9BA3AF] leading-relaxed">

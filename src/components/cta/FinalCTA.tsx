@@ -14,10 +14,10 @@ export const FinalCTA: React.FC = () => {
   };
 
   return (
-    <section id="final-cta" className="relative py-20 sm:py-28 px-4 sm:px-6 lg:px-8 bg-[#F6F6F3]">
+    <section id="final-cta" className="relative py-14 sm:py-18 lg:py-20 px-4 sm:px-6 lg:px-8 bg-[#F6F6F3]">
       <div className="max-w-6xl mx-auto">
         {/* Dark Elevated CTA Box for Strategic Visual Rhythm */}
-        <div className="relative rounded-3xl bg-[#111318] text-white p-8 sm:p-14 lg:p-16 border border-[#22262F] shadow-[0_20px_50px_rgba(0,0,0,0.15)] overflow-hidden text-center">
+        <div className="relative rounded-3xl bg-[#111318] text-white p-8 sm:p-12 lg:p-16 border border-[#22262F] shadow-[0_20px_50px_rgba(0,0,0,0.15)] overflow-hidden text-center">
           {/* Subtle Ambient Radial Glow */}
           <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-[radial-gradient(circle_at_top_right,rgba(109,74,255,0.15),transparent_70%)] pointer-events-none" />
 
@@ -32,8 +32,8 @@ export const FinalCTA: React.FC = () => {
             </p>
 
             <div className="flex flex-col sm:flex-row items-center justify-center gap-3.5 mb-10">
-              <Link to="/signup" className="w-full sm:w-auto">
-                <Button size="lg" withArrow className="w-full sm:w-48 sm:min-w-[190px] justify-center text-center">
+              <Link to="/signup" className="w-full sm:w-auto inline-flex">
+                <Button size="lg" withArrow className="w-full sm:w-52 sm:min-w-[200px] h-12 justify-center text-center">
                   Start Building
                 </Button>
               </Link>
@@ -41,7 +41,7 @@ export const FinalCTA: React.FC = () => {
               <Button
                 variant="dark"
                 size="lg"
-                className="w-full sm:w-48 sm:min-w-[190px] justify-center text-center"
+                className="w-full sm:w-52 sm:min-w-[200px] h-12 justify-center text-center"
                 onClick={() => {
                   const el = document.getElementById('features');
                   el?.scrollIntoView({ behavior: 'smooth' });

@@ -22,7 +22,7 @@ export const PageHeader: React.FC<PageHeaderProps> = ({
   const isCenter = align === 'center';
 
   return (
-    <div className={`pt-28 pb-12 sm:pt-32 sm:pb-16 max-w-4xl ${isCenter ? 'mx-auto text-center' : 'text-left'} ${className}`}>
+    <div className={`pt-20 pb-8 sm:pt-24 sm:pb-10 lg:pt-24 lg:pb-12 max-w-4xl ${isCenter ? 'mx-auto text-center' : 'text-left'} ${className}`}>
       {badge && (
         <div className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white border border-[#E5E5E2] text-xs font-mono text-[#626873] shadow-sm mb-4 ${isCenter ? 'mx-auto' : ''}`}>
           {badgeIcon && <span className="text-[#6D4AFF]">{badgeIcon}</span>}

@@ -117,7 +117,7 @@ const MILESTONES: MilestoneItem[] = [
 
 export const ChangelogPage: React.FC = () => {
   return (
-    <div className="pb-24 px-4 sm:px-6 lg:px-8 text-left">
+    <div className="min-h-[calc(100vh-4rem)] flex flex-col justify-between pb-24 px-4 sm:px-6 lg:px-8 text-left max-w-7xl mx-auto w-full">
       {/* Header */}
       <PageHeader
         badge="Build in Public"
