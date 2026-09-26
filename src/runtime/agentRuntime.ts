@@ -8,6 +8,12 @@ import { logWorkspaceActivity } from '../services/activityService';
 import { getWorkspacePolicy } from '../services/policyService';
 import { recordAuditLog } from '../services/auditService';
 import { dispatchDeveloperWebhookEvent } from '../services/webhookDeliveryService';
+import {
+  detectPromptInjection,
+  scanExternalContext,
+  redactSensitiveData,
+  verifyOutputSafety,
+} from '../security/aiSecurityShield';
 
 export interface ExecuteAgentOptions {
   workspaceId: string;
@@ -46,6 +52,34 @@ export const executeAgent = async (
     }
     return event;
   };
+
+  // 0. AI Security Shield Pre-Flight Inspection (Prompt Injection & Jailbreak Defense)
+  const securityScan = detectPromptInjection(input);
+  if (!securityScan.safe) {
+    const errorMsg = `Execution blocked by NEXUS AI Security Shield: Adversarial prompt injection or safety policy violation detected (${securityScan.violations.map((v) => v.description).join('; ')}).`;
+    await emitEvent('AGENT_FAILED', errorMsg, null, 'failed', { securityViolations: securityScan.violations });
+    await recordAuditLog(workspaceId, {
+      action: 'SECURITY_VIOLATION',
+      resource_type: 'agent',
+      resource_id: agentId,
+      status: 'failure',
+      metadata: {
+        executionId,
+        violations: securityScan.violations,
+        score: securityScan.score,
+      },
+    });
+
+    return await saveExecutionRecord(workspaceId, {
+      id: executionId,
+      agent_id: agentId,
+      status: 'failed',
+      input: '[REDACTED_ADVERSARIAL_PAYLOAD]',
+      error: errorMsg,
+      completed_at: new Date().toISOString(),
+      duration_ms: Date.now() - startTime,
+    });
+  }
 
   // 1. Fetch Agent
   const { agent } = await getAgentById(workspaceId, agentId);
@@ -321,11 +355,18 @@ export const executeAgent = async (
             { summary: typeof toolResult === 'object' && toolResult.total_found ? `${toolResult.total_found} items returned` : 'Data retrieved' }
           );
 
+          const rawResultString = JSON.stringify(toolResult);
+          // Indirect prompt injection inspection on external tool results
+          const contextScan = scanExternalContext(rawResultString, call.name);
+          const safeContent = contextScan.safe
+            ? rawResultString
+            : redactSensitiveData(rawResultString).cleanText;
+
           messages.push({
             role: 'tool',
             name: call.name,
             toolCallId: call.id,
-            content: JSON.stringify(toolResult),
+            content: safeContent,
           });
         } catch (toolExecErr: any) {
           const errStr = toolExecErr.message || 'Tool execution encountered an error.';
@@ -342,8 +383,16 @@ export const executeAgent = async (
         break;
       }
     } else {
-      // Model returned final response
-      finalOutput = modelRes.text || 'No response generated.';
+      // Model returned final response - verify against exfiltration & leakage
+      const rawText = modelRes.text || '';
+      const outputSafety = verifyOutputSafety(rawText, agent.instructions);
+      if (!outputSafety.safe) {
+        finalOutput = '[REDACTED_BY_SECURITY_SHIELD: Response contained potential data exfiltration or sensitive instruction leakage.]';
+        await emitEvent('AGENT_FAILED', `Output leak guardrail: ${outputSafety.reason}`, null, 'failed');
+      } else {
+        finalOutput = rawText || 'No response generated.';
+      }
+
       await emitEvent(
         'MODEL_RESPONSE',
         'Model generated response.',

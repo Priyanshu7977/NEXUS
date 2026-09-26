@@ -32,6 +32,17 @@ async function getCryptoKey(customMaterial?: string): Promise<CryptoKey> {
   );
 }
 
+/**
+ * Overwrites sensitive memory buffers with random bytes and zeros
+ * to prevent cold-boot memory recovery and memory inspection.
+ */
+export function zeroizeBuffer(buffer: Uint8Array): void {
+  if (buffer && buffer.length > 0) {
+    crypto.getRandomValues(buffer);
+    buffer.fill(0);
+  }
+}
+
 function arrayBufferToBase64(buffer: ArrayBuffer | Uint8Array): string {
   const bytes = new Uint8Array(buffer);
   let binary = '';

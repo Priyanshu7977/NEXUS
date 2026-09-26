@@ -34,10 +34,10 @@ export const Footer: React.FC = () => {
       ]
     },
     {
-      title: 'Legal',
+      title: 'Legal & Privacy',
       links: [
-        { label: 'Privacy Policy', to: '#' },
-        { label: 'Terms of Service', to: '#' },
+        { label: 'Privacy & Data Sovereignty', to: '/security' },
+        { label: 'Apache 2.0 Licensing', to: '/open-source' },
         { label: 'Responsible Disclosure', to: '/security' },
       ]
     }

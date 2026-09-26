@@ -28,6 +28,7 @@ import { getWorkspacePolicy } from '../services/policyService';
 import { recordAuditLog } from '../services/auditService';
 import { getWorkspaceMembership } from '../services/authorizationService';
 import { WorkspacePolicy } from '../types/security';
+import { detectPromptInjection } from '../security/aiSecurityShield';
 
 const cancelledExecutionIds = new Set<string>();
 
@@ -106,6 +107,29 @@ export const executeWorkflow = async (
     }
     return event;
   };
+
+  // 0. AI Security Shield: Inspect trigger input data
+  const triggerString = JSON.stringify(triggerData);
+  const triggerScan = detectPromptInjection(triggerString);
+  if (!triggerScan.safe) {
+    const errorMsg = `Workflow execution blocked by AI Security Shield: Malicious prompt injection payload detected in trigger input (${triggerScan.violations.map((v) => v.description).join('; ')}).`;
+    await emitEvent('WORKFLOW_FAILED', errorMsg, null, 'failed', { violations: triggerScan.violations });
+    await recordAuditLog(workspaceId, {
+      action: 'SECURITY_VIOLATION',
+      resource_type: 'workflow',
+      resource_id: workflowId,
+      status: 'failure',
+      metadata: { executionId, violations: triggerScan.violations },
+    });
+    return await saveWorkflowExecutionRecord(workspaceId, {
+      id: executionId,
+      workflow_id: workflowId,
+      status: 'failed',
+      error: errorMsg,
+      completed_at: new Date().toISOString(),
+      duration_ms: Date.now() - startTime,
+    });
+  }
 
   // 1. Fetch Workflow
   const { workflow, error: wfError } = await getWorkflowById(workspaceId, workflowId);

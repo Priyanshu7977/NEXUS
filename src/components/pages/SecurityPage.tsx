@@ -12,8 +12,94 @@ import {
   Check, 
   X, 
   Circle, 
-  Info
+  Info,
+  Cpu,
+  Fingerprint,
+  AlertTriangle,
+  ExternalLink,
+  ShieldAlert
 } from 'lucide-react';
+
+const AI_SHIELD_MODULES = [
+  {
+    title: 'Adversarial Prompt Injection Defense',
+    status: 'Active Shield',
+    description: 'Pre-flight multi-heuristic and regex filters intercept direct prompt injections, jailbreak roleplays, and encoded bypass payloads before execution.',
+    icon: ShieldAlert,
+    tag: 'Pre-Flight Guard',
+    color: 'text-rose-600',
+    bg: 'bg-rose-50 border-rose-100'
+  },
+  {
+    title: 'Indirect Prompt Injection Scanning',
+    status: 'Active Shield',
+    description: 'Deep content inspection on external tool outputs (pull requests, git diffs, issue comments, webhooks) neutralizes hidden rogue instructions.',
+    icon: Cpu,
+    tag: 'Context Validator',
+    color: 'text-[#6D4AFF]',
+    bg: 'bg-purple-50 border-purple-100'
+  },
+  {
+    title: 'Automated PII & Secret Scrubbing',
+    status: 'Active Redactor',
+    description: 'Autonomous masking of GitHub personal tokens, OpenAI/Gemini API keys, bearer JWTs, and email addresses prevents accidental credential leakage.',
+    icon: Key,
+    tag: 'DLP Engine',
+    color: 'text-amber-600',
+    bg: 'bg-amber-50 border-amber-100'
+  },
+  {
+    title: 'Zero-Model Training Guarantee',
+    status: 'Enforced Policy',
+    description: 'Hardened privacy headers (X-Do-Not-Train) and zero-retention commercial API tiers ensure client code and prompts are never used to train public LLMs.',
+    icon: Lock,
+    tag: 'Data Sovereignty',
+    color: 'text-emerald-600',
+    bg: 'bg-emerald-50 border-emerald-100'
+  },
+  {
+    title: 'Cryptographic Buffer Zeroization',
+    status: 'Active Memory Guard',
+    description: 'In-memory secret byte buffers are actively overwritten with cryptographically random noise and zeros to prevent cold-boot memory extraction attacks.',
+    icon: Fingerprint,
+    tag: 'Memory Safe',
+    color: 'text-blue-600',
+    bg: 'bg-blue-50 border-blue-100'
+  },
+  {
+    title: 'Strict CSP & Client Rate Limiting',
+    status: 'Active Perimeter',
+    description: 'Hardened Content-Security-Policy with whitelisted API endpoints, anti-CSRF single-use nonces, and sliding-window client rate limiting.',
+    icon: AlertTriangle,
+    tag: 'Perimeter Defense',
+    color: 'text-[#111318]',
+    bg: 'bg-neutral-100 border-neutral-200'
+  }
+];
+
+const COMPLIANCE_DOCS = [
+  {
+    title: 'Apache License 2.0',
+    file: 'LICENSE',
+    description: 'Permissive enterprise open-source licensing granting clear patent rights, redistribution, and commercial usage protection.',
+    badge: 'Open Source',
+    href: 'https://github.com/Priyanshu7977/NEXUS/blob/main/LICENSE'
+  },
+  {
+    title: 'Vulnerability Disclosure Policy',
+    file: 'SECURITY.md',
+    description: 'Coordinated vulnerability disclosure with a 24-hour triage SLA, safe harbor protections, and confidential reporting via security@nexus.dev.',
+    badge: 'Security Policy',
+    href: 'https://github.com/Priyanshu7977/NEXUS/blob/main/SECURITY.md'
+  },
+  {
+    title: 'Enterprise Privacy & Data Sovereignty',
+    file: 'PRIVACY.md',
+    description: 'Comprehensive data protection policy guaranteeing zero model training, tenant isolation, and full GDPR / CCPA data rights.',
+    badge: 'Data Sovereignty',
+    href: 'https://github.com/Priyanshu7977/NEXUS/blob/main/PRIVACY.md'
+  }
+];
 
 const SECURITY_PILLARS = [
   {
@@ -223,6 +309,106 @@ export const SecurityPage: React.FC = () => {
                 </div>
               );
             })}
+          </div>
+        </div>
+
+        {/* Real-time AI Security Shield & Threat Mitigation */}
+        <div className="mb-20">
+          <div className="mb-8">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-50 border border-emerald-200 text-xs font-mono font-medium text-emerald-700 mb-3">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+              Active AI Security Shield v1.4
+            </div>
+            <h3 className="text-2xl font-bold text-[#111318] mb-2">
+              Next-generation AI runtime defense
+            </h3>
+            <p className="text-xs sm:text-sm text-[#626873]">
+              Deterministic safeguards to prevent jailbreaks, prompt injection, indirect data exfiltration, and unauthorized LLM training.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 items-stretch">
+            {AI_SHIELD_MODULES.map((module) => {
+              const Icon = module.icon;
+              return (
+                <div
+                  key={module.title}
+                  className="h-full p-6 rounded-2xl bg-white border border-[#E5E5E2] hover:border-[#D4D4CE] transition-all flex flex-col justify-between shadow-sm min-w-0"
+                >
+                  <div>
+                    <div className="flex items-center justify-between gap-2 mb-4">
+                      <div className={`w-10 h-10 rounded-xl ${module.bg} ${module.color} border flex items-center justify-center shrink-0`}>
+                        <Icon className="w-5 h-5" />
+                      </div>
+                      <span className="px-2.5 py-0.5 rounded-full text-[10px] font-mono font-semibold bg-[#FAFAF8] border border-[#E5E5E2] text-[#111318]">
+                        {module.tag}
+                      </span>
+                    </div>
+
+                    <h4 className="text-base font-bold text-[#111318] mb-1">
+                      {module.title}
+                    </h4>
+                    <p className="text-xs text-[#626873] leading-relaxed mb-4">
+                      {module.description}
+                    </p>
+                  </div>
+
+                  <div className="pt-3 border-t border-[#EFEFEA] flex items-center justify-between text-[11px] font-mono">
+                    <span className="text-[#8B919B]">Enforcement</span>
+                    <span className="text-emerald-600 font-semibold flex items-center gap-1">
+                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 inline-block" />
+                      {module.status}
+                    </span>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* Governance, Official Licensing & Privacy Policies */}
+        <div className="mb-20">
+          <div className="mb-8">
+            <h3 className="text-2xl font-bold text-[#111318] mb-2">
+              Enterprise governance & legal transparency
+            </h3>
+            <p className="text-xs sm:text-sm text-[#626873]">
+              Open-source Apache 2.0 licensing, documented vulnerability response SLAs, and strict customer data sovereignty.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+            {COMPLIANCE_DOCS.map((doc) => (
+              <a
+                key={doc.file}
+                href={doc.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group p-6 rounded-2xl bg-[#FAFAF8] border border-[#E5E5E2] hover:bg-white hover:border-[#6D4AFF]/40 hover:shadow-sm transition-all flex flex-col justify-between block"
+              >
+                <div>
+                  <div className="flex items-center justify-between gap-2 mb-3">
+                    <span className="px-2.5 py-0.5 rounded-md text-[10px] font-mono font-semibold bg-white border border-[#E5E5E2] text-[#6D4AFF]">
+                      {doc.badge}
+                    </span>
+                    <span className="text-xs font-mono text-[#8B919B] group-hover:text-[#111318] flex items-center gap-1 transition-colors">
+                      {doc.file}
+                      <ExternalLink className="w-3 h-3" />
+                    </span>
+                  </div>
+                  <h4 className="text-base font-bold text-[#111318] mb-2 group-hover:text-[#6D4AFF] transition-colors">
+                    {doc.title}
+                  </h4>
+                  <p className="text-xs text-[#626873] leading-relaxed">
+                    {doc.description}
+                  </p>
+                </div>
+
+                <div className="pt-4 mt-4 border-t border-[#EFEFEA] text-[11px] font-semibold text-[#6D4AFF] flex items-center gap-1">
+                  View Document <ExternalLink className="w-3 h-3 ml-0.5" />
+                </div>
+              </a>
+            ))}
           </div>
         </div>
 
