@@ -100,7 +100,7 @@ export const GraphNode: React.FC<GraphNodeProps> = ({
               }`}
             >
               {isBrandNode ? (
-                <BrandLogo brand={node.id} size={15} />
+                <BrandLogo brand={node.id} size={16} className="text-current" />
               ) : (
                 <IconComponent className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
               )}

@@ -53,7 +53,7 @@ export const ConnectorShowcase: React.FC = () => {
             >
               <div className="flex-1 flex flex-col">
                 <div className="flex items-start justify-between mb-3.5">
-                  <div className="w-10 h-10 rounded-lg bg-[#FAFAF8] border border-[#E5E5E2] flex items-center justify-center group-hover:scale-105 transition-transform duration-200 shrink-0">
+                  <div className="w-10 h-10 rounded-lg bg-[#FAFAF8] border border-[#E5E5E2] flex items-center justify-center group-hover:border-[#D4D4CE] group-hover:bg-white transition-colors duration-150 shrink-0">
                     <BrandLogo brand={item.id} size={22} />
                   </div>
                   <span className="text-[11px] font-mono text-[#8B919B] bg-[#FAFAF8] px-2 py-0.5 rounded border border-[#EFEFEA] shrink-0">

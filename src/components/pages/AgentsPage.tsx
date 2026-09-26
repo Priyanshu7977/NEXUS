@@ -173,8 +173,8 @@ export const AgentsPage: React.FC = () => {
               <div className="pt-3 border-t border-[#EFEFEA] flex items-center justify-between text-xs text-[#8B919B] mt-auto">
                 <div className="flex items-center gap-1.5 min-w-0">
                   <span className="text-[11px] font-mono shrink-0">Model:</span>
-                  <span className="font-medium text-[#111318] uppercase text-[10px] bg-[#FAFAF8] px-2 py-0.5 rounded border border-[#E5E5E2] flex items-center gap-1 truncate">
-                    <BrandLogo brand={ag.model_provider} size={12} />
+                  <span className="font-medium text-[#111318] uppercase text-[10px] bg-[#FAFAF8] px-2 py-0.5 rounded border border-[#E5E5E2] flex items-center gap-1.5 truncate">
+                    <BrandLogo brand={ag.model_provider} size={14} />
                     <span className="truncate">{ag.model_provider}</span>
                   </span>
                 </div>

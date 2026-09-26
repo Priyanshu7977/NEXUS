@@ -110,7 +110,7 @@ export const OrchestrationGraph: React.FC = () => {
         onMouseLeave={() => setHoveredNode(null)}
         className="absolute -translate-x-1/2 -translate-y-1/2 z-20 cursor-pointer group"
       >
-        <div className="flex items-center gap-2 sm:gap-2.5 px-3 py-2 sm:px-4 sm:py-2.5 rounded-xl bg-[#111318] text-white border border-[#22262F] shadow-[0_8px_20px_rgba(0,0,0,0.25)] transition-transform duration-200 group-hover:scale-105">
+        <div className="flex items-center gap-2 sm:gap-2.5 px-3 py-2 sm:px-4 sm:py-2.5 rounded-xl bg-[#111318] text-white border border-[#22262F] shadow-[0_8px_20px_rgba(0,0,0,0.25)] transition-all duration-200 group-hover:border-[#6D4AFF]/60 group-hover:shadow-[0_8px_24px_rgba(109,74,255,0.25)]">
           <NexusLogo size={18} dark />
           <div className="flex flex-col text-left">
             <span className="text-[11px] sm:text-xs font-semibold tracking-tight text-white whitespace-nowrap">NEXUS Core</span>
@@ -140,7 +140,7 @@ export const OrchestrationGraph: React.FC = () => {
             >
               {node.brand && (
                 <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-[#FAFAF8] border border-[#E5E5E2] flex items-center justify-center shrink-0 text-[#111318]">
-                  <BrandLogo brand={node.brand} size={16} />
+                  <BrandLogo brand={node.brand} size={18} />
                 </div>
               )}
 

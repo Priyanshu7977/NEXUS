@@ -45,17 +45,17 @@ export const EcosystemStrip: React.FC = () => {
                 onMouseLeave={() => setHoveredBrand(null)}
                 className={`h-full min-h-[96px] p-3.5 sm:p-4 rounded-xl border transition-all duration-200 flex flex-col items-center justify-center text-center cursor-pointer min-w-0 ${
                   isHovered
-                    ? 'bg-white border-[#D4D4CE] shadow-[0_4px_16px_rgba(0,0,0,0.05)] -translate-y-0.5'
-                    : 'bg-white/60 border-[#E5E5E2] hover:bg-white hover:border-[#D4D4CE]'
+                    ? 'bg-white border-[#6D4AFF]/40 shadow-[0_4px_16px_rgba(109,74,255,0.08)] -translate-y-0.5'
+                    : 'bg-white border-[#E5E5E2] hover:border-[#D4D4CE]'
                 }`}
               >
-                <div className="h-7 flex items-center justify-center mb-2 shrink-0">
-                  <BrandLogo brand={b.name} size={22} monochrome={!isHovered} />
+                <div className="h-8 flex items-center justify-center mb-2 shrink-0 text-[#111318]">
+                  <BrandLogo brand={b.id} size={24} />
                 </div>
                 <div className="text-xs font-semibold text-[#111318] tracking-tight truncate w-full px-1">
                   {b.name}
                 </div>
-                <div className="text-[10px] text-[#8B919B] truncate w-full mt-0.5 px-1">
+                <div className="text-[10px] text-[#626873] truncate w-full mt-0.5 px-1 font-medium">
                   {b.category}
                 </div>
               </div>

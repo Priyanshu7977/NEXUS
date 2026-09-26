@@ -20,35 +20,37 @@ export const NexusLogo: React.FC<{ className?: string; size?: number; dark?: boo
   dark = false
 }) => (
   <div className={`flex items-center gap-2.5 ${className}`}>
-    <div className="relative flex items-center justify-center">
+    <div className="relative flex items-center justify-center shrink-0">
       <svg
         width={size}
         height={size}
         viewBox="0 0 32 32"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
-        className="transition-transform duration-200 group-hover:scale-105"
+        shapeRendering="geometricPrecision"
+        className="shrink-0"
       >
         {/* Hexagonal Outer Frame with Node Vertices */}
         <polygon
           points="16,3 28,10 28,22 16,29 4,22 4,10"
-          stroke={dark ? "rgba(255, 255, 255, 0.2)" : "#111318"}
-          strokeWidth="1.5"
+          stroke={dark ? "rgba(255, 255, 255, 0.4)" : "#111318"}
+          strokeWidth="1.8"
+          strokeLinejoin="round"
           fill={dark ? "#15171C" : "#FFFFFF"}
         />
         {/* Tri-Node Inner Mesh Interconnect */}
-        <line x1="16" y1="3" x2="16" y2="16" stroke="#6D4AFF" strokeWidth="1.5" />
-        <line x1="28" y1="22" x2="16" y2="16" stroke={dark ? "#45D7FF" : "#3B82F6"} strokeWidth="1.5" />
-        <line x1="4" y1="22" x2="16" y2="16" stroke="#6D4AFF" strokeWidth="1.5" />
+        <line x1="16" y1="3" x2="16" y2="16" stroke="#6D4AFF" strokeWidth="1.8" strokeLinecap="round" />
+        <line x1="28" y1="22" x2="16" y2="16" stroke={dark ? "#45D7FF" : "#2563EB"} strokeWidth="1.8" strokeLinecap="round" />
+        <line x1="4" y1="22" x2="16" y2="16" stroke="#6D4AFF" strokeWidth="1.8" strokeLinecap="round" />
         
         {/* Center Core Node */}
         <circle cx="16" cy="16" r="3" fill="#6D4AFF" />
         <circle cx="16" cy="16" r="1.2" fill="#FFFFFF" />
 
         {/* Outer Vertices */}
-        <circle cx="16" cy="3" r="1.5" fill={dark ? "#45D7FF" : "#3B82F6"} />
-        <circle cx="28" cy="22" r="1.5" fill="#6D4AFF" />
-        <circle cx="4" cy="22" r="1.5" fill={dark ? "#45D7FF" : "#3B82F6"} />
+        <circle cx="16" cy="3" r="1.6" fill={dark ? "#45D7FF" : "#2563EB"} />
+        <circle cx="28" cy="22" r="1.6" fill="#6D4AFF" />
+        <circle cx="4" cy="22" r="1.6" fill={dark ? "#45D7FF" : "#2563EB"} />
       </svg>
     </div>
     <div className="flex flex-col">
