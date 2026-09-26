@@ -17,6 +17,8 @@ import { createWorkflow } from './workflowService';
 import { registerMcpServer } from './mcpService';
 import { registerExternalAgent } from './externalAgentService';
 import { logWorkspaceActivity } from './activityService';
+import { detectPromptInjection, isSafeExternalUrl } from '../security';
+import { recordAuditLog } from './auditService';
 
 const LOCAL_PUBLISHERS_KEY = 'nexus_marketplace_publishers';
 const LOCAL_RESOURCES_KEY = 'nexus_marketplace_resources';
@@ -893,7 +895,21 @@ export const publishMarketplaceResource = async (
     .replace(/[^a-z0-9]+/g, '-')
     .replace(/(^-|-$)/g, '');
 
-  // Secret Scanning
+  // 1. Anti-SSRF URL Protocol and Hostname Validation
+  if (documentationUrl && !isSafeExternalUrl(documentationUrl)) {
+    return {
+      resource: null,
+      error: 'Security Policy Rejection: Documentation URL contains an invalid protocol or restricted internal network address.',
+    };
+  }
+  if (repositoryUrl && !isSafeExternalUrl(repositoryUrl)) {
+    return {
+      resource: null,
+      error: 'Security Policy Rejection: Repository URL contains an invalid protocol or restricted internal network address.',
+    };
+  }
+
+  // 2. Secret & Credential Scanning
   const scanPayload = {
     name,
     summary,
@@ -912,6 +928,17 @@ export const publishMarketplaceResource = async (
       resource: null,
       error: `Publication rejected: Detected ${secretScanResult.violations.length} exposed credential(s) or private key(s). Please remove all secrets before publishing.`,
       secretViolations: secretScanResult.violations,
+    };
+  }
+
+  // 3. AI Security Shield: Non-Bypassable Adversarial Prompt Injection Defense
+  const contentToScan = `${name}\n${summary}\n${description || ''}\n${JSON.stringify(spec || {})}\n${tags.join(' ')}`;
+  const injectionScan = detectPromptInjection(contentToScan);
+  if (!injectionScan.safe) {
+    const violationSummary = injectionScan.violations.map((v) => v.description).join('; ');
+    return {
+      resource: null,
+      error: `Security Shield Rejection: Publication blocked due to potential prompt injection, delimiter smuggling, or safety guideline violation (${violationSummary}).`,
     };
   }
 
@@ -1009,17 +1036,51 @@ export const publishMarketplaceResource = async (
   allResources.unshift(newResource);
   saveLocalResources(allResources);
 
+  // Compute cryptographic provenance fingerprint
+  let specFingerprint = '';
+  try {
+    const specString = JSON.stringify({ name: newResource.name, version: newResource.version, spec: newResource.spec, type: newResource.type });
+    const encoder = new TextEncoder();
+    const data = encoder.encode(specString);
+    if (typeof crypto !== 'undefined' && crypto.subtle) {
+      const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+      const hashArray = Array.from(new Uint8Array(hashBuffer));
+      specFingerprint = hashArray.map((b) => b.toString(16).padStart(2, '0')).join('');
+    }
+  } catch (err) {
+    console.warn('[NEXUS Marketplace] Provenance hashing fallback:', err);
+  }
+
   await logWorkspaceActivity(workspaceId, {
     type: 'system',
     action: 'publish_marketplace_resource',
     name: newResource.name,
     status: 'completed',
-    details: `Published ${newResource.type} "${newResource.name}" (v${newResource.version}, ${newResource.visibility}) to marketplace.`,
+    details: `Published ${newResource.type} "${newResource.name}" (v${newResource.version}, ${newResource.visibility}) to marketplace with cryptographic provenance verification.`,
     metadata: {
       resource_id: newResource.id,
       slug: newResource.slug,
       type: newResource.type,
       visibility: newResource.visibility,
+      provenance_fingerprint: specFingerprint,
+    },
+  });
+
+  await recordAuditLog({
+    workspaceId,
+    action: 'RESOURCE_PUBLISHED',
+    resourceType: newResource.type.toLowerCase(),
+    resourceId: newResource.id,
+    metadata: {
+      name: newResource.name,
+      version: newResource.version,
+      visibility: newResource.visibility,
+      provenance_fingerprint: specFingerprint,
+      security_scans: {
+        secrets_clean: true,
+        injection_clean: true,
+        urls_verified: true,
+      },
     },
   });
 

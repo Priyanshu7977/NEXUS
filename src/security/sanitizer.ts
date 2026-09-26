@@ -84,3 +84,41 @@ export function sanitizeString(input: string, maxLength: number = 5000): string 
   const cleaned = input.replace(/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/g, '');
   return cleaned.trim().slice(0, maxLength);
 }
+
+/**
+ * Validates an external public web URL, enforcing strict http/https scheme and blocking SSRF
+ * vectors against internal networks, cloud metadata services, and loopback addresses.
+ */
+export function isSafeExternalUrl(url: string): boolean {
+  if (!url || typeof url !== 'string') return false;
+  const trimmed = url.trim().toLowerCase();
+  if (!trimmed.startsWith('http://') && !trimmed.startsWith('https://')) return false;
+
+  try {
+    const parsed = new URL(trimmed);
+    const host = parsed.hostname.toLowerCase();
+    if (
+      host === 'localhost' ||
+      host === '127.0.0.1' ||
+      host === '::1' ||
+      host === '0.0.0.0' ||
+      host.endsWith('.local') ||
+      host.endsWith('.internal') ||
+      host === '169.254.169.254' ||
+      host.startsWith('10.') ||
+      host.startsWith('192.168.') ||
+      host.startsWith('172.16.') ||
+      host.startsWith('172.17.') ||
+      host.startsWith('172.18.') ||
+      host.startsWith('172.19.') ||
+      host.startsWith('172.2') ||
+      host.startsWith('172.3')
+    ) {
+      return false;
+    }
+    return true;
+  } catch {
+    return false;
+  }
+}
+

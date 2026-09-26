@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { BrandLogo } from '../brand/BrandLogo';
 
 interface BrandItem {
@@ -39,11 +40,13 @@ export const EcosystemStrip: React.FC = () => {
           {brands.map((b) => {
             const isHovered = hoveredBrand === b.id;
             return (
-              <div
+              <Link
                 key={b.id}
+                to={`/explore?tab=connectors&q=${encodeURIComponent(b.name)}`}
                 onMouseEnter={() => setHoveredBrand(b.id)}
                 onMouseLeave={() => setHoveredBrand(null)}
-                className={`h-full min-h-[80px] sm:min-h-[96px] p-2 sm:p-4 rounded-xl border transition-all duration-200 flex flex-col items-center justify-center text-center cursor-pointer min-w-0 ${
+                aria-label={`Explore ${b.name} Connector`}
+                className={`h-full min-h-[80px] sm:min-h-[96px] p-2 sm:p-4 rounded-xl border transition-all duration-200 flex flex-col items-center justify-center text-center cursor-pointer min-w-0 block ${
                   isHovered
                     ? 'bg-white border-[#6D4AFF]/40 shadow-[0_4px_16px_rgba(109,74,255,0.08)] -translate-y-0.5'
                     : 'bg-white border-[#E5E5E2] hover:border-[#D4D4CE]'
@@ -58,13 +61,16 @@ export const EcosystemStrip: React.FC = () => {
                 <div className="text-[9px] sm:text-[10px] text-[#626873] truncate w-full mt-0.5 px-0.5 font-medium">
                   {b.category}
                 </div>
-              </div>
+              </Link>
             );
           })}
         </div>
 
         <div className="mt-8 text-center text-xs text-[#626873]">
-          Integrate custom REST, gRPC, and Python agents through universal SDKs.
+          Integrate custom REST, gRPC, and Python agents through universal protocols.
+          <Link to="/developers" className="text-[#6D4AFF] hover:underline font-semibold ml-1.5 inline-flex items-center gap-0.5">
+            Explore Developer SDKs →
+          </Link>
         </div>
       </div>
     </section>

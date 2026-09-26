@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { Cable, Network, Eye, CheckCircle2, ChevronRight } from 'lucide-react';
 import { BrandLogo } from '../brand/BrandLogo';
 
@@ -150,17 +151,39 @@ export const FeatureGrid: React.FC = () => {
                   {/* Interactive Visual Preview */}
                   <div className="mb-5">{pillar.renderVisual()}</div>
 
-                  {/* Badge Pills */}
-                  <div className="flex flex-wrap gap-2 pt-4 border-t border-[#EFEFEA]">
-                    {pillar.badges.map((b) => (
-                      <span
-                        key={b}
-                        className="inline-flex items-center gap-1.5 text-xs text-[#626873] bg-[#FAFAF8] px-2.5 py-1 rounded-md border border-[#E5E5E2]"
+                  {/* Badge Pills & Direct Action */}
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-4 border-t border-[#EFEFEA]">
+                    <div className="flex flex-wrap gap-2">
+                      {pillar.badges.map((b) => (
+                        <span
+                          key={b}
+                          className="inline-flex items-center gap-1.5 text-xs text-[#626873] bg-[#FAFAF8] px-2.5 py-1 rounded-md border border-[#E5E5E2]"
+                        >
+                          <CheckCircle2 className="w-3.5 h-3.5 text-[#10B981]" />
+                          <span>{b}</span>
+                        </span>
+                      ))}
+                    </div>
+
+                    {isSelected && (
+                      <Link
+                        to={
+                          pillar.id === 'connect'
+                            ? '/explore?tab=connectors'
+                            : pillar.id === 'orchestrate'
+                            ? '/explore?tab=workflows'
+                            : '/security'
+                        }
+                        className="text-xs font-semibold inline-flex items-center gap-1 hover:underline shrink-0"
+                        style={{ color: pillar.accent }}
                       >
-                        <CheckCircle2 className="w-3.5 h-3.5 text-[#10B981]" />
-                        <span>{b}</span>
-                      </span>
-                    ))}
+                        {pillar.id === 'connect'
+                          ? 'Explore Connectors →'
+                          : pillar.id === 'orchestrate'
+                          ? 'Explore Workflows →'
+                          : 'View Telemetry →'}
+                      </Link>
+                    )}
                   </div>
                 </div>
               );

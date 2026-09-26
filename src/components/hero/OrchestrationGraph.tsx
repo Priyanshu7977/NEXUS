@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { BrandLogo } from '../brand/BrandLogo';
 import { NexusLogo } from '../layout/Navbar';
 import { Check, ArrowUpRight } from 'lucide-react';
@@ -11,6 +12,7 @@ interface NodeData {
   status: 'Ready' | 'Executing' | 'Connected';
   x: number;
   y: number;
+  link: string;
 }
 
 export const OrchestrationGraph: React.FC = () => {
@@ -25,6 +27,7 @@ export const OrchestrationGraph: React.FC = () => {
       status: 'Ready',
       x: 24,
       y: 20,
+      link: '/explore?tab=agents',
     },
     {
       id: 'code',
@@ -34,6 +37,7 @@ export const OrchestrationGraph: React.FC = () => {
       status: 'Executing',
       x: 76,
       y: 20,
+      link: '/explore?tab=agents',
     },
     {
       id: 'database',
@@ -43,6 +47,7 @@ export const OrchestrationGraph: React.FC = () => {
       status: 'Connected',
       x: 24,
       y: 76,
+      link: '/explore?tab=connectors',
     },
     {
       id: 'deploy',
@@ -52,6 +57,7 @@ export const OrchestrationGraph: React.FC = () => {
       status: 'Connected',
       x: 76,
       y: 76,
+      link: '/explore?tab=connectors',
     },
   ];
 
@@ -104,11 +110,13 @@ export const OrchestrationGraph: React.FC = () => {
       </svg>
 
       {/* Center Dark Core Node */}
-      <div
+      <Link
+        to="/explore"
         style={{ left: `${centerX}%`, top: `${centerY}%` }}
         onMouseEnter={() => setHoveredNode('core')}
         onMouseLeave={() => setHoveredNode(null)}
         className="absolute -translate-x-1/2 -translate-y-1/2 z-20 cursor-pointer group"
+        aria-label="Explore NEXUS Core Platform"
       >
         <div className="flex items-center gap-1.5 sm:gap-2.5 px-2.5 py-1.5 sm:px-3.5 sm:py-2 rounded-xl bg-[#111318] text-white border border-[#22262F] shadow-[0_8px_20px_rgba(0,0,0,0.25)] transition-all duration-200 group-hover:border-[#6D4AFF]/60 group-hover:shadow-[0_8px_24px_rgba(109,74,255,0.25)]">
           <NexusLogo size={16} dark />
@@ -118,18 +126,20 @@ export const OrchestrationGraph: React.FC = () => {
           </div>
           <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-[#6D4AFF] animate-pulse ml-0.5 sm:ml-1 shrink-0" />
         </div>
-      </div>
+      </Link>
 
       {/* Satellite White Cards */}
       {nodes.map((node) => {
         const isHovered = hoveredNode === node.id;
         return (
-          <div
+          <Link
             key={node.id}
+            to={node.link}
             style={{ left: `${node.x}%`, top: `${node.y}%` }}
             onMouseEnter={() => setHoveredNode(node.id)}
             onMouseLeave={() => setHoveredNode(null)}
-            className="absolute -translate-x-1/2 -translate-y-1/2 z-10 cursor-pointer"
+            className="absolute -translate-x-1/2 -translate-y-1/2 z-10 cursor-pointer block"
+            aria-label={`Inspect ${node.name}`}
           >
             <div
               className={`flex items-center gap-1.5 sm:gap-2.5 p-1.5 sm:p-2.5 rounded-xl bg-white border transition-all duration-200 shadow-sm w-[136px] xs:w-[155px] sm:w-48 md:w-52 lg:w-44 xl:w-52 2xl:w-56 text-left ${
@@ -147,12 +157,12 @@ export const OrchestrationGraph: React.FC = () => {
               <div className="flex-1 min-w-0">
                 <div className="flex items-center justify-between gap-1 mb-0.5">
                   <span className="text-[11px] sm:text-xs font-semibold text-[#111318] truncate">{node.name}</span>
-                  {isHovered && <ArrowUpRight className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-[#6D4AFF] shrink-0" />}
+                  <ArrowUpRight className={`w-3 h-3 sm:w-3.5 sm:h-3.5 text-[#6D4AFF] shrink-0 transition-opacity ${isHovered ? 'opacity-100' : 'opacity-0'}`} />
                 </div>
                 <div className="text-[9px] sm:text-[10px] text-[#626873] leading-tight break-words line-clamp-1 xs:line-clamp-2">{node.role}</div>
               </div>
             </div>
-          </div>
+          </Link>
         );
       })}
 

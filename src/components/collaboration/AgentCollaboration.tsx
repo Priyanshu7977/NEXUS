@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
-import { Bot, User, CheckCircle2, Terminal, Rocket } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { Bot, User, CheckCircle2, Terminal, Rocket, ArrowUpRight } from 'lucide-react';
 import { BrandLogo } from '../brand/BrandLogo';
+import { Button } from '../ui/Button';
 
 export const AgentCollaboration: React.FC = () => {
   const [activeStep, setActiveStep] = useState<string>('code-agent');
@@ -59,20 +61,25 @@ export const AgentCollaboration: React.FC = () => {
             <div className="w-[1px] h-4 bg-[#D4D4CE] mx-auto my-[-4px]" />
 
             {/* Step 2: Planner */}
-            <div className="p-4 rounded-xl bg-white border border-[#E5E5E2] shadow-sm flex items-center justify-between min-w-0">
+            <Link
+              to="/explore?tab=agents"
+              className="p-4 rounded-xl bg-white border border-[#E5E5E2] hover:border-[#6D4AFF] shadow-sm flex items-center justify-between min-w-0 transition-all duration-150 group"
+              aria-label="Inspect Planner Agent in Registry"
+            >
               <div className="flex items-center gap-3.5 min-w-0 flex-1">
                 <div className="w-8 h-8 rounded-lg bg-[#6D4AFF]/10 border border-[#6D4AFF]/20 flex items-center justify-center shrink-0 text-[#6D4AFF]">
                   <Bot className="w-4 h-4" />
                 </div>
                 <div className="min-w-0 flex-1">
                   <div className="flex items-center gap-2 flex-wrap">
-                    <span className="text-xs font-semibold text-[#111318]">Planner Agent</span>
+                    <span className="text-xs font-semibold text-[#111318] group-hover:text-[#6D4AFF] transition-colors">Planner Agent</span>
                     <span className="text-[10px] bg-emerald-50 text-emerald-700 px-1.5 py-0.2 rounded border border-emerald-200 font-medium">COMPLETED</span>
                   </div>
                   <span className="text-xs text-[#626873] block break-words">Decomposes task into database schema, client state, and security boundaries.</span>
                 </div>
               </div>
-            </div>
+              <ArrowUpRight className="w-3.5 h-3.5 text-[#8B919B] opacity-0 group-hover:opacity-100 transition-opacity ml-2 shrink-0 text-[#6D4AFF]" />
+            </Link>
 
             {/* Connecting Fork Lines */}
             <div className="w-[1px] h-4 bg-[#D4D4CE] mx-auto my-[-4px]" />
@@ -93,7 +100,7 @@ export const AgentCollaboration: React.FC = () => {
                       onClick={() => setActiveStep(ag.id)}
                       className={`h-full p-4 rounded-xl border transition-all duration-150 cursor-pointer text-left flex flex-col justify-between min-w-0 ${
                         isSelected
-                          ? 'bg-white border-[#6D4AFF] shadow-sm'
+                          ? 'bg-white border-[#6D4AFF] shadow-sm ring-1 ring-[#6D4AFF]/20'
                           : 'bg-white/80 border-[#E5E5E2] hover:bg-white hover:border-[#D4D4CE]'
                       }`}
                     >
@@ -111,6 +118,10 @@ export const AgentCollaboration: React.FC = () => {
                       <p className="text-[11px] text-[#626873] leading-relaxed break-words flex-1">
                         {ag.role}
                       </p>
+                      <div className="pt-2 mt-2 border-t border-[#EFEFEA] flex items-center justify-between text-[10px] font-mono text-[#6D4AFF]">
+                        <span>{isSelected ? 'Currently Selected' : 'Click to Inspect'}</span>
+                        <ArrowUpRight className="w-3 h-3" />
+                      </div>
                     </div>
                   );
                 })}
@@ -121,36 +132,46 @@ export const AgentCollaboration: React.FC = () => {
             <div className="w-[1px] h-4 bg-[#D4D4CE] mx-auto my-[-4px]" />
 
             {/* Step 4: Verification Gate */}
-            <div className="p-4 rounded-xl bg-white border border-[#E5E5E2] shadow-sm flex items-center justify-between min-w-0">
+            <Link
+              to="/security"
+              className="p-4 rounded-xl bg-white border border-[#E5E5E2] hover:border-[#3B82F6] shadow-sm flex items-center justify-between min-w-0 transition-all duration-150 group"
+              aria-label="View Security and Verification Controls"
+            >
               <div className="flex items-center gap-3.5 min-w-0 flex-1">
                 <div className="w-8 h-8 rounded-lg bg-blue-50 border border-blue-200 flex items-center justify-center shrink-0 text-blue-600">
                   <Terminal className="w-4 h-4" />
                 </div>
                 <div className="min-w-0 flex-1">
                   <div className="flex items-center gap-2 flex-wrap">
-                    <span className="text-xs font-semibold text-[#111318]">Test & Security Gate</span>
+                    <span className="text-xs font-semibold text-[#111318] group-hover:text-blue-600 transition-colors">Test & Security Gate</span>
                     <span className="text-[10px] bg-amber-50 text-amber-700 px-1.5 py-0.2 rounded border border-amber-200 font-medium">QUEUED</span>
                   </div>
                   <span className="text-xs text-[#626873] block break-words">Typecheck, RLS policy validation, and automated test run.</span>
                 </div>
               </div>
-            </div>
+              <ArrowUpRight className="w-3.5 h-3.5 text-[#8B919B] opacity-0 group-hover:opacity-100 transition-opacity ml-2 shrink-0 text-blue-600" />
+            </Link>
 
             {/* Connecting Line */}
             <div className="w-[1px] h-4 bg-[#D4D4CE] mx-auto my-[-4px]" />
 
             {/* Step 5: Deployment */}
-            <div className="p-4 rounded-xl bg-white border border-[#E5E5E2] shadow-sm flex items-center justify-between min-w-0">
+            <Link
+              to="/explore?tab=connectors"
+              className="p-4 rounded-xl bg-white border border-[#E5E5E2] hover:border-emerald-500 shadow-sm flex items-center justify-between min-w-0 transition-all duration-150 group"
+              aria-label="Explore Deployment Connectors"
+            >
               <div className="flex items-center gap-3.5 min-w-0 flex-1">
                 <div className="w-8 h-8 rounded-lg bg-[#FAFAF8] border border-[#E5E5E2] flex items-center justify-center shrink-0 text-[#111318]">
                   <Rocket className="w-4 h-4" />
                 </div>
                 <div className="min-w-0 flex-1">
-                  <span className="text-xs font-semibold text-[#111318] block">Deploy to Staging Preview</span>
+                  <span className="text-xs font-semibold text-[#111318] block group-hover:text-emerald-600 transition-colors">Deploy to Staging Preview</span>
                   <p className="text-xs text-[#626873] break-words">Creates preview environment and updates PR with verification log.</p>
                 </div>
               </div>
-            </div>
+              <ArrowUpRight className="w-3.5 h-3.5 text-[#8B919B] opacity-0 group-hover:opacity-100 transition-opacity ml-2 shrink-0 text-emerald-600" />
+            </Link>
           </div>
 
           {/* Right: Step Detail Inspector Panel */}
@@ -186,9 +207,27 @@ export const AgentCollaboration: React.FC = () => {
                 </div>
               </div>
 
-              <div className="pt-3 border-t border-[#EFEFEA] flex items-center justify-between text-xs text-[#8B919B]">
+              <div className="pt-3 border-t border-[#EFEFEA] flex items-center justify-between text-xs text-[#8B919B] mb-4">
                 <span>Status: In progress</span>
                 <span className="font-mono">Time: 1.4s</span>
+              </div>
+
+              {/* Direct Action Links */}
+              <div className="pt-3 border-t border-[#EFEFEA] flex flex-col gap-2">
+                <Link
+                  to="/explore?tab=agents"
+                  className="w-full inline-flex"
+                >
+                  <Button size="sm" withArrow className="w-full justify-center text-xs h-9">
+                    Explore {activeStep === 'code-agent' ? 'Code Review Agent' : 'Research Agents'} in Registry
+                  </Button>
+                </Link>
+                <Link
+                  to="/signup"
+                  className="text-center text-[11px] text-[#626873] hover:text-[#6D4AFF] font-medium transition-colors pt-1"
+                >
+                  Run multi-agent collaboration in your workspace →
+                </Link>
               </div>
             </div>
           </div>

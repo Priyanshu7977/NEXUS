@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { 
   Play, 
   Settings2, 
@@ -38,6 +39,25 @@ export const WorkflowPreview: React.FC = () => {
   const [activeNodeId, setActiveNodeId] = useState<string>('wf-code');
   const [zoomLevel, setZoomLevel] = useState<number>(100);
   const [isYamlOpen, setIsYamlOpen] = useState<boolean>(false);
+  const [isSimulating, setIsSimulating] = useState<boolean>(false);
+
+  const handleRunPreview = () => {
+    if (isSimulating) return;
+    setIsSimulating(true);
+    const nodeIds = ['wf-trigger', 'wf-code', 'wf-test', 'wf-security', 'wf-gate', 'wf-deploy'];
+    let stepIndex = 0;
+    setActiveNodeId(nodeIds[0]);
+
+    const interval = setInterval(() => {
+      stepIndex++;
+      if (stepIndex < nodeIds.length) {
+        setActiveNodeId(nodeIds[stepIndex]);
+      } else {
+        clearInterval(interval);
+        setIsSimulating(false);
+      }
+    }, 700);
+  };
 
   const nodes: WorkflowNodeItem[] = [
     {
@@ -135,14 +155,23 @@ export const WorkflowPreview: React.FC = () => {
                 <span>YAML</span>
               </button>
 
-              <button className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white/5 border border-white/10 text-xs font-mono text-[#9BA3AF] hover:text-white transition-colors">
+              <Link
+                to="/docs"
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white/5 border border-white/10 text-xs font-mono text-[#9BA3AF] hover:text-white transition-colors"
+                aria-label="Workflow Configuration Docs"
+              >
                 <Settings2 className="w-3.5 h-3.5" />
                 <span className="hidden sm:inline">Settings</span>
-              </button>
+              </Link>
 
-              <Button size="sm" className="h-8 text-xs">
-                <Play className="w-3 h-3 mr-1 fill-white" />
-                <span>Run Preview</span>
+              <Button
+                size="sm"
+                onClick={handleRunPreview}
+                className="h-8 text-xs cursor-pointer"
+                disabled={isSimulating}
+              >
+                <Play className={`w-3 h-3 mr-1 fill-white ${isSimulating ? 'animate-spin' : ''}`} />
+                <span>{isSimulating ? 'Simulating...' : 'Run Preview'}</span>
               </Button>
             </div>
           </div>
@@ -275,12 +304,20 @@ pipeline:
 
           {/* Bottom Status Info */}
           <div className="px-6 py-3 bg-[#181A21] border-t border-white/[0.08] flex flex-col sm:flex-row items-center justify-between gap-2 text-xs text-[#9BA3AF] text-left">
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 flex-wrap">
               <span className="text-[#626A78]">Selected Step:</span>
               <span className="text-white font-semibold">{activeNode.title}</span>
               <span className="text-[#626A78]">({activeNode.details})</span>
             </div>
-            <span className="text-[11px] font-mono text-[#626A78]">Deterministic DAG Pipeline</span>
+            <div className="flex items-center gap-3">
+              <span className="text-[11px] font-mono text-[#626A78]">Deterministic DAG Pipeline</span>
+              <Link
+                to="/signup"
+                className="text-xs font-semibold text-[#6D4AFF] hover:text-[#8264FF] transition-colors inline-flex items-center gap-1"
+              >
+                Open in Studio →
+              </Link>
+            </div>
           </div>
         </div>
       </div>

@@ -18,10 +18,27 @@ const PAGE_TITLES: Record<string, string> = {
 export const PublicLayout: React.FC = () => {
   const location = useLocation();
 
-  // Scroll to top on route change
+  // Scroll to targeted anchor or top on route/hash change
   useEffect(() => {
-    window.scrollTo(0, 0);
-  }, [location.pathname]);
+    if (location.hash) {
+      const targetId = location.hash.replace('#', '');
+      const scrollToTarget = () => {
+        const el = document.getElementById(targetId);
+        if (el) {
+          el.scrollIntoView({ behavior: 'smooth' });
+          return true;
+        }
+        return false;
+      };
+
+      if (!scrollToTarget()) {
+        const timeout = setTimeout(scrollToTarget, 100);
+        return () => clearTimeout(timeout);
+      }
+    } else {
+      window.scrollTo(0, 0);
+    }
+  }, [location.pathname, location.hash]);
 
   // Set document title
   useEffect(() => {

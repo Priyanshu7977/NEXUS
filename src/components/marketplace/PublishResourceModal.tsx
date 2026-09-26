@@ -27,6 +27,12 @@ import { getWorkspaceAgents } from '../../services/agentService';
 import { getWorkflows } from '../../services/workflowService';
 import { Agent } from '../../types/agent';
 import { Workflow } from '../../types/workflow';
+import { 
+  detectPromptInjection, 
+  isSafeExternalUrl, 
+  sanitizeString, 
+  workflowRateLimiter 
+} from '../../security';
 
 interface PublishResourceModalProps {
   isOpen: boolean;
@@ -177,7 +183,24 @@ export const PublishResourceModal: React.FC<PublishResourceModalProps> = ({
     setErrorMsg(null);
     setSecretViolations([]);
 
-    // Live Secret Scanner check prior to request
+    // 1. Client-Side Rate Limiting Check
+    const rateCheck = workflowRateLimiter.check(workspaceId || 'client_session', 5, 60000);
+    if (!rateCheck.allowed) {
+      setErrorMsg(`Publish rate limit reached. Please wait ${rateCheck.retryAfterSeconds || 60}s before attempting again.`);
+      return;
+    }
+
+    // 2. Client-Side Anti-SSRF URL Validation
+    if (documentationUrl.trim() && !isSafeExternalUrl(documentationUrl.trim())) {
+      setErrorMsg('Security Validation: Documentation URL must be a valid public HTTP or HTTPS web address and cannot reference local or internal networks.');
+      return;
+    }
+    if (repositoryUrl.trim() && !isSafeExternalUrl(repositoryUrl.trim())) {
+      setErrorMsg('Security Validation: Repository URL must be a valid public HTTP or HTTPS web address and cannot reference local or internal networks.');
+      return;
+    }
+
+    // 3. Client-Side Secret & Credential Scanning
     const candidatePayload = {
       name,
       summary,
@@ -193,23 +216,6 @@ export const PublishResourceModal: React.FC<PublishResourceModalProps> = ({
       setSecretViolations(scanResult.violations);
       return;
     }
-
-    setSubmitting(true);
-
-    const tags = tagsInput
-      .split(',')
-      .map((t) => t.trim())
-      .filter((t) => t.length > 0);
-
-    const requiredConnectors = requiredConnectorsInput
-      .split(',')
-      .map((c) => c.trim().toLowerCase())
-      .filter((c) => c.length > 0);
-
-    const requiredCapabilities = requiredCapabilitiesInput
-      .split(',')
-      .map((c) => c.trim().toLowerCase())
-      .filter((c) => c.length > 0);
 
     // Build spec
     let spec: Record<string, any> = {};
@@ -234,21 +240,47 @@ export const PublishResourceModal: React.FC<PublishResourceModalProps> = ({
       }
     }
 
+    // 4. Client-Side AI Security Shield: Adversarial Prompt Injection & Jailbreak Defense
+    const contentToScan = `${name}\n${summary}\n${description}\n${JSON.stringify(spec)}`;
+    const injectionScan = detectPromptInjection(contentToScan);
+    if (!injectionScan.safe) {
+      const violationDetails = injectionScan.violations.map((v) => v.description).join('; ');
+      setErrorMsg(`AI Security Shield Alert: Publication blocked due to potential prompt injection, delimiter smuggling, or adversarial safety policy violation (${violationDetails}).`);
+      return;
+    }
+
+    setSubmitting(true);
+
+    const tags = tagsInput
+      .split(',')
+      .map((t) => sanitizeString(t.trim(), 40))
+      .filter((t) => t.length > 0);
+
+    const requiredConnectors = requiredConnectorsInput
+      .split(',')
+      .map((c) => sanitizeString(c.trim().toLowerCase(), 40))
+      .filter((c) => c.length > 0);
+
+    const requiredCapabilities = requiredCapabilitiesInput
+      .split(',')
+      .map((c) => sanitizeString(c.trim().toLowerCase(), 40))
+      .filter((c) => c.length > 0);
+
     const res = await publishMarketplaceResource({
       workspaceId,
       type,
-      name,
-      slug: slug || name.toLowerCase().replace(/[^a-z0-9]+/g, '-'),
-      summary,
-      description,
-      version,
+      name: sanitizeString(name, 100),
+      slug: sanitizeString(slug || name.toLowerCase().replace(/[^a-z0-9]+/g, '-'), 80),
+      summary: sanitizeString(summary, 500),
+      description: sanitizeString(description, 10000),
+      version: sanitizeString(version, 20),
       visibility,
       spec,
       requiredConnectors,
       requiredCapabilities,
       tags,
       categories: [categoryInput],
-      license,
+      license: sanitizeString(license, 50),
       documentationUrl: documentationUrl.trim() || null,
       repositoryUrl: repositoryUrl.trim() || null,
     });

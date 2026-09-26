@@ -21,9 +21,21 @@ import { getMarketplaceResources } from '../../services/marketplaceService';
 import { InstallResourceModal } from '../marketplace/InstallResourceModal';
 import { PublishResourceModal } from '../marketplace/PublishResourceModal';
 
+const resolveTypeParam = (param: string | null): string => {
+  if (!param) return 'ALL';
+  const upper = param.toUpperCase().trim();
+  if (upper === 'AGENTS' || upper === 'AGENT') return 'AGENT';
+  if (upper === 'CONNECTORS' || upper === 'CONNECTOR') return 'CONNECTOR';
+  if (upper === 'WORKFLOWS' || upper === 'WORKFLOW') return 'WORKFLOW';
+  if (upper === 'MCP' || upper === 'MCP_SERVER') return 'MCP_SERVER';
+  if (upper === 'A2A' || upper === 'A2A_AGENT') return 'A2A_AGENT';
+  return upper;
+};
+
 export const ExplorePage: React.FC = () => {
   const [searchParams] = useSearchParams();
-  const initialType = searchParams.get('type') as MarketplaceResourceType | null;
+  const rawParam = searchParams.get('tab') || searchParams.get('type');
+  const initialType = resolveTypeParam(rawParam);
 
   // Active workspace id fallback
   const workspaceId =
@@ -34,11 +46,23 @@ export const ExplorePage: React.FC = () => {
   const [loading, setLoading] = useState(true);
 
   // Filters
-  const [searchQuery, setSearchQuery] = useState('');
-  const [selectedType, setSelectedType] = useState<string>(initialType || 'ALL');
+  const [searchQuery, setSearchQuery] = useState(searchParams.get('q') || '');
+  const [selectedType, setSelectedType] = useState<string>(initialType);
   const [selectedCategory, setSelectedCategory] = useState<string>('ALL');
   const [selectedVerification, setSelectedVerification] = useState<string>('ALL');
   const [sortBy, setSortBy] = useState<'popular' | 'recent' | 'name'>('popular');
+
+  // Sync when URL search parameters change
+  useEffect(() => {
+    const currentTab = searchParams.get('tab') || searchParams.get('type');
+    if (currentTab) {
+      setSelectedType(resolveTypeParam(currentTab));
+    }
+    const currentQuery = searchParams.get('q');
+    if (currentQuery !== null) {
+      setSearchQuery(currentQuery);
+    }
+  }, [searchParams]);
 
   // Modals
   const [installTarget, setInstallTarget] = useState<MarketplaceResource | null>(null);
