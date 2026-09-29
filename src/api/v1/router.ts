@@ -63,9 +63,19 @@ export async function handleApiV1Request(req: ApiV1Request): Promise<ApiV1Respon
   const method = req.method.toUpperCase();
   const urlPath = req.path.split('?')[0].replace(/\/+$/, '');
 
-  // 1. OpenAPI Specification endpoint (public, unauthenticated)
+  // 1. OpenAPI Specification endpoint (public, unauthenticated, pure OpenAPI 3.1.0 document)
   if (method === 'GET' && (urlPath === '/api/v1/openapi.json' || urlPath === '/api/v1/openapi')) {
-    return formatResponse(200, openApiSpec, requestId);
+    return {
+      status: 200,
+      headers: {
+        'Content-Type': 'application/json; charset=utf-8',
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Methods': 'GET, OPTIONS',
+        'Cache-Control': 'public, max-age=3600',
+        'X-NEXUS-Version': 'v1',
+      },
+      body: openApiSpec,
+    };
   }
 
   // 2. Authentication: Extract Bearer API Key

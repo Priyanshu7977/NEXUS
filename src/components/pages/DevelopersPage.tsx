@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '../ui/Button';
 import { ApiExplorer } from '../developers/ApiExplorer';
+import { OpenApiSpecModal } from '../developers/OpenApiSpecModal';
 import { 
   Terminal, 
   Cable, 
@@ -15,8 +16,7 @@ import {
   Key,
   Layers,
   FileCode,
-  Package,
-  ExternalLink
+  Package
 } from 'lucide-react';
 
 type SectionId = 
@@ -33,6 +33,7 @@ type SectionId =
 export const DevelopersPage: React.FC = () => {
   const [activeSection, setActiveSection] = useState<SectionId>('overview');
   const [copiedSnippet, setCopiedSnippet] = useState<string | null>(null);
+  const [isOpenApiModalOpen, setIsOpenApiModalOpen] = useState(false);
 
   const copyCode = (id: string, text: string) => {
     navigator.clipboard.writeText(text);
@@ -83,15 +84,14 @@ export const DevelopersPage: React.FC = () => {
               <span>Get API Key</span>
             </Button>
           </Link>
-          <a
-            href="/api/v1/openapi.json"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-white border border-[#E5E5E2] hover:border-[#D4D4CE] text-xs font-semibold text-[#111318] transition-colors shadow-2xs"
+          <button
+            type="button"
+            onClick={() => setIsOpenApiModalOpen(true)}
+            className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-white border border-[#E5E5E2] hover:border-[#D4D4CE] text-xs font-semibold text-[#111318] hover:bg-[#FAFAF8] transition-colors shadow-2xs cursor-pointer"
           >
+            <FileCode className="w-3.5 h-3.5 text-[#6D4AFF]" />
             <span>OpenAPI 3.1 Spec</span>
-            <ExternalLink className="w-3.5 h-3.5 text-[#8B919B]" />
-          </a>
+          </button>
           <div className="text-xs font-mono text-[#8B919B] bg-[#FAFAF8] px-3 py-2 rounded-xl border border-[#E5E5E2]">
             npm install @nexus/sdk
           </div>
@@ -735,6 +735,12 @@ export const postgresConnector = defineConnector({
           </div>
         )}
       </div>
+
+      {/* OpenAPI 3.1 Spec Modal */}
+      <OpenApiSpecModal
+        isOpen={isOpenApiModalOpen}
+        onClose={() => setIsOpenApiModalOpen(false)}
+      />
     </div>
   );
 };

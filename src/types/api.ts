@@ -39,7 +39,7 @@ export interface ApiV1Request {
 export interface ApiV1Response {
   status: number;
   headers: Record<string, string>;
-  body: ApiResponse;
+  body: ApiResponse | Record<string, any>;
 }
 
 // --------------------------------------------------------------------

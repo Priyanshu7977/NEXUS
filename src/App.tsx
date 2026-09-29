@@ -21,6 +21,7 @@ import { LoginPage } from './components/pages/LoginPage';
 import { SignupPage } from './components/pages/SignupPage';
 import { ForgotPasswordPage } from './components/pages/ForgotPasswordPage';
 import { ResetPasswordPage } from './components/pages/ResetPasswordPage';
+import { RawOpenApiPage } from './components/pages/RawOpenApiPage';
 
 // Authenticated App Shell & Pages
 import { AppLayout } from './components/app/AppLayout';
@@ -63,6 +64,10 @@ export const App: React.FC = () => {
           <Route path="/signup" element={<SignupPage />} />
           <Route path="/forgot-password" element={<ForgotPasswordPage />} />
           <Route path="/reset-password" element={<ResetPasswordPage />} />
+
+          {/* Standalone Pure OpenAPI 3.1 Specification (Clean & Chrome-Free) */}
+          <Route path="/api/v1/openapi.json" element={<RawOpenApiPage />} />
+          <Route path="/api/v1/openapi" element={<RawOpenApiPage />} />
 
           {/* Authenticated Application Shell Routes (Protected via ProtectedRoute) */}
           <Route
