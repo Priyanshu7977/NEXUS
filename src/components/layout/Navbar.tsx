@@ -11,7 +11,8 @@ import {
   Activity, 
   ShieldCheck,
   ArrowRight,
-  Monitor
+  Monitor,
+  Layers
 } from 'lucide-react';
 import { Button } from '../ui/Button';
 import { DesktopAppModal } from '../desktop/DesktopAppModal';
@@ -109,6 +110,14 @@ export const Navbar: React.FC = () => {
   }, [mobileMenuOpen]);
 
   const productItems = [
+    {
+      title: 'How NEXUS Works',
+      description: 'End-to-end walkthrough: BYOK APIs, MCP tools, DAG pipelines, and governance.',
+      to: '/#how-it-works',
+      icon: Layers,
+      color: 'text-indigo-600',
+      bg: 'bg-indigo-50'
+    },
     {
       title: 'Agents',
       description: 'Specialized autonomous AI agents for code, research, and analysis.',
@@ -230,6 +239,13 @@ export const Navbar: React.FC = () => {
               </div>
 
               {/* Standard Links */}
+              <Link
+                to="/#how-it-works"
+                className="px-3 py-1.5 text-xs lg:text-sm font-medium transition-colors rounded-lg cursor-pointer text-[#626873] hover:text-[#111318] hover:bg-black/[0.03]"
+              >
+                Overview
+              </Link>
+
               <Link
                 to="/explore"
                 className={`px-3 py-1.5 text-xs lg:text-sm font-medium transition-colors rounded-lg cursor-pointer ${

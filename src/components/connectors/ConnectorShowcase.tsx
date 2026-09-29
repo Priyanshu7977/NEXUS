@@ -13,11 +13,11 @@ export const ConnectorShowcase: React.FC = () => {
     : CONNECTORS_DATA.filter((c) => c.category === selectedCategory);
 
   return (
-    <section id="connectors" className="relative py-14 sm:py-18 lg:py-20 px-4 sm:px-6 lg:px-8 bg-[#F6F6F3]">
+    <section id="connectors" className="relative py-12 sm:py-16 px-4 sm:px-6 lg:px-8 bg-[#F6F6F3]">
       <div className="max-w-7xl mx-auto">
         {/* Section Header */}
-        <div className="max-w-3xl mb-10 text-left">
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-[#111318] leading-[1.1] mb-4">
+        <div className="max-w-3xl mb-8 text-left">
+          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-[#111318] leading-[1.1] mb-3">
             Your stack, connected.
           </h2>
           <p className="text-base sm:text-lg text-[#626873] leading-relaxed">
@@ -26,7 +26,7 @@ export const ConnectorShowcase: React.FC = () => {
         </div>
 
         {/* Category Filter Pills */}
-        <div className="flex items-center gap-2 flex-wrap mb-8">
+        <div className="flex items-center gap-2 flex-wrap mb-6">
           {categories.map((cat) => {
             const isSelected = selectedCategory === cat;
             return (
@@ -47,18 +47,27 @@ export const ConnectorShowcase: React.FC = () => {
 
         {/* Connector Cards Grid with Real Brand Logos */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5 items-stretch">
-          {filteredConnectors.map((item) => (
-            <Link
-              key={item.id}
-              to={`/explore?tab=connectors&q=${encodeURIComponent(item.name)}`}
-              className="h-full p-5 rounded-xl bg-white border border-[#E5E5E2] hover:border-[#6D4AFF]/50 hover:shadow-[0_4px_16px_rgba(109,74,255,0.08)] transition-all duration-200 flex flex-col justify-between group min-w-0 block text-left"
-              aria-label={`Explore ${item.name} Connector`}
-            >
-              <div className="flex-1 flex flex-col">
-                <div className="flex items-start justify-between mb-3.5">
-                  <div className="w-10 h-10 rounded-lg bg-[#FAFAF8] border border-[#E5E5E2] flex items-center justify-center group-hover:border-[#6D4AFF]/30 group-hover:bg-purple-50/30 transition-colors duration-150 shrink-0">
-                    <BrandLogo brand={item.id} size={22} />
-                  </div>
+          {filteredConnectors.map((item) => {
+            const connectorSlugMap: Record<string, string> = {
+              github: '/explore/github-connector',
+              vercel: '/explore/vercel-connector',
+              supabase: '/explore/supabase-connector',
+              linear: '/explore/linear-triage-agent',
+            };
+            const targetLink = connectorSlugMap[item.id] || `/explore?tab=connectors&q=${encodeURIComponent(item.name)}`;
+
+            return (
+              <Link
+                key={item.id}
+                to={targetLink}
+                className="h-full p-5 rounded-xl bg-white border border-[#E5E5E2] hover:border-[#6D4AFF]/50 hover:shadow-[0_4px_16px_rgba(109,74,255,0.08)] transition-all duration-200 flex flex-col justify-between group min-w-0 block text-left"
+                aria-label={`Explore ${item.name} Connector`}
+              >
+                <div className="flex-1 flex flex-col">
+                  <div className="flex items-start justify-between mb-3.5">
+                    <div className="w-10 h-10 rounded-lg bg-[#FAFAF8] border border-[#E5E5E2] flex items-center justify-center group-hover:border-[#6D4AFF]/30 group-hover:bg-purple-50/30 transition-colors duration-150 shrink-0">
+                      <BrandLogo brand={item.id} size={22} />
+                    </div>
                   <span className="text-[11px] font-mono text-[#8B919B] bg-[#FAFAF8] px-2 py-0.5 rounded border border-[#EFEFEA] shrink-0">
                     {item.category}
                   </span>
@@ -85,8 +94,9 @@ export const ConnectorShowcase: React.FC = () => {
                 ))}
               </div>
             </Link>
-          ))}
-        </div>
+          );
+        })}
+      </div>
 
         {/* Custom Connector Protocol Banner */}
         <Link

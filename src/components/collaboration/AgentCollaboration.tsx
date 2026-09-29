@@ -27,11 +27,11 @@ export const AgentCollaboration: React.FC = () => {
   ];
 
   return (
-    <section id="collaboration" className="relative py-14 sm:py-18 lg:py-20 px-4 sm:px-6 lg:px-8 bg-[#FAFAF8] border-y border-[#E5E5E2]">
+    <section id="collaboration" className="relative py-12 sm:py-16 px-4 sm:px-6 lg:px-8 bg-[#FAFAF8] border-y border-[#E5E5E2]">
       <div className="max-w-7xl mx-auto">
         {/* Section Header */}
-        <div className="max-w-3xl mb-10 lg:mb-12 text-left">
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-[#111318] leading-[1.1] mb-4">
+        <div className="max-w-3xl mb-8 sm:mb-10 text-left">
+          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-[#111318] leading-[1.1] mb-3">
             One task.<br />
             A team of agents.
           </h2>
@@ -41,7 +41,7 @@ export const AgentCollaboration: React.FC = () => {
         </div>
 
         {/* Visual Timeline Layout */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-start">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
           {/* Left: Orchestration Timeline Tree */}
           <div className="lg:col-span-7 flex flex-col gap-4 relative">
             {/* Step 1: User Request */}
@@ -62,9 +62,9 @@ export const AgentCollaboration: React.FC = () => {
 
             {/* Step 2: Planner */}
             <Link
-              to="/explore?tab=agents"
+              to="/explore/claude-planner-agent"
               className="p-4 rounded-xl bg-white border border-[#E5E5E2] hover:border-[#6D4AFF] shadow-sm flex items-center justify-between min-w-0 transition-all duration-150 group"
-              aria-label="Inspect Planner Agent in Registry"
+              aria-label="Inspect Claude Planner Agent in Registry"
             >
               <div className="flex items-center gap-3.5 min-w-0 flex-1">
                 <div className="w-8 h-8 rounded-lg bg-[#6D4AFF]/10 border border-[#6D4AFF]/20 flex items-center justify-center shrink-0 text-[#6D4AFF]">
@@ -72,7 +72,7 @@ export const AgentCollaboration: React.FC = () => {
                 </div>
                 <div className="min-w-0 flex-1">
                   <div className="flex items-center gap-2 flex-wrap">
-                    <span className="text-xs font-semibold text-[#111318] group-hover:text-[#6D4AFF] transition-colors">Planner Agent</span>
+                    <span className="text-xs font-semibold text-[#111318] group-hover:text-[#6D4AFF] transition-colors">Claude Planner Agent</span>
                     <span className="text-[10px] bg-emerald-50 text-emerald-700 px-1.5 py-0.2 rounded border border-emerald-200 font-medium">COMPLETED</span>
                   </div>
                   <span className="text-xs text-[#626873] block break-words">Decomposes task into database schema, client state, and security boundaries.</span>
@@ -133,9 +133,9 @@ export const AgentCollaboration: React.FC = () => {
 
             {/* Step 4: Verification Gate */}
             <Link
-              to="/security"
+              to="/explore/deepseek-security-auditor"
               className="p-4 rounded-xl bg-white border border-[#E5E5E2] hover:border-[#3B82F6] shadow-sm flex items-center justify-between min-w-0 transition-all duration-150 group"
-              aria-label="View Security and Verification Controls"
+              aria-label="View DeepSeek Security Auditor"
             >
               <div className="flex items-center gap-3.5 min-w-0 flex-1">
                 <div className="w-8 h-8 rounded-lg bg-blue-50 border border-blue-200 flex items-center justify-center shrink-0 text-blue-600">
@@ -143,10 +143,10 @@ export const AgentCollaboration: React.FC = () => {
                 </div>
                 <div className="min-w-0 flex-1">
                   <div className="flex items-center gap-2 flex-wrap">
-                    <span className="text-xs font-semibold text-[#111318] group-hover:text-blue-600 transition-colors">Test & Security Gate</span>
+                    <span className="text-xs font-semibold text-[#111318] group-hover:text-blue-600 transition-colors">DeepSeek Security Auditor</span>
                     <span className="text-[10px] bg-amber-50 text-amber-700 px-1.5 py-0.2 rounded border border-amber-200 font-medium">QUEUED</span>
                   </div>
-                  <span className="text-xs text-[#626873] block break-words">Typecheck, RLS policy validation, and automated test run.</span>
+                  <span className="text-xs text-[#626873] block break-words">Typecheck, RLS policy validation, and automated AST vulnerability scan.</span>
                 </div>
               </div>
               <ArrowUpRight className="w-3.5 h-3.5 text-[#8B919B] opacity-0 group-hover:opacity-100 transition-opacity ml-2 shrink-0 text-blue-600" />
@@ -157,16 +157,16 @@ export const AgentCollaboration: React.FC = () => {
 
             {/* Step 5: Deployment */}
             <Link
-              to="/explore?tab=connectors"
+              to="/explore/vercel-connector"
               className="p-4 rounded-xl bg-white border border-[#E5E5E2] hover:border-emerald-500 shadow-sm flex items-center justify-between min-w-0 transition-all duration-150 group"
-              aria-label="Explore Deployment Connectors"
+              aria-label="Explore Vercel Deployment Connector"
             >
               <div className="flex items-center gap-3.5 min-w-0 flex-1">
                 <div className="w-8 h-8 rounded-lg bg-[#FAFAF8] border border-[#E5E5E2] flex items-center justify-center shrink-0 text-[#111318]">
                   <Rocket className="w-4 h-4" />
                 </div>
                 <div className="min-w-0 flex-1">
-                  <span className="text-xs font-semibold text-[#111318] block group-hover:text-emerald-600 transition-colors">Deploy to Staging Preview</span>
+                  <span className="text-xs font-semibold text-[#111318] block group-hover:text-emerald-600 transition-colors">Vercel Deployment Connector</span>
                   <p className="text-xs text-[#626873] break-words">Creates preview environment and updates PR with verification log.</p>
                 </div>
               </div>
@@ -181,11 +181,11 @@ export const AgentCollaboration: React.FC = () => {
                 <div>
                   <span className="text-[10px] font-mono text-[#8B919B] uppercase tracking-wider block">Active Agent Inspector</span>
                   <h3 className="text-base font-bold text-[#111318]">
-                    {activeStep === 'code-agent' ? 'Code Generation Agent' : 'Research & Analysis Agent'}
+                    {activeStep === 'code-agent' ? 'GPT-4o Code Synthesis Agent' : 'Claude Architecture & Research Agent'}
                   </h3>
                 </div>
                 <div className="p-2 rounded-lg bg-[#FAFAF8] border border-[#E5E5E2]">
-                  <BrandLogo brand={activeStep === 'code-agent' ? 'github' : 'anthropic'} size={20} />
+                  <BrandLogo brand={activeStep === 'code-agent' ? 'openai' : 'anthropic'} size={20} />
                 </div>
               </div>
 
@@ -202,8 +202,8 @@ export const AgentCollaboration: React.FC = () => {
                 <div className="p-3 rounded-lg bg-[#111318] text-[#F5F7FA] font-mono text-[11px] leading-relaxed overflow-x-auto">
                   <span className="text-[#8B919B] block mb-1">// Execution Output Trace</span>
                   {activeStep === 'code-agent'
-                    ? '> [CodeAgent] Wrote supabase/schema.sql with 6 RLS policies\n> [CodeAgent] Exported Database type in src/types/database.ts\n> [CodeAgent] Compilation: 0 errors'
-                    : '> [ResearchAgent] Found 3 dependent components in src/context\n> [ResearchAgent] Verified RLS compatibility with auth.uid()\n> [ResearchAgent] Ready for code synthesis'}
+                    ? '> [GPT-4o] Wrote supabase/schema.sql with 6 RLS policies\n> [GPT-4o] Exported Database type in src/types/database.ts\n> [GPT-4o] Compilation: 0 errors'
+                    : '> [Claude 3.7] Found 3 dependent components in src/context\n> [Claude 3.7] Verified RLS compatibility with auth.uid()\n> [Claude 3.7] Ready for code synthesis'}
                 </div>
               </div>
 
@@ -215,11 +215,11 @@ export const AgentCollaboration: React.FC = () => {
               {/* Direct Action Links */}
               <div className="pt-3 border-t border-[#EFEFEA] flex flex-col gap-2">
                 <Link
-                  to="/explore?tab=agents"
+                  to={activeStep === 'code-agent' ? '/explore/gpt4o-code-agent' : '/explore/claude-planner-agent'}
                   className="w-full inline-flex"
                 >
                   <Button size="sm" withArrow className="w-full justify-center text-xs h-9">
-                    Explore {activeStep === 'code-agent' ? 'Code Review Agent' : 'Research Agents'} in Registry
+                    Explore {activeStep === 'code-agent' ? 'GPT-4o Code Agent' : 'Claude Planner Agent'} in Registry
                   </Button>
                 </Link>
                 <Link

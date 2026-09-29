@@ -39,7 +39,7 @@ export const OrchestrationGraph: React.FC = () => {
       status: 'Planning',
       latency: '142ms',
       tokensPerSec: 88,
-      link: '/explore?tab=agents',
+      link: '/explore/claude-planner-agent',
       position: 'top-left',
     },
     {
@@ -51,7 +51,7 @@ export const OrchestrationGraph: React.FC = () => {
       status: 'Executing',
       latency: '118ms',
       tokensPerSec: 114,
-      link: '/explore?tab=agents',
+      link: '/explore/gpt4o-code-agent',
       position: 'top-right',
     },
     {
@@ -63,7 +63,7 @@ export const OrchestrationGraph: React.FC = () => {
       status: 'Verifying',
       latency: '164ms',
       tokensPerSec: 72,
-      link: '/explore?tab=agents',
+      link: '/explore/deepseek-security-auditor',
       position: 'bottom-left',
     },
     {
@@ -75,7 +75,7 @@ export const OrchestrationGraph: React.FC = () => {
       status: 'Streaming',
       latency: '95ms',
       tokensPerSec: 130,
-      link: '/explore?tab=agents',
+      link: '/explore/gemini-multimodal-analyst',
       position: 'bottom-right',
     },
   ];

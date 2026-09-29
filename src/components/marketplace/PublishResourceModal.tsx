@@ -676,6 +676,37 @@ export const PublishResourceModal: React.FC<PublishResourceModalProps> = ({
                 </div>
               )}
 
+              {/* Dual-Sided Security Pre-Flight Clearance */}
+              <div className="p-3 bg-purple-50/50 border border-purple-200/70 rounded-xl space-y-2">
+                <div className="flex items-center justify-between text-xs font-semibold text-[#6D4AFF]">
+                  <div className="flex items-center gap-1.5">
+                    <ShieldCheck className="w-4 h-4" />
+                    <span>Dual-Sided Security Clearance (Pre-Flight Checks)</span>
+                  </div>
+                  <span className="text-[10px] font-mono bg-purple-100 px-2 py-0.5 rounded text-[#6D4AFF] font-bold">
+                    ENFORCED
+                  </span>
+                </div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5 text-[11px] text-gray-600 font-mono">
+                  <div className="flex items-center gap-1.5">
+                    <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
+                    <span>Client: Anti-SSRF URL Protocol</span>
+                  </div>
+                  <div className="flex items-center gap-1.5">
+                    <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
+                    <span>Client: Prompt Injection Shield</span>
+                  </div>
+                  <div className="flex items-center gap-1.5">
+                    <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
+                    <span>Client: Zero-Secret Scanner</span>
+                  </div>
+                  <div className="flex items-center gap-1.5">
+                    <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
+                    <span>Server: SHA-256 Provenance & Audit</span>
+                  </div>
+                </div>
+              </div>
+
               {/* Footer Button inside form */}
               <div className="pt-3 border-t border-gray-100 flex items-center justify-between">
                 <div className="flex items-center gap-1.5 text-[11px] text-gray-500">

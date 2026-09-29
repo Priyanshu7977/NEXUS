@@ -27,8 +27,8 @@ const resolveTypeParam = (param: string | null): string => {
   if (upper === 'AGENTS' || upper === 'AGENT') return 'AGENT';
   if (upper === 'CONNECTORS' || upper === 'CONNECTOR') return 'CONNECTOR';
   if (upper === 'WORKFLOWS' || upper === 'WORKFLOW') return 'WORKFLOW';
-  if (upper === 'MCP' || upper === 'MCP_SERVER') return 'MCP_SERVER';
-  if (upper === 'A2A' || upper === 'A2A_AGENT') return 'A2A_AGENT';
+  if (upper === 'MCP' || upper === 'MCP_SERVER' || upper === 'MCPS') return 'MCP_SERVER';
+  if (upper === 'A2A' || upper === 'A2A_AGENT' || upper === 'EXTERNAL_AGENT' || upper === 'EXTERNAL_AGENTS') return 'EXTERNAL_AGENT';
   return upper;
 };
 

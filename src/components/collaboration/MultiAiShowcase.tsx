@@ -1,14 +1,17 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { BrandLogo } from '../brand/BrandLogo';
 import { 
   Cpu, 
   Play, 
   Check, 
-  RefreshCw
+  RefreshCw,
+  ArrowUpRight
 } from 'lucide-react';
 
 interface ModelPersona {
   id: string;
+  slug: string;
   name: string;
   provider: 'anthropic' | 'openai' | 'deepseek' | 'gemini' | 'meta';
   roleTitle: string;
@@ -23,6 +26,7 @@ interface ModelPersona {
 const TOP_MODELS: ModelPersona[] = [
   {
     id: 'claude',
+    slug: 'claude-planner-agent',
     name: 'Claude 3.7 Sonnet',
     provider: 'anthropic',
     roleTitle: 'Lead Architect & Task Decomposition',
@@ -35,6 +39,7 @@ const TOP_MODELS: ModelPersona[] = [
   },
   {
     id: 'openai',
+    slug: 'gpt4o-code-agent',
     name: 'OpenAI GPT-4o / o3-mini',
     provider: 'openai',
     roleTitle: 'Core Code Synthesis & Tool Calling',
@@ -47,6 +52,7 @@ const TOP_MODELS: ModelPersona[] = [
   },
   {
     id: 'deepseek',
+    slug: 'deepseek-security-auditor',
     name: 'DeepSeek R1',
     provider: 'deepseek',
     roleTitle: 'Formal Logic & Security Verification',
@@ -59,6 +65,7 @@ const TOP_MODELS: ModelPersona[] = [
   },
   {
     id: 'gemini',
+    slug: 'gemini-multimodal-analyst',
     name: 'Google Gemini 2.5 Pro',
     provider: 'gemini',
     roleTitle: '1M+ Context & Multimodal Vision',
@@ -71,6 +78,7 @@ const TOP_MODELS: ModelPersona[] = [
   },
   {
     id: 'llama',
+    slug: 'llama-edge-dispatcher',
     name: 'Meta Llama 3.3 70B (Groq)',
     provider: 'meta',
     roleTitle: 'Sub-Second Edge Telemetry & Triage',
@@ -109,15 +117,15 @@ export const MultiAiShowcase: React.FC = () => {
   };
 
   return (
-    <section className="py-16 sm:py-24 px-4 sm:px-6 lg:px-8 bg-white border-t border-[#E5E5E2] text-left">
+    <section className="py-12 sm:py-16 px-4 sm:px-6 lg:px-8 bg-white border-t border-[#E5E5E2] text-left">
       <div className="max-w-7xl mx-auto">
         {/* Section Header */}
-        <div className="max-w-3xl mb-12 sm:mb-16">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-purple-50 border border-purple-200 text-xs font-mono font-semibold text-[#6D4AFF] mb-4">
+        <div className="max-w-3xl mb-8 sm:mb-10">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-purple-50 border border-purple-200 text-xs font-mono font-semibold text-[#6D4AFF] mb-3">
             <Cpu className="w-3.5 h-3.5" />
             <span>TOP AI APIs · MULTI-MODEL COLLABORATION</span>
           </div>
-          <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight text-[#111318] mb-4">
+          <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight text-[#111318] mb-3">
             Every top AI model working as one cohesive team
           </h2>
           <p className="text-sm sm:text-base text-[#626873] leading-relaxed">
@@ -237,11 +245,16 @@ export const MultiAiShowcase: React.FC = () => {
                 </div>
               </div>
 
-              {/* Live Multi-Model Pipeline Trigger */}
+              {/* Live Multi-Model Pipeline Trigger & Direct Registry Link */}
               <div className="pt-2 flex flex-wrap items-center justify-between gap-4">
-                <div className="text-xs text-[#626873]">
-                  Simulate all 4 models collaborating synchronously on one PR:
-                </div>
+                <Link
+                  to={`/explore/${selectedModel.slug}`}
+                  className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#6D4AFF] hover:text-[#5E3CE6] transition-colors"
+                >
+                  <span>View {selectedModel.name} Specs in Registry</span>
+                  <ArrowUpRight className="w-3.5 h-3.5" />
+                </Link>
+
                 <button
                   type="button"
                   disabled={simulating}

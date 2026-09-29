@@ -12,12 +12,14 @@
   "dependencies": {
     "@supabase/supabase-js": "^2.115.0",
     "clsx": "^2.1.1",
+    "docx": "^9.8.1",
     "framer-motion": "^12.4.7",
     "lucide-react": "^0.475.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-router-dom": "^7.18.3",
-    "tailwind-merge": "^3.0.1"
+    "tailwind-merge": "^3.0.1",
+    "xlsx": "^0.18.5"
   },
   "devDependencies": {
     "@types/node": "^22.13.4",

@@ -9,7 +9,7 @@ export const Hero: React.FC = () => {
   const [isDesktopModalOpen, setIsDesktopModalOpen] = useState(false);
 
   return (
-    <section className="relative pt-20 pb-12 sm:pt-24 sm:pb-16 lg:py-10 xl:py-14 lg:min-h-[calc(100vh-4.5rem)] lg:flex lg:flex-col lg:justify-center overflow-hidden bg-[#F6F6F3]">
+    <section className="relative pt-24 pb-10 sm:pt-28 sm:pb-12 lg:pt-28 lg:pb-14 overflow-hidden bg-[#F6F6F3]">
       {/* Subtle architectural background grid */}
       <div className="absolute inset-0 bg-grid-light opacity-60 pointer-events-none" />
 
