@@ -1,178 +1,298 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { BrandLogo } from '../brand/BrandLogo';
 import { NexusLogo } from '../layout/Navbar';
 import { Check, ArrowUpRight } from 'lucide-react';
 
-interface NodeData {
+interface AiModelNode {
   id: string;
   name: string;
+  provider: 'anthropic' | 'openai' | 'deepseek' | 'gemini';
+  modelBadge: string;
   role: string;
-  brand?: 'github' | 'vercel' | 'anthropic' | 'supabase' | 'openai' | 'gemini';
-  status: 'Ready' | 'Executing' | 'Connected';
-  x: number;
-  y: number;
+  status: 'Planning' | 'Executing' | 'Verifying' | 'Streaming';
+  latency: string;
+  tokensPerSec: number;
   link: string;
+  position: 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right';
 }
 
 export const OrchestrationGraph: React.FC = () => {
   const [hoveredNode, setHoveredNode] = useState<string | null>(null);
+  const [liveTokenCount, setLiveTokenCount] = useState(14820);
 
-  const nodes: NodeData[] = [
+  // Live token animation
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setLiveTokenCount((prev) => prev + Math.floor(Math.random() * 28) + 12);
+    }, 1800);
+    return () => clearInterval(timer);
+  }, []);
+
+  const models: AiModelNode[] = [
     {
-      id: 'planner',
-      name: 'Planner Agent',
-      role: 'Goal decomposition & routing',
-      brand: 'anthropic',
-      status: 'Ready',
-      x: 24,
-      y: 20,
+      id: 'claude',
+      name: 'Claude 3.7 Sonnet',
+      provider: 'anthropic',
+      modelBadge: 'Reasoning & Planning',
+      role: 'Decomposes goals into deterministic DAG tasks',
+      status: 'Planning',
+      latency: '142ms',
+      tokensPerSec: 88,
       link: '/explore?tab=agents',
+      position: 'top-left',
     },
     {
-      id: 'code',
-      name: 'Code Agent',
-      role: 'Implementation & PR generation',
-      brand: 'github',
+      id: 'openai',
+      name: 'OpenAI GPT-4o',
+      provider: 'openai',
+      modelBadge: 'Code & Tools Agent',
+      role: 'Synthesizes code & invokes MCP integrations',
       status: 'Executing',
-      x: 76,
-      y: 20,
+      latency: '118ms',
+      tokensPerSec: 114,
       link: '/explore?tab=agents',
+      position: 'top-right',
     },
     {
-      id: 'database',
-      name: 'Data Layer',
-      role: 'Schema & state persistence',
-      brand: 'supabase',
-      status: 'Connected',
-      x: 24,
-      y: 76,
-      link: '/explore?tab=connectors',
+      id: 'deepseek',
+      name: 'DeepSeek R1',
+      provider: 'deepseek',
+      modelBadge: 'Formal Math & Audit',
+      role: 'Verifies logic proofs, security & AST invariants',
+      status: 'Verifying',
+      latency: '164ms',
+      tokensPerSec: 72,
+      link: '/explore?tab=agents',
+      position: 'bottom-left',
     },
     {
-      id: 'deploy',
-      name: 'Deploy Gate',
-      role: 'Ephemeral preview & verification',
-      brand: 'vercel',
-      status: 'Connected',
-      x: 76,
-      y: 76,
-      link: '/explore?tab=connectors',
+      id: 'gemini',
+      name: 'Google Gemini 2.5',
+      provider: 'gemini',
+      modelBadge: '1M+ Context & Vision',
+      role: 'Scans full repository context & multimodal assets',
+      status: 'Streaming',
+      latency: '95ms',
+      tokensPerSec: 130,
+      link: '/explore?tab=agents',
+      position: 'bottom-right',
     },
   ];
 
-  const centerX = 50;
-  const centerY = 48;
-
   return (
-    <div className="relative w-full aspect-[4/3] sm:aspect-[16/11] lg:aspect-[16/10] min-h-[290px] xs:min-h-[320px] sm:min-h-[360px] lg:min-h-[340px] xl:min-h-[390px] max-h-[440px] rounded-2xl bg-white border border-[#E5E5E2] shadow-[0_4px_24px_rgba(0,0,0,0.04)] overflow-hidden p-2.5 sm:p-5 select-none">
-      {/* Background Dots Pattern */}
-      <div className="absolute inset-0 bg-dots-light opacity-80 pointer-events-none" />
+    <div className="relative w-full rounded-2xl bg-white border border-[#E5E5E2] shadow-[0_4px_24px_rgba(0,0,0,0.04)] overflow-hidden p-3 sm:p-5 select-none text-left">
+      {/* Background Architectural Grid Pattern */}
+      <div className="absolute inset-0 bg-dots-light opacity-70 pointer-events-none" />
 
-      {/* SVG System Lines */}
-      <svg className="absolute inset-0 w-full h-full pointer-events-none">
-        <defs>
-          <linearGradient id="activeLine" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stopColor="#6D4AFF" stopOpacity="0.8" />
-            <stop offset="100%" stopColor="#3B82F6" stopOpacity="0.8" />
-          </linearGradient>
-        </defs>
-
-        {nodes.map((node) => {
-          const isActive = hoveredNode === node.id || hoveredNode === 'core';
-          return (
-            <g key={node.id}>
-              {/* Static Path */}
-              <line
-                x1={`${centerX}%`}
-                y1={`${centerY}%`}
-                x2={`${node.x}%`}
-                y2={`${node.y}%`}
-                stroke={isActive ? '#6D4AFF' : '#E5E5E2'}
-                strokeWidth={isActive ? '2' : '1.2'}
-                className="transition-colors duration-200"
-              />
-              {/* Animated flow dash */}
-              <line
-                x1={`${centerX}%`}
-                y1={`${centerY}%`}
-                x2={`${node.x}%`}
-                y2={`${node.y}%`}
-                stroke={isActive ? '#3B82F6' : '#6D4AFF'}
-                strokeWidth="2"
-                strokeDasharray="4 16"
-                className="animate-flow-line"
-                opacity={isActive ? 0.9 : 0.4}
-              />
-            </g>
-          );
-        })}
-      </svg>
-
-      {/* Center Dark Core Node */}
-      <Link
-        to="/explore"
-        style={{ left: `${centerX}%`, top: `${centerY}%` }}
-        onMouseEnter={() => setHoveredNode('core')}
-        onMouseLeave={() => setHoveredNode(null)}
-        className="absolute -translate-x-1/2 -translate-y-1/2 z-20 cursor-pointer group"
-        aria-label="Explore NEXUS Core Platform"
-      >
-        <div className="flex items-center gap-1.5 sm:gap-2.5 px-2.5 py-1.5 sm:px-3.5 sm:py-2 rounded-xl bg-[#111318] text-white border border-[#22262F] shadow-[0_8px_20px_rgba(0,0,0,0.25)] transition-all duration-200 group-hover:border-[#6D4AFF]/60 group-hover:shadow-[0_8px_24px_rgba(109,74,255,0.25)]">
-          <NexusLogo size={16} dark />
-          <div className="flex flex-col text-left">
-            <span className="text-[10px] sm:text-xs font-semibold tracking-tight text-white whitespace-nowrap">NEXUS Core</span>
-            <span className="text-[8px] sm:text-[10px] text-[#8B919B] whitespace-nowrap">Orchestration Bus</span>
-          </div>
-          <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-[#6D4AFF] animate-pulse ml-0.5 sm:ml-1 shrink-0" />
+      {/* Top Bar Indicator */}
+      <div className="flex items-center justify-between pb-3 sm:pb-4 border-b border-[#EFEFEA] mb-3 sm:mb-4 text-[11px] font-mono text-[#8B919B]">
+        <div className="flex items-center gap-2">
+          <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+          <span className="font-semibold text-[#111318]">MULTI-AI COLLABORATION RUNTIME</span>
         </div>
-      </Link>
+        <div className="flex items-center gap-3">
+          <span className="hidden xs:inline">BYOK Enabled</span>
+          <span className="text-[#6D4AFF] font-semibold">{liveTokenCount.toLocaleString()} tok/min</span>
+        </div>
+      </div>
 
-      {/* Satellite White Cards */}
-      {nodes.map((node) => {
-        const isHovered = hoveredNode === node.id;
-        return (
+      {/* Grid Canvas Layout (Eliminates all overlapping, whitespace gaps, and clipping) */}
+      <div className="relative min-h-[320px] sm:min-h-[340px] lg:min-h-[330px] xl:min-h-[360px] flex flex-col justify-between">
+        {/* SVG Connection Lines for sm+ screens */}
+        <svg className="hidden sm:block absolute inset-0 w-full h-full pointer-events-none z-0">
+          <defs>
+            <linearGradient id="multiAiActiveLine" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stopColor="#6D4AFF" stopOpacity="0.8" />
+              <stop offset="100%" stopColor="#3B82F6" stopOpacity="0.8" />
+            </linearGradient>
+          </defs>
+
+          {/* Top-Left to Center */}
+          <line x1="25%" y1="24%" x2="50%" y2="50%" stroke="#E5E5E2" strokeWidth="1.5" strokeDasharray="3 3" />
+          {/* Top-Right to Center */}
+          <line x1="75%" y1="24%" x2="50%" y2="50%" stroke="#E5E5E2" strokeWidth="1.5" strokeDasharray="3 3" />
+          {/* Bottom-Left to Center */}
+          <line x1="25%" y1="76%" x2="50%" y2="50%" stroke="#E5E5E2" strokeWidth="1.5" strokeDasharray="3 3" />
+          {/* Bottom-Right to Center */}
+          <line x1="75%" y1="76%" x2="50%" y2="50%" stroke="#E5E5E2" strokeWidth="1.5" strokeDasharray="3 3" />
+
+          {/* Animated Flow Pulse to active node */}
+          <circle cx="50%" cy="50%" r="42" fill="none" stroke="#6D4AFF" strokeWidth="1" opacity="0.2" className="animate-ping" />
+        </svg>
+
+        {/* Top Row: Claude (Left) & GPT-4o (Right) */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 sm:gap-4 relative z-10">
+          {/* Node 1: Claude 3.7 Sonnet */}
           <Link
-            key={node.id}
-            to={node.link}
-            style={{ left: `${node.x}%`, top: `${node.y}%` }}
-            onMouseEnter={() => setHoveredNode(node.id)}
+            to={models[0].link}
+            onMouseEnter={() => setHoveredNode(models[0].id)}
             onMouseLeave={() => setHoveredNode(null)}
-            className="absolute -translate-x-1/2 -translate-y-1/2 z-10 cursor-pointer block"
-            aria-label={`Inspect ${node.name}`}
+            className={`p-3 rounded-xl bg-white border transition-all duration-200 shadow-2xs group cursor-pointer ${
+              hoveredNode === models[0].id
+                ? 'border-[#6D4AFF] shadow-sm -translate-y-0.5'
+                : 'border-[#E5E5E2] hover:border-[#D4D4CE]'
+            }`}
           >
-            <div
-              className={`flex items-center gap-1.5 sm:gap-2.5 p-1.5 sm:p-2.5 rounded-xl bg-white border transition-all duration-200 shadow-sm w-[136px] xs:w-[155px] sm:w-48 md:w-52 lg:w-44 xl:w-52 2xl:w-56 text-left ${
-                isHovered
-                  ? 'border-[#6D4AFF] shadow-[0_6px_20px_rgba(109,74,255,0.12)] -translate-y-0.5'
-                  : 'border-[#E5E5E2] hover:border-[#D4D4CE]'
-              }`}
-            >
-              {node.brand && (
-                <div className="w-6 h-6 sm:w-7.5 sm:h-7.5 rounded-lg bg-[#FAFAF8] border border-[#E5E5E2] flex items-center justify-center shrink-0 text-[#111318]">
-                  <BrandLogo brand={node.brand} size={14} />
+            <div className="flex items-center justify-between gap-1.5 mb-1.5">
+              <div className="flex items-center gap-2">
+                <div className="w-6 h-6 rounded-lg bg-[#FAFAF8] border border-[#E5E5E2] flex items-center justify-center shrink-0">
+                  <BrandLogo brand={models[0].provider} size={14} />
                 </div>
-              )}
-
-              <div className="flex-1 min-w-0">
-                <div className="flex items-center justify-between gap-1 mb-0.5">
-                  <span className="text-[11px] sm:text-xs font-semibold text-[#111318] truncate">{node.name}</span>
-                  <ArrowUpRight className={`w-3 h-3 sm:w-3.5 sm:h-3.5 text-[#6D4AFF] shrink-0 transition-opacity ${isHovered ? 'opacity-100' : 'opacity-0'}`} />
+                <div>
+                  <h4 className="text-xs font-bold text-[#111318] group-hover:text-[#6D4AFF] transition-colors">
+                    {models[0].name}
+                  </h4>
+                  <span className="text-[10px] font-mono text-[#8B919B] block">
+                    {models[0].modelBadge}
+                  </span>
                 </div>
-                <div className="text-[9px] sm:text-[10px] text-[#626873] leading-tight break-words line-clamp-1 xs:line-clamp-2">{node.role}</div>
               </div>
+              <span className="text-[9px] font-mono font-semibold px-1.5 py-0.5 rounded bg-purple-50 text-[#6D4AFF] border border-purple-200 shrink-0">
+                {models[0].latency}
+              </span>
             </div>
+            <p className="text-[11px] text-[#626873] leading-snug line-clamp-2">
+              {models[0].role}
+            </p>
           </Link>
-        );
-      })}
 
-      {/* Subtle Status Footer */}
-      <div className="absolute bottom-2.5 sm:bottom-3 left-3 sm:left-4 right-3 sm:right-4 flex items-center justify-between text-[10px] sm:text-[11px] text-[#8B919B] z-10 pointer-events-none">
-        <div className="flex items-center gap-1.5 truncate">
-          <Check className="w-3.5 h-3.5 text-emerald-500 shrink-0" />
-          <span className="truncate">Deterministic execution flow</span>
+          {/* Node 2: OpenAI GPT-4o */}
+          <Link
+            to={models[1].link}
+            onMouseEnter={() => setHoveredNode(models[1].id)}
+            onMouseLeave={() => setHoveredNode(null)}
+            className={`p-3 rounded-xl bg-white border transition-all duration-200 shadow-2xs group cursor-pointer ${
+              hoveredNode === models[1].id
+                ? 'border-[#6D4AFF] shadow-sm -translate-y-0.5'
+                : 'border-[#E5E5E2] hover:border-[#D4D4CE]'
+            }`}
+          >
+            <div className="flex items-center justify-between gap-1.5 mb-1.5">
+              <div className="flex items-center gap-2">
+                <div className="w-6 h-6 rounded-lg bg-[#FAFAF8] border border-[#E5E5E2] flex items-center justify-center shrink-0">
+                  <BrandLogo brand={models[1].provider} size={14} />
+                </div>
+                <div>
+                  <h4 className="text-xs font-bold text-[#111318] group-hover:text-[#6D4AFF] transition-colors">
+                    {models[1].name}
+                  </h4>
+                  <span className="text-[10px] font-mono text-[#8B919B] block">
+                    {models[1].modelBadge}
+                  </span>
+                </div>
+              </div>
+              <span className="text-[9px] font-mono font-semibold px-1.5 py-0.5 rounded bg-emerald-50 text-emerald-700 border border-emerald-200 shrink-0">
+                {models[1].latency}
+              </span>
+            </div>
+            <p className="text-[11px] text-[#626873] leading-snug line-clamp-2">
+              {models[1].role}
+            </p>
+          </Link>
         </div>
-        <span className="shrink-0 text-right">Topology</span>
+
+        {/* Center Nexus Orchestration Bus Badge */}
+        <div className="my-2 sm:my-3 flex items-center justify-center relative z-20">
+          <Link
+            to="/explore"
+            onMouseEnter={() => setHoveredNode('core')}
+            onMouseLeave={() => setHoveredNode(null)}
+            className="inline-flex items-center gap-2.5 px-4 py-2 rounded-xl bg-[#111318] hover:bg-[#1C1F26] text-white border border-[#22262F] shadow-md transition-all duration-200 hover:border-[#6D4AFF]/80 group cursor-pointer"
+          >
+            <NexusLogo size={16} dark />
+            <div className="flex flex-col text-left">
+              <div className="flex items-center gap-1.5">
+                <span className="text-xs font-bold tracking-tight text-white">NEXUS Multi-Model Bus</span>
+                <span className="w-1.5 h-1.5 rounded-full bg-[#6D4AFF] animate-ping" />
+              </div>
+              <span className="text-[10px] font-mono text-[#8B919B]">A2A Inter-Agent Protocol • &lt;10ms Sync</span>
+            </div>
+            <ArrowUpRight className="w-3.5 h-3.5 text-[#8B919B] group-hover:text-[#6D4AFF] transition-colors" />
+          </Link>
+        </div>
+
+        {/* Bottom Row: DeepSeek R1 (Left) & Gemini 2.5 (Right) */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 sm:gap-4 relative z-10">
+          {/* Node 3: DeepSeek R1 */}
+          <Link
+            to={models[2].link}
+            onMouseEnter={() => setHoveredNode(models[2].id)}
+            onMouseLeave={() => setHoveredNode(null)}
+            className={`p-3 rounded-xl bg-white border transition-all duration-200 shadow-2xs group cursor-pointer ${
+              hoveredNode === models[2].id
+                ? 'border-[#6D4AFF] shadow-sm -translate-y-0.5'
+                : 'border-[#E5E5E2] hover:border-[#D4D4CE]'
+            }`}
+          >
+            <div className="flex items-center justify-between gap-1.5 mb-1.5">
+              <div className="flex items-center gap-2">
+                <div className="w-6 h-6 rounded-lg bg-[#FAFAF8] border border-[#E5E5E2] flex items-center justify-center shrink-0">
+                  <BrandLogo brand={models[2].provider} size={14} />
+                </div>
+                <div>
+                  <h4 className="text-xs font-bold text-[#111318] group-hover:text-[#6D4AFF] transition-colors">
+                    {models[2].name}
+                  </h4>
+                  <span className="text-[10px] font-mono text-[#8B919B] block">
+                    {models[2].modelBadge}
+                  </span>
+                </div>
+              </div>
+              <span className="text-[9px] font-mono font-semibold px-1.5 py-0.5 rounded bg-blue-50 text-blue-700 border border-blue-200 shrink-0">
+                {models[2].latency}
+              </span>
+            </div>
+            <p className="text-[11px] text-[#626873] leading-snug line-clamp-2">
+              {models[2].role}
+            </p>
+          </Link>
+
+          {/* Node 4: Google Gemini 2.5 */}
+          <Link
+            to={models[3].link}
+            onMouseEnter={() => setHoveredNode(models[3].id)}
+            onMouseLeave={() => setHoveredNode(null)}
+            className={`p-3 rounded-xl bg-white border transition-all duration-200 shadow-2xs group cursor-pointer ${
+              hoveredNode === models[3].id
+                ? 'border-[#6D4AFF] shadow-sm -translate-y-0.5'
+                : 'border-[#E5E5E2] hover:border-[#D4D4CE]'
+            }`}
+          >
+            <div className="flex items-center justify-between gap-1.5 mb-1.5">
+              <div className="flex items-center gap-2">
+                <div className="w-6 h-6 rounded-lg bg-[#FAFAF8] border border-[#E5E5E2] flex items-center justify-center shrink-0">
+                  <BrandLogo brand={models[3].provider} size={14} />
+                </div>
+                <div>
+                  <h4 className="text-xs font-bold text-[#111318] group-hover:text-[#6D4AFF] transition-colors">
+                    {models[3].name}
+                  </h4>
+                  <span className="text-[10px] font-mono text-[#8B919B] block">
+                    {models[3].modelBadge}
+                  </span>
+                </div>
+              </div>
+              <span className="text-[9px] font-mono font-semibold px-1.5 py-0.5 rounded bg-amber-50 text-amber-700 border border-amber-200 shrink-0">
+                {models[3].latency}
+              </span>
+            </div>
+            <p className="text-[11px] text-[#626873] leading-snug line-clamp-2">
+              {models[3].role}
+            </p>
+          </Link>
+        </div>
+      </div>
+
+      {/* Bottom Status Footer */}
+      <div className="pt-3 sm:pt-4 mt-3 sm:mt-4 border-t border-[#EFEFEA] flex flex-wrap items-center justify-between gap-2 text-[10px] sm:text-[11px] text-[#8B919B] font-mono">
+        <div className="flex items-center gap-2">
+          <Check className="w-3.5 h-3.5 text-emerald-500 shrink-0" />
+          <span>Autonomous A2A Protocol · Deterministic Orchestration</span>
+        </div>
+        <div className="flex items-center gap-2 font-sans font-medium text-[#626873]">
+          <span>Web &amp; Desktop Unified</span>
+        </div>
       </div>
     </div>
   );

@@ -10,9 +10,11 @@ import {
   Network, 
   Activity, 
   ShieldCheck,
-  ArrowRight
+  ArrowRight,
+  Monitor
 } from 'lucide-react';
 import { Button } from '../ui/Button';
+import { DesktopAppModal } from '../desktop/DesktopAppModal';
 
 export const NexusLogo: React.FC<{ className?: string; size?: number; dark?: boolean }> = ({
   className = '',
@@ -65,6 +67,7 @@ export const Navbar: React.FC = () => {
   const [scrolled, setScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [productDropdownOpen, setProductDropdownOpen] = useState(false);
+  const [desktopModalOpen, setDesktopModalOpen] = useState(false);
   const location = useLocation();
   const dropdownRef = useRef<HTMLDivElement>(null);
 
@@ -274,6 +277,15 @@ export const Navbar: React.FC = () => {
 
             {/* Right CTAs */}
             <div className="hidden md:flex items-center gap-2.5">
+              <button
+                type="button"
+                onClick={() => setDesktopModalOpen(true)}
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs lg:text-sm font-semibold text-[#111318] hover:text-[#6D4AFF] bg-white border border-[#E5E5E2] hover:border-[#D4D4CE] rounded-lg transition-colors shadow-2xs hover:bg-[#FAFAF8] cursor-pointer"
+              >
+                <Monitor className="w-3.5 h-3.5 text-[#6D4AFF]" />
+                <span>Desktop App</span>
+              </button>
+
               <Link
                 to="/login"
                 className="px-3.5 py-1.5 text-xs lg:text-sm font-medium text-[#626873] hover:text-[#111318] transition-colors rounded-lg hover:bg-black/[0.03] cursor-pointer"
@@ -392,6 +404,17 @@ export const Navbar: React.FC = () => {
           </div>
 
           <div className="flex flex-col gap-2.5 pt-6 border-t border-[#E5E5E2]">
+            <button
+              type="button"
+              onClick={() => {
+                setMobileMenuOpen(false);
+                setDesktopModalOpen(true);
+              }}
+              className="w-full py-2.5 flex items-center justify-center gap-2 text-sm font-semibold text-[#111318] hover:bg-black/[0.04] rounded-lg border border-[#E5E5E2] bg-white cursor-pointer"
+            >
+              <Monitor className="w-4 h-4 text-[#6D4AFF]" />
+              <span>Get Desktop App (Windows / Mac / Linux)</span>
+            </button>
             <Link
               to="/login"
               onClick={() => setMobileMenuOpen(false)}
@@ -410,6 +433,12 @@ export const Navbar: React.FC = () => {
           </div>
         </div>
       )}
+
+      {/* Desktop App Modal */}
+      <DesktopAppModal
+        isOpen={desktopModalOpen}
+        onClose={() => setDesktopModalOpen(false)}
+      />
     </>
   );
 };

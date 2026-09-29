@@ -1,6 +1,7 @@
 import React from 'react';
 import { Hero } from '../hero/Hero';
 import { EcosystemStrip } from '../ecosystem/EcosystemStrip';
+import { MultiAiShowcase } from '../collaboration/MultiAiShowcase';
 import { FeatureGrid } from '../features/FeatureGrid';
 import { ConnectorShowcase } from '../connectors/ConnectorShowcase';
 import { AgentCollaboration } from '../collaboration/AgentCollaboration';
@@ -14,7 +15,10 @@ export const HomePage: React.FC = () => {
       {/* 1. Hero & Physical System Orchestration Map */}
       <Hero />
 
-      {/* 2. Bring the tools you already use - Ecosystem Strip */}
+      {/* 2. Top AI APIs Working Together (Claude, OpenAI, DeepSeek, Gemini, Llama) */}
+      <MultiAiShowcase />
+
+      {/* 3. Bring the tools you already use - Ecosystem Strip */}
       <EcosystemStrip />
 
       {/* 3. One system. Every agent. - Left-Right Editorial Flow */}

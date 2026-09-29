@@ -8,6 +8,7 @@ export const Footer: React.FC = () => {
       title: 'Product',
       links: [
         { label: 'Overview', to: '/' },
+        { label: 'Desktop App (Win/Mac/Linux)', to: '/#download' },
         { label: 'Explore Ecosystem', to: '/explore' },
         { label: 'Pricing & Plans', to: '/pricing' },
         { label: 'Agents', to: '/explore?tab=agents' },
@@ -20,6 +21,7 @@ export const Footer: React.FC = () => {
       links: [
         { label: 'Developers Overview', to: '/developers' },
         { label: 'Documentation', to: '/docs' },
+        { label: 'OpenAPI 3.1 Spec', to: '/api/v1/openapi.json' },
         { label: 'Agent SDK', to: '/developers' },
         { label: 'Connector SDK', to: '/developers' },
         { label: 'Open Source Core', to: '/open-source' },

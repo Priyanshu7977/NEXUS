@@ -8,6 +8,14 @@ export type BrandName =
   | 'google gemini'
   | 'anthropic'
   | 'claude'
+  | 'deepseek'
+  | 'mistral'
+  | 'groq'
+  | 'meta'
+  | 'llama'
+  | 'windows'
+  | 'apple'
+  | 'linux'
   | 'supabase'
   | 'mongodb'
   | 'postgres'
@@ -37,6 +45,13 @@ function resolveBrand(input: string): string {
   if (s.includes('anthropic') || s.includes('claude')) return 'anthropic';
   if (s.includes('gemini') || s.includes('google')) return 'gemini';
   if (s.includes('openai') || s.includes('gpt')) return 'openai';
+  if (s.includes('deepseek')) return 'deepseek';
+  if (s.includes('mistral')) return 'mistral';
+  if (s.includes('groq')) return 'groq';
+  if (s.includes('meta') || s.includes('llama')) return 'meta';
+  if (s.includes('windows') || s.includes('win')) return 'windows';
+  if (s.includes('apple') || s.includes('mac') || s.includes('darwin')) return 'apple';
+  if (s.includes('linux') || s.includes('ubuntu')) return 'linux';
   if (s.includes('github') || s.includes('git')) return 'github';
   if (s.includes('vercel')) return 'vercel';
   if (s.includes('supabase')) return 'supabase';
@@ -99,6 +114,55 @@ export const BrandLogo: React.FC<BrandLogoProps> = ({
         return (
           <svg viewBox="0 0 24 24" width={size} height={size} fill="currentColor" aria-label="Anthropic Claude" shapeRendering="geometricPrecision" className="shrink-0">
             <path d="M13.827 2.164a.75.75 0 0 0-.96 0L8.293 6.05a.75.75 0 0 0-.256.456l-1.39 6.81a.75.75 0 0 0 .428.825l6.096 2.875a.75.75 0 0 0 .907-.184l4.966-5.815a.75.75 0 0 0 .148-.567l-1.077-6.862a.75.75 0 0 0-.288-.479l-4.007-2.965zm-2.072 6.42a1.5 1.5 0 1 1 2.298-1.927 1.5 1.5 0 0 1-2.298 1.927zM2.87 14.494a.75.75 0 0 1 .91-.538l6.815 1.73a.75.75 0 0 1 .53.518l2.128 6.57a.75.75 0 0 1-.84.954l-7.394-1.637a.75.75 0 0 1-.571-.62l-.578-6.977zm18.26 0a.75.75 0 0 0-.91-.538l-6.815 1.73a.75.75 0 0 0-.53.518l-2.128 6.57a.75.75 0 0 0 .84.954l7.394-1.637a.75.75 0 0 0 .571-.62l.578-6.977z" />
+          </svg>
+        );
+
+      case 'deepseek':
+        return (
+          <svg viewBox="0 0 24 24" width={size} height={size} fill="currentColor" aria-label="DeepSeek AI" shapeRendering="geometricPrecision" className="shrink-0">
+            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 16.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z" />
+          </svg>
+        );
+
+      case 'mistral':
+        return (
+          <svg viewBox="0 0 24 24" width={size} height={size} fill="currentColor" aria-label="Mistral AI" shapeRendering="geometricPrecision" className="shrink-0">
+            <path d="M3 3h4v4H3V3zm7 0h4v4h-4V3zm7 0h4v4h-4V3zM3 10h4v4H3v-4zm14 0h4v4h-4v-4zM3 17h4v4H3v-4zm7 0h4v4h-4v-4zm7 0h4v4h-4v-4z" />
+          </svg>
+        );
+
+      case 'groq':
+        return (
+          <svg viewBox="0 0 24 24" width={size} height={size} fill="currentColor" aria-label="Groq" shapeRendering="geometricPrecision" className="shrink-0">
+            <path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2zm3.8 11.2h-3.2v-2.4h5.6v4.8A7.6 7.6 0 1 1 12 4.4a7.6 7.6 0 0 1 5.4 2.2l-1.7 1.7a5.2 5.2 0 1 0 0 7.4z" />
+          </svg>
+        );
+
+      case 'meta':
+        return (
+          <svg viewBox="0 0 24 24" width={size} height={size} fill="currentColor" aria-label="Meta Llama" shapeRendering="geometricPrecision" className="shrink-0">
+            <path d="M12.003 4.298c-3.142 0-5.32 1.488-6.634 3.754-1.285 2.217-1.428 4.79-.884 7.228.47 2.11 1.637 3.864 3.298 4.935 1.543.996 3.328 1.485 5.093 1.485 1.832 0 3.684-.524 5.281-1.574 1.704-1.12 2.87-2.938 3.295-5.114.49-2.5-.04-5.118-1.48-7.356-1.34-2.083-3.664-3.558-6.969-3.558zm-1.042 11.69c-1.378 0-2.584-.663-3.31-1.77-.732-1.116-.838-2.532-.29-3.882.52-1.285 1.564-2.14 2.793-2.288 1.344-.162 2.684.5 3.398 1.674l-2.591 6.266zm4.674-.012l-2.59-6.265c.713-1.173 2.053-1.836 3.397-1.674 1.229.148 2.273 1.003 2.793 2.288.548 1.35.442 2.766-.29 3.882-.726 1.107-1.932 1.77-3.31 1.77z" />
+          </svg>
+        );
+
+      case 'windows':
+        return (
+          <svg viewBox="0 0 24 24" width={size} height={size} fill="currentColor" aria-label="Windows" shapeRendering="geometricPrecision" className="shrink-0">
+            <path d="M0 3.449L9.75 2.1v9.451H0m10.949-9.602L24 0v11.4H10.949M0 12.6h9.75v9.451L0 20.699M10.949 12.6H24V24l-12.9-1.801" />
+          </svg>
+        );
+
+      case 'apple':
+        return (
+          <svg viewBox="0 0 24 24" width={size} height={size} fill="currentColor" aria-label="Apple macOS" shapeRendering="geometricPrecision" className="shrink-0">
+            <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M15.97 6.37c.62-.75 1.04-1.8 1.01-2.87-.96.04-2.12.64-2.8 1.44-.59.69-.99 1.77-.96 2.84 1.08.08 2.13-.56 2.75-1.41z" />
+          </svg>
+        );
+
+      case 'linux':
+        return (
+          <svg viewBox="0 0 24 24" width={size} height={size} fill="currentColor" aria-label="Linux" shapeRendering="geometricPrecision" className="shrink-0">
+            <path d="M12.001 2c-3.14 0-5.7 2.56-5.7 5.7 0 1.2.37 2.31 1 3.23-.96 1.34-1.53 2.98-1.53 4.77 0 .58.07 1.15.2 1.7-1.07.64-1.8 1.79-1.8 3.1 0 1.93 1.57 3.5 3.5 3.5 1.03 0 1.95-.45 2.6-1.16 1.06.44 2.24.66 3.43.66s2.37-.22 3.43-.66c.65.71 1.57 1.16 2.6 1.16 1.93 0 3.5-1.57 3.5-3.5 0-1.31-.73-2.46-1.8-3.1.13-.55.2-1.12.2-1.7 0-1.79-.57-3.43-1.53-4.77.63-.92 1-2.03 1-3.23 0-3.14-2.56-5.7-5.7-5.7zm0 2.5c1.77 0 3.2 1.43 3.2 3.2 0 1.77-1.43 3.2-3.2 3.2s-3.2-1.43-3.2-3.2c0-1.77 1.43-3.2 3.2-3.2z" />
           </svg>
         );
 

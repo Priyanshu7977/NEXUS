@@ -1,5 +1,5 @@
 export type AgentStatus = 'draft' | 'active' | 'paused' | 'archived';
-export type AgentModelProvider = 'gemini' | 'openai' | 'anthropic';
+export type AgentModelProvider = 'gemini' | 'openai' | 'anthropic' | 'deepseek' | 'groq' | 'mistral' | 'meta';
 export type AgentPermissionMode = 'read_only' | 'read_write' | 'allowed';
 
 export interface AgentToolPermission {

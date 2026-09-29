@@ -12,17 +12,17 @@ export const EcosystemStrip: React.FC = () => {
   const [hoveredBrand, setHoveredBrand] = useState<string | null>(null);
 
   const brands: BrandItem[] = [
+    { id: 'anthropic', name: 'Claude 3.7', category: 'Reasoning AI' },
+    { id: 'openai', name: 'OpenAI GPT-4o', category: 'LLM & Tools' },
+    { id: 'deepseek', name: 'DeepSeek R1', category: 'Reasoning & Math' },
+    { id: 'gemini', name: 'Google Gemini', category: 'Multimodal 1M+' },
+    { id: 'meta', name: 'Meta Llama', category: 'Open Weights' },
+    { id: 'mistral', name: 'Mistral AI', category: 'Code & Speed' },
     { id: 'github', name: 'GitHub', category: 'DevOps & Repos' },
     { id: 'vercel', name: 'Vercel', category: 'Deployment' },
-    { id: 'openai', name: 'OpenAI', category: 'LLM Engine' },
-    { id: 'gemini', name: 'Google Gemini', category: 'Multimodal AI' },
-    { id: 'anthropic', name: 'Anthropic Claude', category: 'Reasoning AI' },
     { id: 'supabase', name: 'Supabase', category: 'PostgreSQL & Auth' },
     { id: 'mongodb', name: 'MongoDB', category: 'Document Database' },
-    { id: 'postgresql', name: 'PostgreSQL', category: 'Relational DB' },
     { id: 'slack', name: 'Slack', category: 'Team Dispatch' },
-    { id: 'notion', name: 'Notion', category: 'Knowledge Base' },
-    { id: 'shopify', name: 'Shopify', category: 'E-commerce API' },
     { id: 'docker', name: 'Docker', category: 'Container Sandbox' },
   ];
 

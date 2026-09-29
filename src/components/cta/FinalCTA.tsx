@@ -2,9 +2,11 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '../ui/Button';
 import { Terminal, Copy, Check } from 'lucide-react';
+import { DesktopAppModal } from '../desktop/DesktopAppModal';
 
 export const FinalCTA: React.FC = () => {
   const [copied, setCopied] = useState(false);
+  const [isDesktopOpen, setIsDesktopOpen] = useState(false);
   const command = 'npx create-nexus-app@latest';
 
   const handleCopy = () => {
@@ -33,22 +35,18 @@ export const FinalCTA: React.FC = () => {
 
             <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-center gap-3.5 mb-10 max-w-md sm:max-w-none mx-auto">
               <Link to="/signup" className="w-full sm:w-auto inline-flex">
-                <Button size="lg" withArrow className="w-full sm:w-52 sm:min-w-[200px] h-12 justify-center text-center">
-                  Start Building
+                <Button size="lg" withArrow className="w-full sm:w-48 sm:min-w-[190px] h-12 justify-center text-center">
+                  Start Building Free
                 </Button>
               </Link>
 
-              <Button
-                variant="dark"
-                size="lg"
-                className="w-full sm:w-52 sm:min-w-[200px] h-12 justify-center text-center"
-                onClick={() => {
-                  const el = document.getElementById('features');
-                  el?.scrollIntoView({ behavior: 'smooth' });
-                }}
+              <button
+                type="button"
+                onClick={() => setIsDesktopOpen(true)}
+                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 h-12 rounded-xl bg-white/10 hover:bg-white/15 border border-white/20 text-xs sm:text-sm font-semibold text-white transition-all shadow-sm cursor-pointer"
               >
-                Explore Platform
-              </Button>
+                <span>Get Desktop App</span>
+              </button>
             </div>
 
             {/* CLI Snippet */}
@@ -72,6 +70,12 @@ export const FinalCTA: React.FC = () => {
           </div>
         </div>
       </div>
+
+      {/* Desktop App Modal */}
+      <DesktopAppModal
+        isOpen={isDesktopOpen}
+        onClose={() => setIsDesktopOpen(false)}
+      />
     </section>
   );
 };
