@@ -31,3 +31,4 @@ dist-ssr
 # Build info and scratch files
 *.tsbuildinfo
 scratch/
+NEXUS-main/
