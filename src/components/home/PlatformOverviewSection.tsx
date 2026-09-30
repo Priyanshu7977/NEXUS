@@ -194,58 +194,58 @@ export const PlatformOverviewSection: React.FC = () => {
           </div>
 
           {/* Right Column: Interactive Visual Simulator for the Active Step */}
-          <div className="lg:col-span-6 rounded-3xl bg-[#111318] border border-[#242833] p-5 sm:p-6 text-white flex flex-col justify-between shadow-lg">
+          <div className="lg:col-span-6 rounded-3xl bg-white border border-[#E5E5E2] p-5 sm:p-6 text-[#111318] flex flex-col justify-between shadow-sm">
             {/* Stage Visual: Step 1 (BYOK Vault) */}
             {activeStepIndex === 0 && (
               <div className="space-y-4">
-                <div className="flex items-center justify-between pb-3 border-b border-[#242833] text-xs font-mono text-[#8B919B]">
+                <div className="flex items-center justify-between pb-3 border-b border-[#E5E5E2] text-xs font-mono text-[#626873]">
                   <div className="flex items-center gap-2">
-                    <Lock className="w-3.5 h-3.5 text-emerald-400" />
-                    <span className="text-white font-semibold">Client-Side Key Vault</span>
+                    <Lock className="w-3.5 h-3.5 text-emerald-600" />
+                    <span className="text-[#111318] font-bold">Client-Side Key Vault</span>
                   </div>
-                  <span className="text-emerald-400">AES-256 GCM</span>
+                  <span className="text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200 text-[10px] font-bold">AES-256 GCM</span>
                 </div>
 
                 <div className="space-y-2.5 text-xs font-mono">
-                  <div className="p-3 rounded-xl bg-[#1A1D24] border border-[#2A2E3B] flex items-center justify-between">
+                  <div className="p-3 rounded-xl bg-[#FAFAF8] border border-[#E5E5E2] flex items-center justify-between">
                     <div className="flex items-center gap-2.5">
                       <BrandLogo brand="anthropic" size={16} />
-                      <span className="text-white">Anthropic API Key</span>
+                      <span className="text-[#111318] font-semibold">Anthropic API Key</span>
                     </div>
                     <span className="text-[#8B919B]">sk-ant-api03-••••••••••••</span>
-                    <span className="text-emerald-400 text-[10px] bg-emerald-950/60 px-2 py-0.5 rounded border border-emerald-800">CONNECTED</span>
+                    <span className="text-emerald-700 text-[10px] bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200 font-bold">CONNECTED</span>
                   </div>
 
-                  <div className="p-3 rounded-xl bg-[#1A1D24] border border-[#2A2E3B] flex items-center justify-between">
+                  <div className="p-3 rounded-xl bg-[#FAFAF8] border border-[#E5E5E2] flex items-center justify-between">
                     <div className="flex items-center gap-2.5">
                       <BrandLogo brand="openai" size={16} />
-                      <span className="text-white">OpenAI API Key</span>
+                      <span className="text-[#111318] font-semibold">OpenAI API Key</span>
                     </div>
                     <span className="text-[#8B919B]">sk-proj-••••••••••••</span>
-                    <span className="text-emerald-400 text-[10px] bg-emerald-950/60 px-2 py-0.5 rounded border border-emerald-800">CONNECTED</span>
+                    <span className="text-emerald-700 text-[10px] bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200 font-bold">CONNECTED</span>
                   </div>
 
-                  <div className="p-3 rounded-xl bg-[#1A1D24] border border-[#2A2E3B] flex items-center justify-between">
+                  <div className="p-3 rounded-xl bg-[#FAFAF8] border border-[#E5E5E2] flex items-center justify-between">
                     <div className="flex items-center gap-2.5">
                       <BrandLogo brand="deepseek" size={16} />
-                      <span className="text-white">DeepSeek API Key</span>
+                      <span className="text-[#111318] font-semibold">DeepSeek API Key</span>
                     </div>
                     <span className="text-[#8B919B]">sk-ds-••••••••••••</span>
-                    <span className="text-emerald-400 text-[10px] bg-emerald-950/60 px-2 py-0.5 rounded border border-emerald-800">CONNECTED</span>
+                    <span className="text-emerald-700 text-[10px] bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200 font-bold">CONNECTED</span>
                   </div>
 
-                  <div className="p-3 rounded-xl bg-[#1A1D24] border border-[#2A2E3B] flex items-center justify-between">
+                  <div className="p-3 rounded-xl bg-[#FAFAF8] border border-[#E5E5E2] flex items-center justify-between">
                     <div className="flex items-center gap-2.5">
                       <BrandLogo brand="gemini" size={16} />
-                      <span className="text-white">Google AI Studio Key</span>
+                      <span className="text-[#111318] font-semibold">Google AI Studio Key</span>
                     </div>
                     <span className="text-[#8B919B]">AIzaSy••••••••••••</span>
-                    <span className="text-emerald-400 text-[10px] bg-emerald-950/60 px-2 py-0.5 rounded border border-emerald-800">CONNECTED</span>
+                    <span className="text-emerald-700 text-[10px] bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200 font-bold">CONNECTED</span>
                   </div>
                 </div>
 
-                <div className="p-3 rounded-xl bg-[#171A21] border border-[#242833] text-[11px] text-[#8B919B] flex items-center gap-2">
-                  <ShieldCheck className="w-4 h-4 text-emerald-400 shrink-0" />
+                <div className="p-3 rounded-xl bg-[#F6F6F3] border border-[#E5E5E2] text-[11px] text-[#626873] flex items-center gap-2">
+                  <ShieldCheck className="w-4 h-4 text-emerald-600 shrink-0" />
                   <span>Zero telemetry or keys transmitted to third parties. Verified offline ready.</span>
                 </div>
               </div>
@@ -254,49 +254,49 @@ export const PlatformOverviewSection: React.FC = () => {
             {/* Stage Visual: Step 2 (MCP & Connectors) */}
             {activeStepIndex === 1 && (
               <div className="space-y-4">
-                <div className="flex items-center justify-between pb-3 border-b border-[#242833] text-xs font-mono text-[#8B919B]">
+                <div className="flex items-center justify-between pb-3 border-b border-[#E5E5E2] text-xs font-mono text-[#626873]">
                   <div className="flex items-center gap-2">
                     <Cpu className="w-3.5 h-3.5 text-[#6D4AFF]" />
-                    <span className="text-white font-semibold">Active MCP Server Mesh</span>
+                    <span className="text-[#111318] font-bold">Active MCP Server Mesh</span>
                   </div>
-                  <span className="text-[#6D4AFF]">Protocol v2024-11-05</span>
+                  <span className="text-[#6D4AFF] bg-purple-50 px-2 py-0.5 rounded border border-purple-200 text-[10px] font-bold">Protocol v2024-11-05</span>
                 </div>
 
                 <div className="grid grid-cols-2 gap-2.5 text-xs font-mono">
-                  <div className="p-3 rounded-xl bg-[#1A1D24] border border-[#2A2E3B] space-y-1">
-                    <div className="flex items-center gap-2 text-white font-bold">
+                  <div className="p-3 rounded-xl bg-[#FAFAF8] border border-[#E5E5E2] space-y-1">
+                    <div className="flex items-center gap-2 text-[#111318] font-bold">
                       <BrandLogo brand="github" size={14} />
                       <span>GitHub MCP</span>
                     </div>
-                    <p className="text-[10px] text-[#8B919B]">AST Diffing, PR Comments, CI Webhooks</p>
+                    <p className="text-[10px] text-[#626873]">AST Diffing, PR Comments, CI Webhooks</p>
                   </div>
 
-                  <div className="p-3 rounded-xl bg-[#1A1D24] border border-[#2A2E3B] space-y-1">
-                    <div className="flex items-center gap-2 text-white font-bold">
+                  <div className="p-3 rounded-xl bg-[#FAFAF8] border border-[#E5E5E2] space-y-1">
+                    <div className="flex items-center gap-2 text-[#111318] font-bold">
                       <BrandLogo brand="supabase" size={14} />
                       <span>Supabase MCP</span>
                     </div>
-                    <p className="text-[10px] text-[#8B919B]">Postgres Schemas, RLS Policies, Realtime</p>
+                    <p className="text-[10px] text-[#626873]">Postgres Schemas, RLS Policies, Realtime</p>
                   </div>
 
-                  <div className="p-3 rounded-xl bg-[#1A1D24] border border-[#2A2E3B] space-y-1">
-                    <div className="flex items-center gap-2 text-white font-bold">
+                  <div className="p-3 rounded-xl bg-[#FAFAF8] border border-[#E5E5E2] space-y-1">
+                    <div className="flex items-center gap-2 text-[#111318] font-bold">
                       <BrandLogo brand="vercel" size={14} />
                       <span>Vercel MCP</span>
                     </div>
-                    <p className="text-[10px] text-[#8B919B]">Preview Environments, Edge Deployments</p>
+                    <p className="text-[10px] text-[#626873]">Preview Environments, Edge Deployments</p>
                   </div>
 
-                  <div className="p-3 rounded-xl bg-[#1A1D24] border border-[#2A2E3B] space-y-1">
-                    <div className="flex items-center gap-2 text-white font-bold">
+                  <div className="p-3 rounded-xl bg-[#FAFAF8] border border-[#E5E5E2] space-y-1">
+                    <div className="flex items-center gap-2 text-[#111318] font-bold">
                       <BrandLogo brand="linear" size={14} />
                       <span>Linear MCP</span>
                     </div>
-                    <p className="text-[10px] text-[#8B919B]">Issue Clustering, Roadmaps, Sprint Sync</p>
+                    <p className="text-[10px] text-[#626873]">Issue Clustering, Roadmaps, Sprint Sync</p>
                   </div>
                 </div>
 
-                <div className="p-3 rounded-xl bg-[#171A21] border border-[#242833] text-[11px] font-mono text-emerald-400">
+                <div className="p-3 rounded-xl bg-emerald-50 border border-emerald-200 text-[11px] font-mono text-emerald-800">
                   &gt; [MCP_RUNTIME] 18 tools discovered across 4 connected protocol daemons.
                 </div>
               </div>
@@ -305,45 +305,45 @@ export const PlatformOverviewSection: React.FC = () => {
             {/* Stage Visual: Step 3 (Visual DAG Pipelines) */}
             {activeStepIndex === 2 && (
               <div className="space-y-4">
-                <div className="flex items-center justify-between pb-3 border-b border-[#242833] text-xs font-mono text-[#8B919B]">
+                <div className="flex items-center justify-between pb-3 border-b border-[#E5E5E2] text-xs font-mono text-[#626873]">
                   <div className="flex items-center gap-2">
-                    <GitFork className="w-3.5 h-3.5 text-blue-400" />
-                    <span className="text-white font-semibold">DAG Execution Pipeline</span>
+                    <GitFork className="w-3.5 h-3.5 text-blue-600" />
+                    <span className="text-[#111318] font-bold">DAG Execution Pipeline</span>
                   </div>
-                  <span className="text-blue-400">Multi-Model Orchestrator</span>
+                  <span className="text-blue-700 bg-blue-50 px-2 py-0.5 rounded border border-blue-200 text-[10px] font-bold">Multi-Model Orchestrator</span>
                 </div>
 
                 <div className="space-y-2 text-xs font-mono">
-                  <div className="p-3 rounded-xl bg-[#1A1D24] border border-[#6D4AFF]/50 flex items-center justify-between">
+                  <div className="p-3 rounded-xl bg-[#FAFAF8] border border-purple-200 flex items-center justify-between">
                     <div className="flex items-center gap-2">
                       <BrandLogo brand="anthropic" size={14} />
-                      <span className="text-white">Node 1: Claude 3.7 DAG Planner</span>
+                      <span className="text-[#111318] font-medium">Node 1: Claude 3.7 DAG Planner</span>
                     </div>
-                    <span className="text-[10px] text-emerald-400">DONE (142ms)</span>
+                    <span className="text-[10px] text-emerald-700 font-bold bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">DONE (142ms)</span>
                   </div>
 
-                  <div className="p-3 rounded-xl bg-[#1A1D24] border border-blue-500/50 flex items-center justify-between ml-4">
+                  <div className="p-3 rounded-xl bg-[#FAFAF8] border border-blue-200 flex items-center justify-between ml-4">
                     <div className="flex items-center gap-2">
                       <BrandLogo brand="openai" size={14} />
-                      <span className="text-white">Node 2: GPT-4o Code Synthesizer</span>
+                      <span className="text-[#111318] font-medium">Node 2: GPT-4o Code Synthesizer</span>
                     </div>
-                    <span className="text-[10px] text-emerald-400">DONE (118ms)</span>
+                    <span className="text-[10px] text-emerald-700 font-bold bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">DONE (118ms)</span>
                   </div>
 
-                  <div className="p-3 rounded-xl bg-[#1A1D24] border border-amber-500/50 flex items-center justify-between ml-4">
+                  <div className="p-3 rounded-xl bg-[#FAFAF8] border border-amber-200 flex items-center justify-between ml-4">
                     <div className="flex items-center gap-2">
                       <BrandLogo brand="deepseek" size={14} />
-                      <span className="text-white">Node 3: DeepSeek R1 Security Auditor</span>
+                      <span className="text-[#111318] font-medium">Node 3: DeepSeek R1 Security Auditor</span>
                     </div>
-                    <span className="text-[10px] text-emerald-400">VERIFIED (164ms)</span>
+                    <span className="text-[10px] text-emerald-700 font-bold bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">VERIFIED (164ms)</span>
                   </div>
 
-                  <div className="p-3 rounded-xl bg-[#1A1D24] border border-purple-500/50 flex items-center justify-between ml-8">
+                  <div className="p-3 rounded-xl bg-[#FAFAF8] border border-emerald-200 flex items-center justify-between ml-8">
                     <div className="flex items-center gap-2">
-                      <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
-                      <span className="text-white">Node 4: Human Approval Checkpoint</span>
+                      <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
+                      <span className="text-[#111318] font-bold">Node 4: Human Approval Checkpoint</span>
                     </div>
-                    <span className="text-[10px] text-emerald-400 font-semibold">PASSED & APPROVED (100% OK)</span>
+                    <span className="text-[10px] text-emerald-800 font-bold bg-emerald-100/70 px-2 py-0.5 rounded border border-emerald-300">PASSED & APPROVED</span>
                   </div>
                 </div>
               </div>
@@ -352,51 +352,51 @@ export const PlatformOverviewSection: React.FC = () => {
             {/* Stage Visual: Step 4 (Human Gate & Observability) */}
             {activeStepIndex === 3 && (
               <div className="space-y-4">
-                <div className="flex items-center justify-between pb-3 border-b border-[#242833] text-xs font-mono text-[#8B919B]">
+                <div className="flex items-center justify-between pb-3 border-b border-[#E5E5E2] text-xs font-mono text-[#626873]">
                   <div className="flex items-center gap-2">
-                    <Activity className="w-3.5 h-3.5 text-emerald-400" />
-                    <span className="text-white font-semibold">Live Mission Control & Observability</span>
+                    <Activity className="w-3.5 h-3.5 text-emerald-600" />
+                    <span className="text-[#111318] font-bold">Live Mission Control & Observability</span>
                   </div>
-                  <span className="text-emerald-400">Tamper-Proof Audit</span>
+                  <span className="text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200 text-[10px] font-bold">Tamper-Proof Audit</span>
                 </div>
 
-                <div className="p-3.5 rounded-2xl bg-[#1A1D24] border border-purple-500/30 space-y-2.5">
+                <div className="p-3.5 rounded-2xl bg-[#FAFAF8] border border-purple-200 space-y-2.5">
                   <div className="flex items-center justify-between text-xs">
-                    <span className="font-semibold text-white flex items-center gap-2">
-                      <ShieldAlert className="w-3.5 h-3.5 text-purple-400" />
+                    <span className="font-semibold text-[#111318] flex items-center gap-2">
+                      <ShieldAlert className="w-3.5 h-3.5 text-[#6D4AFF]" />
                       Production Deployment Sign-Off
                     </span>
-                    <span className="text-[10px] font-mono text-purple-300 bg-purple-950/80 px-2 py-0.5 rounded border border-purple-800">
+                    <span className="text-[10px] font-mono text-purple-700 bg-purple-50 px-2 py-0.5 rounded border border-purple-200 font-bold">
                       ADMIN ROLE
                     </span>
                   </div>
-                  <p className="text-[11px] text-[#A4ABB8] font-mono">
+                  <p className="text-[11px] text-[#626873] font-mono">
                     Target: Vercel Production Release (v1.2.0) with PostgreSQL RLS migrations.
                   </p>
                   <div className="flex items-center gap-2 pt-1 font-mono text-xs">
                     {approvalStatus === 'approved' ? (
                       <div className="flex items-center gap-2">
-                        <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 text-[11px] font-bold">
-                          <CheckCircle2 className="w-3.5 h-3.5" />
+                        <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-emerald-50 text-emerald-800 border border-emerald-300 text-[11px] font-bold">
+                          <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
                           APPROVED & DEPLOYED (200 OK)
                         </span>
                         <button
                           type="button"
                           onClick={() => setApprovalStatus('pending')}
-                          className="text-[10px] text-[#8B919B] hover:text-white underline cursor-pointer"
+                          className="text-[10px] text-[#8B919B] hover:text-[#111318] underline cursor-pointer"
                         >
                           Simulate Gate
                         </button>
                       </div>
                     ) : approvalStatus === 'rejected' ? (
                       <div className="flex items-center gap-2">
-                        <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-rose-500/20 text-rose-400 border border-rose-500/40 text-[11px] font-bold">
+                        <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-rose-50 text-rose-700 border border-rose-300 text-[11px] font-bold">
                           DEPLOYMENT REJECTED
                         </span>
                         <button
                           type="button"
                           onClick={() => setApprovalStatus('approved')}
-                          className="text-[10px] text-[#8B919B] hover:text-white underline cursor-pointer"
+                          className="text-[10px] text-[#8B919B] hover:text-[#111318] underline cursor-pointer"
                         >
                           Re-approve
                         </button>
@@ -413,7 +413,7 @@ export const PlatformOverviewSection: React.FC = () => {
                         <button
                           type="button"
                           onClick={() => setApprovalStatus('rejected')}
-                          className="px-3 py-1 rounded-lg bg-rose-950 hover:bg-rose-900 text-rose-300 border border-rose-800 text-[11px] transition-colors cursor-pointer"
+                          className="px-3 py-1 rounded-lg bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-300 text-[11px] transition-colors cursor-pointer"
                         >
                           Reject
                         </button>
@@ -422,21 +422,21 @@ export const PlatformOverviewSection: React.FC = () => {
                   </div>
                 </div>
 
-                <div className="p-3 rounded-xl bg-[#171A21] border border-[#242833] text-xs font-mono space-y-1">
-                  <div className="text-[#8B919B] text-[10px] uppercase">Cryptographic Audit Record</div>
-                  <div className="text-emerald-400 truncate">sha256:7f83b1657ff1fc53b92dc18148a1d65dfc2d4b1fa3d677284addd200126d9069</div>
-                  <div className="text-[#8B919B] text-[10px]">Verified: Zero secrets leaked • Nonce verified • AST signed</div>
+                <div className="p-3 rounded-xl bg-[#F6F6F3] border border-[#E5E5E2] text-xs font-mono space-y-1">
+                  <div className="text-[#8B919B] text-[10px] uppercase font-bold">Cryptographic Audit Record</div>
+                  <div className="text-[#111318] truncate font-semibold">sha256:7f83b1657ff1fc53b92dc18148a1d65dfc2d4b1fa3d677284addd200126d9069</div>
+                  <div className="text-emerald-700 text-[10px] font-medium">✓ Verified: Zero secrets leaked • Nonce verified • AST signed</div>
                 </div>
               </div>
             )}
 
             {/* Bottom Platform Status Indicator */}
-            <div className="pt-4 border-t border-[#242833] flex items-center justify-between text-xs font-mono text-[#8B919B]">
+            <div className="pt-4 border-t border-[#E5E5E2] flex items-center justify-between text-xs font-mono text-[#626873]">
               <div className="flex items-center gap-2">
                 <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-                <span>NEXUS DESKTOP & WEB SYNC ACTIVE</span>
+                <span className="font-semibold text-[#111318]">NEXUS DESKTOP & WEB SYNC ACTIVE</span>
               </div>
-              <span className="text-white">BYOK MODE: ON</span>
+              <span className="text-[#6D4AFF] font-bold">BYOK MODE: ON</span>
             </div>
           </div>
         </div>
