@@ -436,59 +436,59 @@ ${edges.map((e) => `  - from: "${e.source_node_key}"\n    to: "${e.target_node_k
   };
 
   return (
-    <div className="flex flex-col h-[calc(100vh-64px)] w-full overflow-hidden bg-[#111318] text-white select-none">
+    <div className="flex flex-col h-[calc(100vh-64px)] w-full overflow-hidden bg-[#FAFAF8] text-[#111318] select-none">
       {/* Top Builder Navigation & Controls */}
-      <div className="h-14 px-4 bg-[#161922] border-b border-[#252836] flex items-center justify-between shrink-0 z-20">
-        <div className="flex items-center gap-3">
+      <div className="h-14 px-4 bg-white border-b border-[#E5E5E2] flex items-center justify-between shrink-0 z-20 gap-3 shadow-2xs">
+        <div className="flex items-center gap-3 shrink-0">
           <button
             onClick={() => navigate('/app/workflows')}
-            className="p-1.5 rounded-lg text-[#8B919B] hover:text-white hover:bg-white/5 transition-colors cursor-pointer"
+            className="p-1.5 rounded-lg text-[#626873] hover:text-[#111318] hover:bg-[#FAFAF8] transition-colors cursor-pointer"
             title="Back to workflows"
           >
             <ArrowLeft className="w-4 h-4" />
           </button>
 
-          <div className="h-4 w-px bg-[#252836]" />
+          <div className="h-4 w-px bg-[#E5E5E2]" />
 
           <input
             type="text"
             value={workflowName}
             onChange={(e) => setWorkflowName(e.target.value)}
-            className="bg-transparent text-sm font-bold text-white border-b border-transparent hover:border-[#3E4259] focus:border-[#6D4AFF] focus:bg-[#1C202E] px-2 py-1 rounded outline-none transition-all max-w-sm"
+            className="bg-transparent text-sm font-bold text-[#111318] border-b border-transparent hover:border-[#D4D4CE] focus:border-[#6D4AFF] focus:bg-white px-2 py-1 rounded outline-none transition-all max-w-xs truncate"
           />
 
           {/* Validation Status Badge */}
           {validation.isValid ? (
-            <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 flex items-center gap-1">
-              <CheckCircle2 className="w-3 h-3 text-emerald-400" /> DAG Valid
+            <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-50 text-emerald-700 border border-emerald-200 flex items-center gap-1 font-semibold shrink-0">
+              <CheckCircle2 className="w-3 h-3 text-emerald-600" /> DAG Valid
             </span>
           ) : (
             <span
-              className="text-[10px] font-mono px-2 py-0.5 rounded bg-amber-500/10 text-amber-400 border border-amber-500/20 flex items-center gap-1 cursor-pointer"
+              className="text-[10px] font-mono px-2 py-0.5 rounded bg-amber-50 text-amber-800 border border-amber-200 flex items-center gap-1 font-semibold shrink-0 cursor-pointer"
               title={validation.errors.join(' | ')}
             >
-              <AlertCircle className="w-3 h-3 text-amber-400" /> Invalid Graph
+              <AlertCircle className="w-3 h-3 text-amber-600" /> Invalid Graph
             </span>
           )}
         </div>
 
         {/* Toolbar Controls */}
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 overflow-x-auto py-1 shrink-0">
           {/* Zoom Controls */}
-          <div className="flex items-center bg-[#1C202E] border border-[#252836] rounded-xl p-0.5">
+          <div className="flex items-center bg-[#FAFAF8] border border-[#E5E5E2] rounded-xl p-0.5 shrink-0 shadow-2xs">
             <button
               onClick={() => setZoom((z) => Math.max(0.5, z - 0.1))}
-              className="p-1.5 text-[#8B919B] hover:text-white rounded-lg hover:bg-white/5 cursor-pointer"
+              className="p-1.5 text-[#626873] hover:text-[#111318] rounded-lg hover:bg-white cursor-pointer"
               title="Zoom out"
             >
               <ZoomOut className="w-3.5 h-3.5" />
             </button>
-            <span className="text-[11px] font-mono px-2 text-[#8B919B]">
+            <span className="text-[11px] font-mono px-2 text-[#111318] font-semibold whitespace-nowrap">
               {Math.round(zoom * 100)}%
             </span>
             <button
               onClick={() => setZoom((z) => Math.min(1.5, z + 0.1))}
-              className="p-1.5 text-[#8B919B] hover:text-white rounded-lg hover:bg-white/5 cursor-pointer"
+              className="p-1.5 text-[#626873] hover:text-[#111318] rounded-lg hover:bg-white cursor-pointer"
               title="Zoom in"
             >
               <ZoomIn className="w-3.5 h-3.5" />
@@ -498,59 +498,60 @@ ${edges.map((e) => `  - from: "${e.source_node_key}"\n    to: "${e.target_node_k
                 setZoom(1);
                 setPan({ x: 0, y: 0 });
               }}
-              className="p-1.5 text-[#8B919B] hover:text-white rounded-lg hover:bg-white/5 cursor-pointer"
+              className="p-1.5 text-[#626873] hover:text-[#111318] rounded-lg hover:bg-white cursor-pointer"
               title="Reset view"
             >
               <Maximize2 className="w-3.5 h-3.5" />
             </button>
           </div>
 
-          <div className="h-4 w-px bg-[#252836]" />
+          <div className="h-4 w-px bg-[#E5E5E2] shrink-0 hidden sm:block" />
 
           {/* AI Compiler Button */}
           <button
             onClick={() => setShowPromptModal(true)}
-            className="px-3 py-1.5 rounded-xl bg-[#6D4AFF]/15 hover:bg-[#6D4AFF]/25 text-[#C4B5FD] hover:text-white text-xs font-semibold flex items-center gap-1.5 border border-[#6D4AFF]/30 transition-all cursor-pointer shadow-sm"
+            className="px-3 py-1.5 rounded-xl bg-purple-50 hover:bg-purple-100 text-[#6D4AFF] text-xs font-semibold flex items-center gap-1.5 border border-purple-200 transition-all cursor-pointer shadow-2xs shrink-0 whitespace-nowrap"
             title="Compile DAG pipeline from natural language prompt"
           >
-            <Sparkles className="w-3.5 h-3.5 text-[#A78BFA] animate-pulse" />
-            <span className="hidden sm:inline">AI Compiler</span>
+            <Sparkles className="w-3.5 h-3.5 text-[#6D4AFF] animate-pulse" />
+            <span className="hidden md:inline">AI Compiler</span>
           </button>
 
           {/* YAML Button */}
           <button
             onClick={() => setShowYamlModal(true)}
-            className="px-3 py-1.5 rounded-xl bg-white/5 hover:bg-white/10 text-white text-xs font-mono flex items-center gap-1.5 border border-white/10 transition-all cursor-pointer shadow-sm"
+            className="px-3 py-1.5 rounded-xl bg-white hover:bg-[#FAFAF8] text-[#111318] text-xs font-mono flex items-center gap-1.5 border border-[#E5E5E2] transition-all cursor-pointer shadow-2xs shrink-0 whitespace-nowrap"
             title="Inspect DAG YAML Specification"
           >
-            <FileCode className="w-3.5 h-3.5 text-emerald-400" />
-            <span className="hidden sm:inline">YAML</span>
+            <FileCode className="w-3.5 h-3.5 text-emerald-600" />
+            <span>YAML</span>
           </button>
 
           {/* Settings Button */}
           <button
             onClick={() => setShowSettingsModal(true)}
-            className="px-3 py-1.5 rounded-xl bg-white/5 hover:bg-white/10 text-white text-xs font-semibold flex items-center gap-1.5 border border-white/10 transition-all cursor-pointer shadow-sm"
+            className="px-3 py-1.5 rounded-xl bg-white hover:bg-[#FAFAF8] text-[#111318] text-xs font-semibold flex items-center gap-1.5 border border-[#E5E5E2] transition-all cursor-pointer shadow-2xs shrink-0 whitespace-nowrap"
             title="Configure Execution, Concurrency, and Gate Settings"
           >
             <Settings2 className="w-3.5 h-3.5 text-[#6D4AFF]" />
-            <span className="hidden sm:inline">Settings</span>
+            <span>Settings</span>
           </button>
 
-          {/* Test Run Button */}
+          {/* Test Run Button (Prominent & Clear) */}
           <button
             onClick={() => setShowRunModal(true)}
-            className="px-3.5 py-1.5 rounded-xl bg-white/10 hover:bg-white/15 text-white text-xs font-semibold flex items-center gap-1.5 border border-white/10 transition-all cursor-pointer shadow-sm"
+            className="px-3.5 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold flex items-center gap-1.5 shadow-sm transition-all cursor-pointer shrink-0 whitespace-nowrap"
+            title="Test run this workflow"
           >
-            <Play className="w-3.5 h-3.5 text-emerald-400" />
-            <span>Test Run</span>
+            <Play className="w-3.5 h-3.5 fill-white" />
+            <span>Run Workflow</span>
           </button>
 
           {/* Save Button */}
           <button
             onClick={handleSave}
             disabled={isSaving}
-            className="px-3.5 py-1.5 rounded-xl bg-[#6D4AFF] hover:bg-[#5B3CE8] text-white text-xs font-semibold flex items-center gap-1.5 transition-all shadow-md cursor-pointer disabled:opacity-50"
+            className="px-3.5 py-1.5 rounded-xl bg-[#6D4AFF] hover:bg-[#5E3CE6] text-white text-xs font-semibold flex items-center gap-1.5 transition-all shadow-sm cursor-pointer disabled:opacity-50 shrink-0 whitespace-nowrap"
           >
             {isSaving ? (
               <Loader2 className="w-3.5 h-3.5 animate-spin" />
@@ -565,23 +566,23 @@ ${edges.map((e) => `  - from: "${e.source_node_key}"\n    to: "${e.target_node_k
       {/* Main Studio Body: Left Node Drawer, Center Canvas, Right Node Inspector */}
       <div className="flex-1 flex overflow-hidden relative">
         {/* Left: Node Library */}
-        <div className="w-64 bg-[#161922] border-r border-[#252836] flex flex-col shrink-0 z-10 text-left">
-          <div className="p-3 border-b border-[#252836] flex items-center justify-between">
-            <span className="text-xs font-bold uppercase tracking-wider text-[#8B919B] flex items-center gap-1.5">
-              <Layers className="w-3.5 h-3.5" /> Node Library
+        <div className="w-64 bg-white border-r border-[#E5E5E2] flex flex-col shrink-0 z-10 text-left shadow-2xs">
+          <div className="p-3 border-b border-[#EFEFEA] flex items-center justify-between bg-[#FAFAF8]">
+            <span className="text-xs font-bold uppercase tracking-wider text-[#111318] flex items-center gap-1.5">
+              <Layers className="w-3.5 h-3.5 text-[#6D4AFF]" /> Node Library
             </span>
           </div>
 
           {/* Category Tabs */}
-          <div className="p-2 border-b border-[#252836] flex items-center gap-1 overflow-x-auto text-[10px] font-mono">
+          <div className="p-2 border-b border-[#EFEFEA] flex items-center gap-1 overflow-x-auto text-[10px] font-mono bg-white">
             {(['ALL', 'TRIGGER', 'AGENT', 'TOOL', 'APPROVAL', 'CONDITION', 'OUTPUT'] as const).map((cat) => (
               <button
                 key={cat}
                 onClick={() => setActiveCategory(cat)}
                 className={`px-2 py-1 rounded-lg uppercase transition-colors cursor-pointer shrink-0 ${
                   activeCategory === cat
-                    ? 'bg-[#6D4AFF] text-white font-semibold'
-                    : 'text-[#8B919B] hover:text-white hover:bg-white/5'
+                    ? 'bg-[#6D4AFF] text-white font-semibold shadow-2xs'
+                    : 'text-[#626873] hover:text-[#111318] hover:bg-[#FAFAF8]'
                 }`}
               >
                 {cat}
@@ -590,25 +591,25 @@ ${edges.map((e) => `  - from: "${e.source_node_key}"\n    to: "${e.target_node_k
           </div>
 
           {/* Node Templates List */}
-          <div className="flex-1 overflow-y-auto p-2.5 flex flex-col gap-2">
+          <div className="flex-1 overflow-y-auto p-2.5 flex flex-col gap-2 bg-[#FAFAF8]">
             {filteredTemplates.map((item) => {
               const Icon = item.icon;
               return (
                 <div
                   key={item.name}
                   onClick={() => handleAddNode(item)}
-                  className="p-3 rounded-xl bg-[#1C202E] hover:bg-[#252A3D] border border-[#252836] hover:border-[#3E4259] transition-all cursor-pointer flex items-center justify-between group"
+                  className="p-3 rounded-xl bg-white hover:bg-white border border-[#E5E5E2] hover:border-[#6D4AFF] hover:shadow-xs transition-all cursor-pointer flex items-center justify-between group"
                 >
                   <div className="flex items-center gap-2.5">
-                    <div className="w-7 h-7 rounded-lg bg-black/40 border border-white/10 flex items-center justify-center shrink-0">
+                    <div className="w-7 h-7 rounded-lg bg-[#FAFAF8] border border-[#E5E5E2] flex items-center justify-center shrink-0 shadow-2xs">
                       {item.isBrand && item.brand ? (
                         <BrandLogo brand={item.brand} size={15} />
                       ) : (
-                        <Icon className="w-4 h-4 text-[#9D85FF]" />
+                        <Icon className="w-4 h-4 text-[#6D4AFF]" />
                       )}
                     </div>
                     <div>
-                      <div className="text-xs font-bold text-white group-hover:text-[#9D85FF] transition-colors">
+                      <div className="text-xs font-bold text-[#111318] group-hover:text-[#6D4AFF] transition-colors">
                         {item.name}
                       </div>
                       <div className="text-[9px] font-mono text-[#8B919B] uppercase">
@@ -616,14 +617,14 @@ ${edges.map((e) => `  - from: "${e.source_node_key}"\n    to: "${e.target_node_k
                       </div>
                     </div>
                   </div>
-                  <Plus className="w-3.5 h-3.5 text-[#8B919B] group-hover:text-white transition-colors" />
+                  <Plus className="w-3.5 h-3.5 text-[#8B919B] group-hover:text-[#6D4AFF] transition-colors" />
                 </div>
               );
             })}
           </div>
         </div>
 
-        {/* Center: Dark Interactive Canvas */}
+        {/* Center: Clean Light Canvas */}
         <div
           ref={canvasRef}
           onMouseMove={handleCanvasMouseMove}
@@ -632,12 +633,18 @@ ${edges.map((e) => `  - from: "${e.source_node_key}"\n    to: "${e.target_node_k
             setSelectedNodeId(null);
             setConnectingSourceKey(null);
           }}
-          className="flex-1 h-full relative overflow-hidden bg-[#0D0F14] cursor-crosshair"
+          className="flex-1 h-full relative overflow-hidden bg-[#F8F9FA] cursor-crosshair"
           style={{
-            backgroundImage: `radial-gradient(circle, #252836 1px, transparent 1px)`,
+            backgroundImage: `radial-gradient(circle, #D4D4CE 1.2px, transparent 1.2px)`,
             backgroundSize: '24px 24px',
           }}
         >
+          {/* Quick Help Guide Banner */}
+          <div className="absolute top-3 left-4 z-20 bg-white/90 backdrop-blur-md px-3 py-1.5 rounded-xl border border-[#E5E5E2] shadow-2xs flex items-center gap-2 text-xs text-[#626873]">
+            <Sparkles className="w-3.5 h-3.5 text-[#6D4AFF]" />
+            <span>Click any node to configure · Drag connection port to link nodes · Click <strong className="text-[#111318]">Run Workflow</strong> to test</span>
+          </div>
+
           {/* Canvas Transform Plane */}
           <div
             className="w-full h-full absolute inset-0 transform-gpu"
@@ -673,31 +680,29 @@ ${edges.map((e) => `  - from: "${e.source_node_key}"\n    to: "${e.target_node_k
                     <path
                       d={pathData}
                       fill="none"
-                      stroke="#222736"
-                      strokeWidth="7"
+                      stroke="#E5E5E2"
+                      strokeWidth="6"
                     />
-                    {/* Animated gradient stroke */}
+                    {/* Active gradient stroke */}
                     <path
                       d={pathData}
                       fill="none"
                       stroke="url(#edgeGlow)"
                       strokeWidth="2.5"
-                      strokeDasharray="4 4"
-                      className="animate-pulse"
                     />
                     {/* Clickable delete target in middle of line */}
                     <circle
                       cx={(startX + endX) / 2}
                       cy={(startY + endY) / 2}
                       r="7"
-                      fill="#1C202E"
+                      fill="#FFFFFF"
                       stroke="#6D4AFF"
                       strokeWidth="1.5"
                       onClick={(e) => {
                         e.stopPropagation();
                         handleDeleteEdge(edge.id!);
                       }}
-                      className="hover:fill-red-500 transition-colors cursor-pointer"
+                      className="hover:fill-red-500 transition-colors cursor-pointer shadow-xs"
                     />
                   </g>
                 );
@@ -726,12 +731,12 @@ ${edges.map((e) => `  - from: "${e.source_node_key}"\n    to: "${e.target_node_k
                     top: `${node.position_y}px`,
                     width: '230px',
                   }}
-                  className={`absolute rounded-2xl bg-[#161922] border transition-all shadow-xl cursor-move p-4 text-left ${
+                  className={`absolute rounded-2xl bg-white border transition-all shadow-md cursor-move p-4 text-left ${
                     isSelected
-                      ? 'border-[#6D4AFF] ring-2 ring-[#6D4AFF]/40 shadow-[0_0_24px_rgba(109,74,255,0.3)]'
+                      ? 'border-[#6D4AFF] ring-2 ring-[#6D4AFF]/20 shadow-xl'
                       : isConnecting
-                      ? 'border-emerald-500 ring-2 ring-emerald-500/40'
-                      : 'border-[#252836] hover:border-[#3E4259]'
+                      ? 'border-emerald-500 ring-2 ring-emerald-500/20'
+                      : 'border-[#E5E5E2] hover:border-[#6D4AFF]'
                   }`}
                 >
                   {/* Left In-Port Handle */}
@@ -743,7 +748,7 @@ ${edges.map((e) => `  - from: "${e.source_node_key}"\n    to: "${e.target_node_k
                       }
                     }}
                     title="Input Port (Click to connect here)"
-                    className="absolute left-[-7px] top-1/2 -translate-y-1/2 w-3.5 h-3.5 rounded-full bg-[#1C202E] border-2 border-[#6D4AFF] hover:scale-125 transition-transform cursor-pointer"
+                    className="absolute left-[-7px] top-1/2 -translate-y-1/2 w-3.5 h-3.5 rounded-full bg-white border-2 border-[#6D4AFF] hover:scale-125 transition-transform cursor-pointer shadow-xs"
                   />
 
                   {/* Right Out-Port Handle */}
@@ -753,24 +758,24 @@ ${edges.map((e) => `  - from: "${e.source_node_key}"\n    to: "${e.target_node_k
                       setConnectingSourceKey(node.node_key);
                     }}
                     title="Output Port (Click then click target node)"
-                    className={`absolute right-[-7px] top-1/2 -translate-y-1/2 w-3.5 h-3.5 rounded-full border-2 border-white hover:scale-125 transition-transform cursor-pointer ${
+                    className={`absolute right-[-7px] top-1/2 -translate-y-1/2 w-3.5 h-3.5 rounded-full border-2 border-white hover:scale-125 transition-transform cursor-pointer shadow-xs ${
                       isConnecting ? 'bg-emerald-400 animate-ping' : 'bg-[#6D4AFF]'
                     }`}
                   />
 
                   {/* Node Header */}
                   <div className="flex items-center justify-between mb-2">
-                    <span className="text-[9px] font-mono uppercase tracking-wider text-[#8B919B] px-1.5 py-0.5 rounded bg-black/40 border border-white/5">
+                    <span className="text-[9px] font-mono uppercase tracking-wider text-[#626873] px-1.5 py-0.5 rounded bg-[#FAFAF8] border border-[#E5E5E2] font-semibold">
                       {node.node_type}
                     </span>
 
-                    <span className="text-[9px] font-mono text-emerald-400 bg-emerald-500/10 px-1.5 py-0.5 rounded border border-emerald-500/20">
+                    <span className="text-[9px] font-mono text-emerald-700 bg-emerald-50 px-1.5 py-0.5 rounded border border-emerald-200 font-bold">
                       Ready
                     </span>
                   </div>
 
                   {/* Node Title & Key */}
-                  <div className="text-xs font-bold text-white mb-0.5 truncate">
+                  <div className="text-xs font-bold text-[#111318] mb-0.5 truncate">
                     {node.name}
                   </div>
                   <div className="text-[10px] font-mono text-[#8B919B] truncate">
@@ -783,15 +788,15 @@ ${edges.map((e) => `  - from: "${e.source_node_key}"\n    to: "${e.target_node_k
         </div>
 
         {/* Right: Node Inspector */}
-        <div className="w-80 bg-[#161922] border-l border-[#252836] flex flex-col shrink-0 z-10 text-left">
-          <div className="p-3 border-b border-[#252836] flex items-center justify-between">
-            <span className="text-xs font-bold uppercase tracking-wider text-[#8B919B]">
+        <div className="w-80 bg-white border-l border-[#E5E5E2] flex flex-col shrink-0 z-10 text-left shadow-2xs">
+          <div className="p-3 border-b border-[#EFEFEA] flex items-center justify-between bg-[#FAFAF8]">
+            <span className="text-xs font-bold uppercase tracking-wider text-[#111318]">
               Node Inspector
             </span>
             {selectedNode && (
               <button
                 onClick={() => handleDeleteNode(selectedNode.node_key)}
-                className="p-1 text-[#8B919B] hover:text-red-400 transition-colors cursor-pointer"
+                className="p-1 text-[#8B919B] hover:text-red-500 transition-colors cursor-pointer"
                 title="Delete node"
               >
                 <Trash2 className="w-4 h-4" />
@@ -800,9 +805,9 @@ ${edges.map((e) => `  - from: "${e.source_node_key}"\n    to: "${e.target_node_k
           </div>
 
           {selectedNode ? (
-            <div className="p-4 flex flex-col gap-4 overflow-y-auto">
+            <div className="p-4 flex flex-col gap-4 overflow-y-auto pb-32">
               <div>
-                <label className="block text-[11px] font-mono uppercase text-[#8B919B] mb-1">
+                <label className="block text-[11px] font-mono uppercase text-[#626873] mb-1 font-semibold tracking-wider">
                   Node Title
                 </label>
                 <input
@@ -814,12 +819,12 @@ ${edges.map((e) => `  - from: "${e.source_node_key}"\n    to: "${e.target_node_k
                       prev.map((n) => (n.node_key === selectedNode.node_key ? { ...n, name: val } : n))
                     );
                   }}
-                  className="w-full h-8 px-2.5 rounded-lg bg-[#1C202E] border border-[#252836] text-xs text-white outline-none focus:border-[#6D4AFF]"
+                  className="w-full h-9 px-3 rounded-xl bg-[#FAFAF8] border border-[#E5E5E2] text-xs font-semibold text-[#111318] outline-none focus:border-[#6D4AFF] focus:bg-white transition-all"
                 />
               </div>
 
               <div>
-                <label className="block text-[11px] font-mono uppercase text-[#8B919B] mb-1">
+                <label className="block text-[11px] font-mono uppercase text-[#626873] mb-1 font-semibold tracking-wider">
                   Node Key (Reference Identifier)
                 </label>
                 <input
@@ -831,7 +836,7 @@ ${edges.map((e) => `  - from: "${e.source_node_key}"\n    to: "${e.target_node_k
                       prev.map((n) => (n.node_key === selectedNode.node_key ? { ...n, node_key: val } : n))
                     );
                   }}
-                  className="w-full h-8 px-2.5 rounded-lg bg-[#1C202E] border border-[#252836] text-xs font-mono text-[#9D85FF] outline-none"
+                  className="w-full h-9 px-3 rounded-xl bg-[#FAFAF8] border border-[#E5E5E2] text-xs font-mono text-[#6D4AFF] font-medium outline-none focus:border-[#6D4AFF] focus:bg-white transition-all"
                 />
               </div>
 
@@ -839,7 +844,7 @@ ${edges.map((e) => `  - from: "${e.source_node_key}"\n    to: "${e.target_node_k
               {selectedNode.node_type === 'AGENT' && (
                 <>
                   <div>
-                    <label className="block text-[11px] font-mono uppercase text-[#8B919B] mb-1">
+                    <label className="block text-[11px] font-mono uppercase text-[#626873] mb-1 font-semibold tracking-wider">
                       Assigned Workspace Agent
                     </label>
                     <select
@@ -854,7 +859,7 @@ ${edges.map((e) => `  - from: "${e.source_node_key}"\n    to: "${e.target_node_k
                           )
                         );
                       }}
-                      className="w-full h-8 px-2 rounded-lg bg-[#1C202E] border border-[#252836] text-xs text-white outline-none"
+                      className="w-full h-9 px-3 rounded-xl bg-[#FAFAF8] border border-[#E5E5E2] text-xs font-medium text-[#111318] outline-none focus:border-[#6D4AFF] focus:bg-white transition-all"
                     >
                       <option value="">Default AI Reasoning Agent</option>
                       {workspaceAgentsList.map((ag) => (
@@ -866,11 +871,11 @@ ${edges.map((e) => `  - from: "${e.source_node_key}"\n    to: "${e.target_node_k
                   </div>
 
                   <div>
-                    <label className="block text-[11px] font-mono uppercase text-[#8B919B] mb-1">
+                    <label className="block text-[11px] font-mono uppercase text-[#626873] mb-1 font-semibold tracking-wider">
                       Task Directive / Prompt Template
                     </label>
                     <textarea
-                      rows={4}
+                      rows={5}
                       value={selectedNode.config?.directive || selectedNode.config?.prompt || ''}
                       onChange={(e) => {
                         const val = e.target.value;
@@ -882,12 +887,12 @@ ${edges.map((e) => `  - from: "${e.source_node_key}"\n    to: "${e.target_node_k
                           )
                         );
                       }}
-                      className="w-full p-2.5 rounded-lg bg-[#1C202E] border border-[#252836] text-xs font-mono text-white outline-none focus:border-[#6D4AFF] leading-relaxed resize-none"
+                      className="w-full p-3 rounded-xl bg-[#FAFAF8] border border-[#E5E5E2] text-xs font-mono text-[#111318] outline-none focus:border-[#6D4AFF] focus:bg-white leading-relaxed resize-none transition-all"
                     />
-                    <div className="mt-1 flex items-center gap-1.5 flex-wrap text-[10px] text-[#8B919B]">
+                    <div className="mt-1.5 flex items-center gap-1.5 flex-wrap text-[10px] text-[#626873]">
                       <span>Interpolate:</span>
-                      <span className="font-mono text-[#9D85FF] bg-black/40 px-1 rounded">{`{{trigger.repository}}`}</span>
-                      <span className="font-mono text-[#9D85FF] bg-black/40 px-1 rounded">{`{{node_fetch.data}}`}</span>
+                      <span className="font-mono text-[#6D4AFF] bg-purple-50 border border-purple-200 px-1.5 py-0.5 rounded text-[10px] font-semibold">{`{{trigger.repository}}`}</span>
+                      <span className="font-mono text-[#6D4AFF] bg-purple-50 border border-purple-200 px-1.5 py-0.5 rounded text-[10px] font-semibold">{`{{node_fetch.data}}`}</span>
                     </div>
                   </div>
                 </>
@@ -896,7 +901,7 @@ ${edges.map((e) => `  - from: "${e.source_node_key}"\n    to: "${e.target_node_k
               {/* Tool Node Configuration */}
               {selectedNode.node_type === 'TOOL' && (
                 <div>
-                  <label className="block text-[11px] font-mono uppercase text-[#8B919B] mb-1">
+                  <label className="block text-[11px] font-mono uppercase text-[#626873] mb-1 font-semibold tracking-wider">
                     Tool Identifier
                   </label>
                   <select
@@ -911,7 +916,7 @@ ${edges.map((e) => `  - from: "${e.source_node_key}"\n    to: "${e.target_node_k
                         )
                       );
                     }}
-                    className="w-full h-8 px-2 rounded-lg bg-[#1C202E] border border-[#252836] text-xs text-white outline-none"
+                    className="w-full h-9 px-3 rounded-xl bg-[#FAFAF8] border border-[#E5E5E2] text-xs font-medium text-[#111318] outline-none focus:border-[#6D4AFF] focus:bg-white transition-all"
                   >
                     <option value="github_get_repository">GitHub: Get Repository Metadata</option>
                     <option value="github_list_pull_requests">GitHub: List Pull Requests</option>
@@ -924,7 +929,7 @@ ${edges.map((e) => `  - from: "${e.source_node_key}"\n    to: "${e.target_node_k
               {selectedNode.node_type === 'APPROVAL' && (
                 <>
                   <div>
-                    <label className="block text-[11px] font-mono uppercase text-[#8B919B] mb-1">
+                    <label className="block text-[11px] font-mono uppercase text-[#626873] mb-1 font-semibold tracking-wider">
                       Required Reviewer Role
                     </label>
                     <select
@@ -939,7 +944,7 @@ ${edges.map((e) => `  - from: "${e.source_node_key}"\n    to: "${e.target_node_k
                           )
                         );
                       }}
-                      className="w-full h-8 px-2 rounded-lg bg-[#1C202E] border border-[#252836] text-xs text-white outline-none"
+                      className="w-full h-9 px-3 rounded-xl bg-[#FAFAF8] border border-[#E5E5E2] text-xs font-medium text-[#111318] outline-none focus:border-[#6D4AFF] focus:bg-white transition-all"
                     >
                       <option value="admin">Workspace Admin</option>
                       <option value="lead">Security Lead</option>
@@ -948,7 +953,7 @@ ${edges.map((e) => `  - from: "${e.source_node_key}"\n    to: "${e.target_node_k
                   </div>
 
                   <div>
-                    <label className="block text-[11px] font-mono uppercase text-[#8B919B] mb-1">
+                    <label className="block text-[11px] font-mono uppercase text-[#626873] mb-1 font-semibold tracking-wider">
                       Approval Prompt / Verification Gate
                     </label>
                     <textarea
@@ -964,7 +969,7 @@ ${edges.map((e) => `  - from: "${e.source_node_key}"\n    to: "${e.target_node_k
                           )
                         );
                       }}
-                      className="w-full p-2.5 rounded-lg bg-[#1C202E] border border-[#252836] text-xs text-white outline-none focus:border-[#6D4AFF] resize-none"
+                      className="w-full p-3 rounded-xl bg-[#FAFAF8] border border-[#E5E5E2] text-xs font-medium text-[#111318] outline-none focus:border-[#6D4AFF] focus:bg-white resize-none transition-all"
                     />
                   </div>
                 </>
@@ -973,7 +978,7 @@ ${edges.map((e) => `  - from: "${e.source_node_key}"\n    to: "${e.target_node_k
               {/* Condition Node Configuration */}
               {selectedNode.node_type === 'CONDITION' && (
                 <div>
-                  <label className="block text-[11px] font-mono uppercase text-[#8B919B] mb-1">
+                  <label className="block text-[11px] font-mono uppercase text-[#626873] mb-1 font-semibold tracking-wider">
                     Condition Expression
                   </label>
                   <input
@@ -990,7 +995,7 @@ ${edges.map((e) => `  - from: "${e.source_node_key}"\n    to: "${e.target_node_k
                       );
                     }}
                     placeholder="e.g. node_auditor.status == 'completed'"
-                    className="w-full h-8 px-2.5 rounded-lg bg-[#1C202E] border border-[#252836] text-xs font-mono text-white outline-none focus:border-[#6D4AFF]"
+                    className="w-full h-9 px-3 rounded-xl bg-[#FAFAF8] border border-[#E5E5E2] text-xs font-mono text-[#111318] outline-none focus:border-[#6D4AFF] focus:bg-white transition-all"
                   />
                 </div>
               )}
@@ -998,7 +1003,7 @@ ${edges.map((e) => `  - from: "${e.source_node_key}"\n    to: "${e.target_node_k
               {/* Output Node Configuration */}
               {selectedNode.node_type === 'OUTPUT' && (
                 <div>
-                  <label className="block text-[11px] font-mono uppercase text-[#8B919B] mb-1">
+                  <label className="block text-[11px] font-mono uppercase text-[#626873] mb-1 font-semibold tracking-wider">
                     Summary Template
                   </label>
                   <textarea
@@ -1014,18 +1019,18 @@ ${edges.map((e) => `  - from: "${e.source_node_key}"\n    to: "${e.target_node_k
                         )
                       );
                     }}
-                    className="w-full p-2.5 rounded-lg bg-[#1C202E] border border-[#252836] text-xs font-mono text-white outline-none focus:border-[#6D4AFF] resize-none"
+                    className="w-full p-3 rounded-xl bg-[#FAFAF8] border border-[#E5E5E2] text-xs font-mono text-[#111318] outline-none focus:border-[#6D4AFF] focus:bg-white resize-none transition-all"
                   />
                 </div>
               )}
 
-              <div className="pt-2 border-t border-[#252836] text-[10px] font-mono text-[#8B919B]">
+              <div className="pt-2 border-t border-[#EFEFEA] text-[10px] font-mono text-[#8B919B]">
                 Canvas Pos: ({selectedNode.position_x}, {selectedNode.position_y})
               </div>
             </div>
           ) : (
             <div className="p-8 text-center text-xs text-[#8B919B] flex flex-col items-center justify-center gap-2">
-              <HelpCircle className="w-6 h-6 text-[#3E4259]" />
+              <HelpCircle className="w-6 h-6 text-[#8B919B]" />
               <p>Click any node on canvas to inspect and edit its parameters.</p>
             </div>
           )}
