@@ -43,7 +43,7 @@ const INJECTION_RULES: { pattern: RegExp; category: SecurityCategory; severity: 
     desc: 'Roleplay persona jailbreak attempt detected',
   },
   {
-    pattern: /(?:output|reveal|show|print|display|dump|repeat|leak)\s+(?:the\s+)?(?:system\s+(?:prompt|instructions?)|developer\s+mode|initial\s+prompt|context\s+window|hidden\s+rules)/i,
+    pattern: /(?:output|reveal|show|print|display|dump|repeat|leak)\s+(?:the\s+)?(?:(?:initial|original|hidden|base)\s+)?(?:system\s+)?(?:prompt|instructions?|rules)|(?:output|reveal|show|print|display|dump|repeat|leak)\s+(?:the\s+)?(?:developer\s+mode|context\s+window|hidden\s+rules)/i,
     category: 'SYSTEM_PROMPT_EXTRACTION',
     severity: 'CRITICAL',
     desc: 'System prompt extraction attempt detected',
