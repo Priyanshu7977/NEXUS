@@ -198,10 +198,10 @@ export const AddMcpServerModal: React.FC<AddMcpServerModalProps> = ({
                 onChange={(e) => setTransportType(e.target.value as McpTransportType)}
                 className="w-full h-10 px-3.5 rounded-xl bg-[#FAFAF8] border border-[#E5E5E2] focus:border-[#6D4AFF] text-xs text-[#111318] outline-none shadow-sm transition-colors"
               >
-                <option value="streamable_http">Streamable HTTP (Recommended)</option>
-                <option value="sse">Server-Sent Events (SSE)</option>
-                <option value="stdio" disabled>stdio (Local daemon only — Coming Soon)</option>
-                <option value="websocket" disabled>WebSocket (Coming Soon)</option>
+                <option value="streamable_http">Streamable HTTP (Standard v2024-11-05)</option>
+                <option value="sse">Server-Sent Events (SSE Transport)</option>
+                <option value="stdio">stdio (Local Daemon / Desktop Subprocess)</option>
+                <option value="websocket">WebSocket (Bidirectional RPC)</option>
               </select>
             </div>
           </div>

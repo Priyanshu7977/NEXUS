@@ -7,7 +7,8 @@ import {
   Cloud, 
   GitFork, 
   Check, 
-  Code2 
+  Code2,
+  ArrowUpRight 
 } from 'lucide-react';
 import { BrandLogo } from '../brand/BrandLogo';
 
@@ -67,13 +68,21 @@ export const OpenSourcePage: React.FC = () => {
               </div>
             </div>
 
-            <div className="p-4 rounded-xl bg-[#FAFAF8] border border-[#E5E5E2] flex items-center justify-between mt-auto">
+            <a
+              href="https://github.com/Priyanshu7977/NEXUS"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="p-4 rounded-xl bg-[#FAFAF8] border border-[#E5E5E2] hover:border-[#6D4AFF] flex items-center justify-between mt-auto transition-colors group cursor-pointer"
+            >
               <div className="flex items-center gap-2">
                 <BrandLogo brand="github" size={18} />
-                <span className="text-xs font-semibold text-[#111318]">GitHub Repository</span>
+                <span className="text-xs font-semibold text-[#111318] group-hover:text-[#6D4AFF] transition-colors">GitHub Repository</span>
               </div>
-              <span className="text-[11px] font-mono text-[#8B919B]">Coming Soon</span>
-            </div>
+              <span className="text-[11px] font-mono text-[#6D4AFF] font-medium flex items-center gap-1">
+                <span>Priyanshu7977/NEXUS</span>
+                <ArrowUpRight className="w-3.5 h-3.5" />
+              </span>
+            </a>
           </div>
 
           {/* NEXUS CLOUD */}

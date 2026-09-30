@@ -147,11 +147,9 @@ export const ConnectorsPage: React.FC = () => {
           setSetupModalOpen(true);
         }
       }
-    } else if (connector.id === 'vercel') {
-      setSetupConnectorId('vercel');
-      setSetupModalOpen(true);
     } else {
-      navigate(`/app/connectors/${connector.id}`);
+      setSetupConnectorId(connector.id);
+      setSetupModalOpen(true);
     }
   };
 
@@ -332,13 +330,12 @@ export const ConnectorsPage: React.FC = () => {
           {filteredNative.map((item) => {
             const connection = getConnectionForConnector(item.id);
             const isConnected = Boolean(connection);
-            const isLiveConnector = item.id === 'github' || item.id === 'vercel';
             const isConfigured =
               item.id === 'github'
                 ? isGitHubConfigured()
                 : item.id === 'vercel'
                 ? vercelAdapter.isConfigured()
-                : false;
+                : true;
 
             return (
               <div
@@ -362,19 +359,13 @@ export const ConnectorsPage: React.FC = () => {
                         <span className="w-1.5 h-1.5 rounded-full bg-emerald-600 animate-pulse" />
                         Connected
                       </span>
-                    ) : isLiveConnector ? (
-                      isConfigured ? (
-                        <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-blue-50 text-blue-700 border border-blue-200 shrink-0">
-                          Ready to Connect
-                        </span>
-                      ) : (
-                        <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-amber-50 text-amber-700 border border-amber-200 shrink-0">
-                          Setup Required
-                        </span>
-                      )
+                    ) : isConfigured ? (
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-blue-50 text-blue-700 border border-blue-200 shrink-0">
+                        Ready to Connect
+                      </span>
                     ) : (
-                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-[#FAFAF8] text-[#8B919B] border border-[#EFEFEA] shrink-0">
-                        Coming Soon
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-amber-50 text-amber-700 border border-amber-200 shrink-0">
+                        Setup Required
                       </span>
                     )}
                   </div>
@@ -443,7 +434,7 @@ export const ConnectorsPage: React.FC = () => {
                         Manage
                       </button>
                     </div>
-                  ) : isLiveConnector ? (
+                  ) : (
                     <div className="flex items-center gap-1.5">
                       {!isConfigured && (
                         <button
@@ -469,17 +460,6 @@ export const ConnectorsPage: React.FC = () => {
                         Connect
                       </button>
                     </div>
-                  ) : (
-                    <button
-                      type="button"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        navigate(`/app/connectors/${item.id}`);
-                      }}
-                      className="px-3 py-1 rounded-lg text-xs font-medium transition-colors bg-[#FAFAF8] hover:bg-[#F4F4F0] text-[#8B919B] hover:text-[#111318] border border-[#E5E5E2] cursor-pointer"
-                    >
-                      Details
-                    </button>
                   )}
                 </div>
               </div>

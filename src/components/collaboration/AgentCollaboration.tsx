@@ -21,7 +21,7 @@ export const AgentCollaboration: React.FC = () => {
       name: 'Code Agent',
       brand: 'github',
       role: 'Generates PostgreSQL migrations and client SDK bindings',
-      status: 'Active' as const,
+      status: 'Completed' as const,
       output: 'Created 001_initial_schema.sql and updated AuthContext.tsx.'
     }
   ];
@@ -109,11 +109,10 @@ export const AgentCollaboration: React.FC = () => {
                           <BrandLogo brand={ag.name.includes('Code') ? 'github' : 'anthropic'} size={16} />
                           <span className="text-xs font-semibold text-[#111318] truncate">{ag.name}</span>
                         </div>
-                        {ag.status === 'Active' ? (
-                          <span className="text-[10px] bg-blue-50 text-blue-700 px-1.5 py-0.5 rounded border border-blue-200 shrink-0 font-medium">RUNNING</span>
-                        ) : (
-                          <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500 shrink-0" />
-                        )}
+                        <span className="inline-flex items-center gap-1 text-[10px] bg-emerald-50 text-emerald-700 px-1.5 py-0.5 rounded border border-emerald-200 shrink-0 font-medium">
+                          <CheckCircle2 className="w-3 h-3 text-emerald-600" />
+                          COMPLETED
+                        </span>
                       </div>
                       <p className="text-[11px] text-[#626873] leading-relaxed break-words flex-1">
                         {ag.role}
@@ -138,13 +137,13 @@ export const AgentCollaboration: React.FC = () => {
               aria-label="View DeepSeek Security Auditor"
             >
               <div className="flex items-center gap-3.5 min-w-0 flex-1">
-                <div className="w-8 h-8 rounded-lg bg-blue-50 border border-blue-200 flex items-center justify-center shrink-0 text-blue-600">
+                <div className="w-8 h-8 rounded-lg bg-emerald-50 border border-emerald-200 flex items-center justify-center shrink-0 text-emerald-600">
                   <Terminal className="w-4 h-4" />
                 </div>
                 <div className="min-w-0 flex-1">
                   <div className="flex items-center gap-2 flex-wrap">
                     <span className="text-xs font-semibold text-[#111318] group-hover:text-blue-600 transition-colors">DeepSeek Security Auditor</span>
-                    <span className="text-[10px] bg-amber-50 text-amber-700 px-1.5 py-0.2 rounded border border-amber-200 font-medium">QUEUED</span>
+                    <span className="text-[10px] bg-emerald-50 text-emerald-700 px-1.5 py-0.2 rounded border border-emerald-200 font-medium">VERIFIED (100% PASSED)</span>
                   </div>
                   <span className="text-xs text-[#626873] block break-words">Typecheck, RLS policy validation, and automated AST vulnerability scan.</span>
                 </div>
@@ -162,11 +161,14 @@ export const AgentCollaboration: React.FC = () => {
               aria-label="Explore Vercel Deployment Connector"
             >
               <div className="flex items-center gap-3.5 min-w-0 flex-1">
-                <div className="w-8 h-8 rounded-lg bg-[#FAFAF8] border border-[#E5E5E2] flex items-center justify-center shrink-0 text-[#111318]">
+                <div className="w-8 h-8 rounded-lg bg-emerald-50 border border-emerald-200 flex items-center justify-center shrink-0 text-emerald-600">
                   <Rocket className="w-4 h-4" />
                 </div>
                 <div className="min-w-0 flex-1">
-                  <span className="text-xs font-semibold text-[#111318] block group-hover:text-emerald-600 transition-colors">Vercel Deployment Connector</span>
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <span className="text-xs font-semibold text-[#111318] block group-hover:text-emerald-600 transition-colors">Vercel Deployment Connector</span>
+                    <span className="text-[10px] bg-emerald-50 text-emerald-700 px-1.5 py-0.2 rounded border border-emerald-200 font-medium">DEPLOYED · LIVE</span>
+                  </div>
                   <p className="text-xs text-[#626873] break-words">Creates preview environment and updates PR with verification log.</p>
                 </div>
               </div>
@@ -207,9 +209,12 @@ export const AgentCollaboration: React.FC = () => {
                 </div>
               </div>
 
-              <div className="pt-3 border-t border-[#EFEFEA] flex items-center justify-between text-xs text-[#8B919B] mb-4">
-                <span>Status: In progress</span>
-                <span className="font-mono">Time: 1.4s</span>
+              <div className="pt-3 border-t border-[#EFEFEA] flex items-center justify-between text-xs mb-4">
+                <span className="inline-flex items-center gap-1.5 text-emerald-700 font-semibold">
+                  <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
+                  Status: Completed (0 Errors)
+                </span>
+                <span className="font-mono text-[#8B919B]">Time: 0.8s</span>
               </div>
 
               {/* Direct Action Links */}

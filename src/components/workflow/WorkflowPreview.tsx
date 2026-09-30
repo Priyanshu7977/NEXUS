@@ -73,40 +73,40 @@ export const WorkflowPreview: React.FC = () => {
       type: 'agent',
       title: 'Code Agent',
       subtitle: 'Synthesis & generation',
-      status: 'RUNNING',
-      details: 'Synthesizing TypeScript interfaces and verifying Supabase client singleton'
+      status: isSimulating && activeNodeId === 'wf-code' ? 'RUNNING' : 'COMPLETED',
+      details: 'Synthesized TypeScript interfaces and verified Supabase client singleton (0 errors)'
     },
     {
       id: 'wf-test',
       type: 'agent',
       title: 'Test Agent',
       subtitle: 'Automated test suite',
-      status: 'WAITING',
-      details: 'Runs unit tests, lint checks, and typecheck builds in ephemeral sandbox'
+      status: isSimulating && activeNodeId === 'wf-test' ? 'RUNNING' : 'COMPLETED',
+      details: 'Ran 14 unit test suites, lint checks, and typecheck builds in ephemeral sandbox (100% passed)'
     },
     {
       id: 'wf-security',
       type: 'guardrail',
       title: 'Security Agent',
       subtitle: 'RLS & vulnerability audit',
-      status: 'WAITING',
-      details: 'Scans for exposed API secrets, SQL injections, and permissive RLS policies'
+      status: isSimulating && activeNodeId === 'wf-security' ? 'RUNNING' : 'COMPLETED',
+      details: 'Scanned 6 RLS policies: zero credential leaks, SQL injections, or boundary bypasses'
     },
     {
       id: 'wf-gate',
       type: 'gate',
       title: 'Human Approval',
-      subtitle: 'Slack dispatch gate',
-      status: 'WAITING',
-      details: 'Requests one-click approval from release engineering channel'
+      subtitle: 'Release sign-off gate',
+      status: isSimulating && activeNodeId === 'wf-gate' ? 'RUNNING' : 'COMPLETED',
+      details: 'Verified and approved by release engineering lead (@priyanshu)'
     },
     {
       id: 'wf-deploy',
       type: 'action',
       title: 'Deploy',
       subtitle: 'Vercel production deploy',
-      status: 'PREVIEW',
-      details: 'Deploys verified artifact to production with zero downtime'
+      status: isSimulating && activeNodeId === 'wf-deploy' ? 'RUNNING' : 'COMPLETED',
+      details: 'Deployed verified production build to global edge network with 0 downtime (200 OK)'
     }
   ];
 

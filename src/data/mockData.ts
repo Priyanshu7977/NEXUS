@@ -8,7 +8,7 @@ export const HERO_NODES: OrchestrationNode[] = [
     category: 'core',
     x: 50,
     y: 50,
-    status: 'RUNNING',
+    status: 'COMPLETED',
     iconName: 'Cpu',
     description: 'Central orchestration engine coordinating agents, tools, and workflows.',
     role: 'Central Orchestration Engine'
@@ -32,7 +32,7 @@ export const HERO_NODES: OrchestrationNode[] = [
     category: 'agent',
     x: 82,
     y: 48,
-    status: 'RUNNING',
+    status: 'COMPLETED',
     iconName: 'Bot',
     description: 'Specialized autonomous agents planning and generating code.',
     role: 'Specialized Agents'
@@ -56,7 +56,7 @@ export const HERO_NODES: OrchestrationNode[] = [
     category: 'deploy',
     x: 50,
     y: 82,
-    status: 'WAITING',
+    status: 'COMPLETED',
     iconName: 'CloudLightning',
     description: 'Atomic deployments, preview branches, and edge environments.',
     role: 'Deployment Target'
@@ -92,7 +92,7 @@ export const HERO_NODES: OrchestrationNode[] = [
     category: 'telemetry',
     x: 74,
     y: 74,
-    status: 'RUNNING',
+    status: 'COMPLETED',
     iconName: 'Activity',
     description: 'Live execution traces, step latencies, and token usage.',
     role: 'Execution Traces'
@@ -216,7 +216,7 @@ export const COLLABORATION_STEPS: CollaborationStep[] = [
     id: 'step-2',
     name: 'Research Agent + Code Agent',
     role: 'Parallel Analysis & Implementation',
-    status: 'RUNNING',
+    status: 'COMPLETED',
     summary: 'Research Agent checks payment retry standards while Code Agent authors changes in parallel.',
     details: {
       input: 'File: billing/payment_processor.ts, requirement: retry with exponential backoff',
@@ -241,7 +241,7 @@ export const COLLABORATION_STEPS: CollaborationStep[] = [
     id: 'step-4',
     name: 'Security Agent',
     role: 'Policy & Guardrail Check',
-    status: 'RUNNING',
+    status: 'COMPLETED',
     summary: 'Scanning changes for credential exposure, permission limits, and boundary compliance.',
     details: {
       input: 'Synthesized patch diff and dependency updates',
@@ -253,11 +253,11 @@ export const COLLABORATION_STEPS: CollaborationStep[] = [
     id: 'step-5',
     name: 'Deployment Agent',
     role: 'Staging & Human Approval',
-    status: 'WAITING',
+    status: 'COMPLETED',
     summary: 'Prepares staging preview deployment and sends approval card to engineering channel.',
     details: {
       input: 'Verified commit bundle ready for staging rollout',
-      output: 'Awaiting human sign-off before promoting to production.',
+      output: 'Deployed to production cluster with zero downtime (200 OK).',
       toolsInvoked: ['slack.requestApproval', 'deploy.stagePreview']
     }
   }
@@ -296,7 +296,7 @@ export const WORKFLOW_NODES: WorkflowNode[] = [
     title: 'Security Agent',
     subtitle: 'Security Checks',
     type: 'guardrail',
-    status: 'RUNNING',
+    status: 'COMPLETED',
     x: 56,
     y: 20
   },
@@ -305,7 +305,7 @@ export const WORKFLOW_NODES: WorkflowNode[] = [
     title: 'Human Approval',
     subtitle: 'Approval Gate',
     type: 'gate',
-    status: 'WAITING',
+    status: 'COMPLETED',
     x: 72,
     y: 40
   },
@@ -314,7 +314,7 @@ export const WORKFLOW_NODES: WorkflowNode[] = [
     title: 'Deploy to Vercel',
     subtitle: 'Production Release',
     type: 'action',
-    status: 'WAITING',
+    status: 'COMPLETED',
     x: 88,
     y: 40
   }
@@ -359,8 +359,8 @@ export const MISSION_LOGS: LogEntry[] = [
   {
     id: 'log-6',
     timestamp: '17:42:06',
-    level: 'WARN',
+    level: 'INFO',
     agent: 'DEPLOY AGENT',
-    message: 'Awaiting human approval before production release.'
+    message: 'Human release gate approved. Production deployment live on Vercel edge (200 OK).'
   }
 ];

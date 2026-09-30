@@ -3,7 +3,8 @@ import { BrandLogo } from '../brand/BrandLogo';
 import { X, Key, ExternalLink, Copy, Check, ShieldCheck, Loader2, AlertCircle } from 'lucide-react';
 import { Button } from '../ui/Button';
 import { getGitHubRedirectUri } from '../../services/githubService';
-import { connectWithToken, connectVercelWithToken } from '../../services/connectorService';
+import { connectWithToken, connectVercelWithToken, connectGenericConnectorWithToken } from '../../services/connectorService';
+import { getConnectorById } from '../../connectors/registry';
 import { useAuth } from '../../context/AuthContext';
 
 interface ConnectorSetupModalProps {
@@ -29,6 +30,10 @@ export const ConnectorSetupModal: React.FC<ConnectorSetupModalProps> = ({
   if (!isOpen) return null;
 
   const isVercel = connectorId === 'vercel';
+  const isGitHub = connectorId === 'github';
+  const connDef = getConnectorById(connectorId);
+  const connectorName = connDef?.name || (isVercel ? 'Vercel' : (isGitHub ? 'GitHub' : connectorId));
+  const connectorBrand = connDef?.brand || (isVercel ? 'vercel' : 'github');
   const redirectUri = getGitHubRedirectUri();
 
   const handleCopyUri = () => {
@@ -40,7 +45,7 @@ export const ConnectorSetupModal: React.FC<ConnectorSetupModalProps> = ({
   const handlePatSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!patToken.trim()) {
-      setError(`Please provide a ${isVercel ? 'Vercel' : 'GitHub'} Access Token.`);
+      setError(`Please provide credentials or an access token for ${connectorName}.`);
       return;
     }
 
@@ -55,7 +60,9 @@ export const ConnectorSetupModal: React.FC<ConnectorSetupModalProps> = ({
     try {
       const res = isVercel
         ? await connectVercelWithToken(currentWorkspace.id, patToken.trim())
-        : await connectWithToken(currentWorkspace.id, patToken.trim());
+        : isGitHub
+        ? await connectWithToken(currentWorkspace.id, patToken.trim())
+        : await connectGenericConnectorWithToken(currentWorkspace.id, connectorId, patToken.trim());
 
       if (res.error) {
         setError(res.error);
@@ -81,16 +88,18 @@ export const ConnectorSetupModal: React.FC<ConnectorSetupModalProps> = ({
         <div className="flex items-center justify-between pb-4 border-b border-[#EFEFEA] mb-5">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-xl bg-[#FAFAF8] border border-[#E5E5E2] flex items-center justify-center">
-              <BrandLogo brand={isVercel ? 'vercel' : 'github'} size={22} />
+              <BrandLogo brand={connectorBrand} size={22} />
             </div>
             <div>
               <h3 className="text-base font-bold text-[#111318]">
-                Configure {isVercel ? 'Vercel' : 'GitHub'} Integration
+                Configure {connectorName} Integration
               </h3>
               <p className="text-xs text-[#626873]">
                 {isVercel
                   ? 'Connect via Vercel Personal Access Token to enable deployments'
-                  : 'Connect via Personal Access Token or configure OAuth App keys'}
+                  : isGitHub
+                  ? 'Connect via Personal Access Token or configure OAuth App keys'
+                  : `Securely save ${connectorName} credentials into your encrypted workspace vault`}
               </p>
             </div>
           </div>
@@ -132,17 +141,21 @@ export const ConnectorSetupModal: React.FC<ConnectorSetupModalProps> = ({
           </div>
         )}
 
-        {/* Tab 1: Personal Access Token (PAT) Form */}
-        {(activeTab === 'pat' || isVercel) && (
+        {/* Tab 1: Personal Access Token / API Key Form */}
+        {(activeTab === 'pat' || !isGitHub) && (
           <form onSubmit={handlePatSubmit} className="flex flex-col gap-4">
             <div className="p-3.5 rounded-xl bg-blue-50/70 border border-blue-100 text-xs text-blue-900 leading-relaxed">
               {isVercel ? (
                 <>
                   <span className="font-semibold">Quick Start:</span> Create a Vercel Personal Access Token from your Vercel Account Settings to deploy projects directly.
                 </>
-              ) : (
+              ) : isGitHub ? (
                 <>
                   <span className="font-semibold">Quick Start:</span> Generate a GitHub Personal Access Token (classic) with <code className="px-1 py-0.5 rounded bg-blue-100/80 font-mono text-[11px]">repo</code> and <code className="px-1 py-0.5 rounded bg-blue-100/80 font-mono text-[11px]">read:user</code> scopes to connect immediately.
+                </>
+              ) : (
+                <>
+                  <span className="font-semibold">Quick Start:</span> Provide your {connectorName} API key or access token. Credentials are AES-256 encrypted and stored securely in your workspace vault.
                 </>
               )}
             </div>
@@ -156,29 +169,47 @@ export const ConnectorSetupModal: React.FC<ConnectorSetupModalProps> = ({
 
             <div>
               <label className="block text-xs font-semibold text-[#111318] mb-1.5">
-                {isVercel ? 'Vercel Access Token' : 'GitHub Token (Personal Access Token)'}
+                {isVercel
+                  ? 'Vercel Access Token'
+                  : isGitHub
+                  ? 'GitHub Token (Personal Access Token)'
+                  : `${connectorName} API Key / Token`}
               </label>
               <input
                 type="password"
                 value={patToken}
                 onChange={(e) => setPatToken(e.target.value)}
-                placeholder={isVercel ? 'vercel_pat_xxxxxxxxxxxxxxxxxxxx' : 'ghp_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'}
+                placeholder={
+                  isVercel
+                    ? 'vercel_pat_xxxxxxxxxxxxxxxxxxxx'
+                    : isGitHub
+                    ? 'ghp_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'
+                    : `sk_${connectorId}_xxxxxxxxxxxxxxxxxxxxxxxx`
+                }
                 className="w-full h-10 px-3 rounded-xl bg-[#FAFAF8] border border-[#E5E5E2] focus:border-[#6D4AFF] focus:bg-white text-xs font-mono text-[#111318] placeholder:text-[#8B919B] outline-none transition-colors"
               />
               <div className="flex items-center justify-between mt-1.5 text-[11px] text-[#8B919B]">
-                <span>Token is encrypted using AES-256 before database storage.</span>
-                <a
-                  href={
-                    isVercel
-                      ? 'https://vercel.com/account/tokens'
-                      : 'https://github.com/settings/tokens/new?scopes=repo,read:user&description=NEXUS+Agent+Orchestration'
-                  }
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-[#6D4AFF] hover:underline flex items-center gap-0.5 font-medium"
-                >
-                  Generate Token <ExternalLink className="w-3 h-3" />
-                </a>
+                <span>Token is encrypted using AES-256 before storage.</span>
+                {isGitHub && (
+                  <a
+                    href="https://github.com/settings/tokens/new?scopes=repo,read:user&description=NEXUS+Agent+Orchestration"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-[#6D4AFF] hover:underline flex items-center gap-0.5 font-medium"
+                  >
+                    Generate Token <ExternalLink className="w-3 h-3" />
+                  </a>
+                )}
+                {isVercel && (
+                  <a
+                    href="https://vercel.com/account/tokens"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-[#6D4AFF] hover:underline flex items-center gap-0.5 font-medium"
+                  >
+                    Generate Token <ExternalLink className="w-3 h-3" />
+                  </a>
+                )}
               </div>
             </div>
 
@@ -202,7 +233,7 @@ export const ConnectorSetupModal: React.FC<ConnectorSetupModalProps> = ({
                     Validating...
                   </>
                 ) : (
-                  `Connect ${isVercel ? 'Vercel' : 'GitHub'}`
+                  `Connect ${connectorName}`
                 )}
               </Button>
             </div>

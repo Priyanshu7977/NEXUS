@@ -144,13 +144,32 @@ export const AgentNewPage: React.FC = () => {
           id: 'github.repositories.write',
           name: 'Commit & Branch Management',
           description: 'Create branches, push commits, and propose code patches.',
-          implemented: false,
+          implemented: true,
         },
         {
           id: 'github.pull_requests.read',
           name: 'Inspect Pull Requests',
           description: 'Analyze pull request diffs, review comments, and check runs.',
-          implemented: false,
+          implemented: true,
+        },
+      ],
+    },
+    {
+      connectorId: 'vercel',
+      connectorName: 'Vercel Deployment Connector',
+      brand: 'vercel' as const,
+      capabilities: [
+        {
+          id: 'vercel.projects.read',
+          name: 'Inspect Projects & Domains',
+          description: 'List linked web applications, domains, and environment settings.',
+          implemented: true,
+        },
+        {
+          id: 'vercel.deployments.create',
+          name: 'Trigger Production Deployments',
+          description: 'Deploy verified artifacts and generate preview URLs on edge runtime.',
+          implemented: true,
         },
       ],
     },
@@ -553,9 +572,7 @@ export const AgentNewPage: React.FC = () => {
                         <label
                           key={cap.id}
                           className={`p-3 rounded-xl border flex items-start justify-between gap-3 cursor-pointer transition-colors ${
-                            !cap.implemented
-                              ? 'opacity-60 bg-white border-[#EFEFEA] cursor-not-allowed'
-                              : isChecked
+                            isChecked
                               ? 'bg-purple-50/50 border-[#6D4AFF]/40'
                               : 'bg-white border-[#E5E5E2] hover:border-[#D4D4CE]'
                           }`}
@@ -563,8 +580,7 @@ export const AgentNewPage: React.FC = () => {
                           <div className="flex items-start gap-2.5">
                             <input
                               type="checkbox"
-                              disabled={!cap.implemented}
-                              checked={isChecked && cap.implemented}
+                              checked={isChecked}
                               onChange={() => toggleCapability(cap.id)}
                               className="mt-0.5 accent-[#6D4AFF] rounded cursor-pointer"
                             />
@@ -579,10 +595,8 @@ export const AgentNewPage: React.FC = () => {
                             </div>
                           </div>
 
-                          <span className={`text-[10px] font-mono px-2 py-0.5 rounded shrink-0 ${
-                            cap.implemented ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' : 'bg-[#FAFAF8] text-[#8B919B] border border-[#EFEFEA]'
-                          }`}>
-                            {cap.implemented ? 'Available' : 'Coming Soon'}
+                          <span className="text-[10px] font-mono px-2 py-0.5 rounded shrink-0 bg-emerald-50 text-emerald-700 border border-emerald-200 font-medium">
+                            Available
                           </span>
                         </label>
                       );

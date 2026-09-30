@@ -12,7 +12,7 @@ export const CONNECTOR_REGISTRY: Record<string, ConnectorDefinition> = {
     brand: 'docker',
     category: 'Development',
     description: 'Isolated container runtimes for sandboxed task and testing execution.',
-    status: 'coming_soon',
+    status: 'available',
     authType: 'api_key',
     requiredScopes: ['containers:read', 'containers:write'],
     capabilities: [
@@ -20,7 +20,7 @@ export const CONNECTOR_REGISTRY: Record<string, ConnectorDefinition> = {
         id: 'docker.containers.run',
         name: 'Spawn Ephemeral Container',
         description: 'Spin up isolated container runtime for unit tests.',
-        status: 'planned'
+        status: 'active'
       }
     ]
   },
@@ -31,7 +31,7 @@ export const CONNECTOR_REGISTRY: Record<string, ConnectorDefinition> = {
     brand: 'openai',
     category: 'AI',
     description: 'GPT-4o, o1, and o3-mini models for deep reasoning and tool invocation.',
-    status: 'coming_soon',
+    status: 'available',
     authType: 'api_key',
     requiredScopes: ['models:read', 'completions:write'],
     capabilities: [
@@ -39,7 +39,7 @@ export const CONNECTOR_REGISTRY: Record<string, ConnectorDefinition> = {
         id: 'openai.chat.completions',
         name: 'Model Inference',
         description: 'Execute structured tool calling with GPT-4o.',
-        status: 'planned'
+        status: 'active'
       }
     ]
   },
@@ -50,7 +50,7 @@ export const CONNECTOR_REGISTRY: Record<string, ConnectorDefinition> = {
     brand: 'gemini',
     category: 'AI',
     description: 'Multimodal reasoning across text, code, audio, and large contexts with Gemini 2.5.',
-    status: 'coming_soon',
+    status: 'available',
     authType: 'api_key',
     requiredScopes: ['models:generate'],
     capabilities: [
@@ -58,7 +58,7 @@ export const CONNECTOR_REGISTRY: Record<string, ConnectorDefinition> = {
         id: 'gemini.content.generate',
         name: 'Gemini Multimodal Inference',
         description: 'Context processing and token streaming with Gemini models.',
-        status: 'planned'
+        status: 'active'
       }
     ]
   },
@@ -69,7 +69,7 @@ export const CONNECTOR_REGISTRY: Record<string, ConnectorDefinition> = {
     brand: 'anthropic',
     category: 'AI',
     description: 'Claude 3.7 Sonnet for hybrid reasoning, code synthesis, refactoring, and planning.',
-    status: 'coming_soon',
+    status: 'available',
     authType: 'api_key',
     requiredScopes: ['messages:create'],
     capabilities: [
@@ -77,7 +77,7 @@ export const CONNECTOR_REGISTRY: Record<string, ConnectorDefinition> = {
         id: 'anthropic.messages.create',
         name: 'Claude Message Synthesis',
         description: 'High-capability reasoning and code editing with Claude.',
-        status: 'planned'
+        status: 'active'
       }
     ]
   },
@@ -88,7 +88,7 @@ export const CONNECTOR_REGISTRY: Record<string, ConnectorDefinition> = {
     brand: 'supabase',
     category: 'Data',
     description: 'PostgreSQL database, authentication context, and real-time subscriptions.',
-    status: 'coming_soon',
+    status: 'available',
     authType: 'api_key',
     requiredScopes: ['database:read', 'database:write'],
     capabilities: [
@@ -96,7 +96,7 @@ export const CONNECTOR_REGISTRY: Record<string, ConnectorDefinition> = {
         id: 'supabase.sql.query',
         name: 'Execute SQL & Migrations',
         description: 'Query tables and manage database schema migrations.',
-        status: 'planned'
+        status: 'active'
       }
     ]
   },
@@ -107,7 +107,7 @@ export const CONNECTOR_REGISTRY: Record<string, ConnectorDefinition> = {
     brand: 'postgres',
     category: 'Data',
     description: 'Direct SQL query execution and schema inspection for specialized agents.',
-    status: 'coming_soon',
+    status: 'available',
     authType: 'service_account',
     requiredScopes: ['connect', 'query'],
     capabilities: [
@@ -115,7 +115,7 @@ export const CONNECTOR_REGISTRY: Record<string, ConnectorDefinition> = {
         id: 'postgres.query.execute',
         name: 'Read/Write SQL Execution',
         description: 'Execute queries with parameterized guards and connection pooling.',
-        status: 'planned'
+        status: 'active'
       }
     ]
   },
@@ -126,7 +126,7 @@ export const CONNECTOR_REGISTRY: Record<string, ConnectorDefinition> = {
     brand: 'mongodb',
     category: 'Data',
     description: 'Document database storage, vector search, and change streams for agent memory.',
-    status: 'coming_soon',
+    status: 'available',
     authType: 'api_key',
     requiredScopes: ['data:read', 'data:write'],
     capabilities: [
@@ -134,7 +134,7 @@ export const CONNECTOR_REGISTRY: Record<string, ConnectorDefinition> = {
         id: 'mongodb.documents.crud',
         name: 'Document Management',
         description: 'Query, insert, and update JSON documents in collections.',
-        status: 'planned'
+        status: 'active'
       }
     ]
   },
@@ -145,7 +145,7 @@ export const CONNECTOR_REGISTRY: Record<string, ConnectorDefinition> = {
     brand: 'wordpress',
     category: 'CMS',
     description: 'Headless content management, drafts, and publishing for marketing agents.',
-    status: 'coming_soon',
+    status: 'available',
     authType: 'oauth2',
     requiredScopes: ['posts:write', 'media:upload'],
     capabilities: [
@@ -153,7 +153,7 @@ export const CONNECTOR_REGISTRY: Record<string, ConnectorDefinition> = {
         id: 'wordpress.posts.manage',
         name: 'Manage Content Posts',
         description: 'Create and update articles, pages, and media.',
-        status: 'planned'
+        status: 'active'
       }
     ]
   },
@@ -164,7 +164,7 @@ export const CONNECTOR_REGISTRY: Record<string, ConnectorDefinition> = {
     brand: 'shopify',
     category: 'CMS',
     description: 'Storefront APIs, inventory webhooks, and product catalog synchronization.',
-    status: 'coming_soon',
+    status: 'available',
     authType: 'oauth2',
     requiredScopes: ['read_products', 'write_inventory'],
     capabilities: [
@@ -172,7 +172,7 @@ export const CONNECTOR_REGISTRY: Record<string, ConnectorDefinition> = {
         id: 'shopify.products.sync',
         name: 'Product Catalog Sync',
         description: 'Fetch and update store inventory and products.',
-        status: 'planned'
+        status: 'active'
       }
     ]
   },
@@ -183,7 +183,7 @@ export const CONNECTOR_REGISTRY: Record<string, ConnectorDefinition> = {
     brand: 'slack',
     category: 'Communication',
     description: 'Human-in-the-loop approvals, status alerts, and thread interactions.',
-    status: 'coming_soon',
+    status: 'available',
     authType: 'oauth2',
     requiredScopes: ['chat:write', 'channels:read'],
     capabilities: [
@@ -191,7 +191,7 @@ export const CONNECTOR_REGISTRY: Record<string, ConnectorDefinition> = {
         id: 'slack.messages.send',
         name: 'Dispatch Channel Messages',
         description: 'Send interactive block cards and approval requests.',
-        status: 'planned'
+        status: 'active'
       }
     ]
   },
@@ -202,7 +202,7 @@ export const CONNECTOR_REGISTRY: Record<string, ConnectorDefinition> = {
     brand: 'notion',
     category: 'CMS',
     description: 'Ingest documentation, specs, and knowledge bases into agent memory.',
-    status: 'coming_soon',
+    status: 'available',
     authType: 'oauth2',
     requiredScopes: ['pages:read', 'databases:read'],
     capabilities: [
@@ -210,7 +210,7 @@ export const CONNECTOR_REGISTRY: Record<string, ConnectorDefinition> = {
         id: 'notion.pages.index',
         name: 'Index Pages & Databases',
         description: 'Read workspace documentation for contextual agent tasks.',
-        status: 'planned'
+        status: 'active'
       }
     ]
   },
@@ -221,7 +221,7 @@ export const CONNECTOR_REGISTRY: Record<string, ConnectorDefinition> = {
     brand: 'discord',
     category: 'Communication',
     description: 'Community bot interactions, automated notices, and feedback channels.',
-    status: 'coming_soon',
+    status: 'available',
     authType: 'oauth2',
     requiredScopes: ['bot', 'messages.read'],
     capabilities: [
@@ -229,7 +229,7 @@ export const CONNECTOR_REGISTRY: Record<string, ConnectorDefinition> = {
         id: 'discord.messages.send',
         name: 'Channel Alerts',
         description: 'Post updates to designated Discord channels.',
-        status: 'planned'
+        status: 'active'
       }
     ]
   },
@@ -240,7 +240,7 @@ export const CONNECTOR_REGISTRY: Record<string, ConnectorDefinition> = {
     brand: 'firebase',
     category: 'Data',
     description: 'Firestore databases, Cloud Storage, and client authentication state synchronization.',
-    status: 'coming_soon',
+    status: 'available',
     authType: 'service_account',
     requiredScopes: ['firestore:read', 'firestore:write'],
     capabilities: [
@@ -248,7 +248,7 @@ export const CONNECTOR_REGISTRY: Record<string, ConnectorDefinition> = {
         id: 'firebase.firestore.sync',
         name: 'Firestore Sync',
         description: 'Read and update Firestore document collections.',
-        status: 'planned'
+        status: 'active'
       }
     ]
   }

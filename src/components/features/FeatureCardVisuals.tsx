@@ -116,25 +116,25 @@ export const ObserveVisual: React.FC = () => {
         <div className="flex items-center justify-between text-[10px] font-mono">
           <span className="text-[#9BA3AF] truncate w-24">planner.plan</span>
           <div className="flex-1 mx-2 h-1.5 rounded-full bg-white/5 overflow-hidden">
-            <div className="h-full bg-emerald-400 rounded-full w-[45%]" />
+            <div className="h-full bg-emerald-400 rounded-full w-full" />
           </div>
-          <span className="text-[#626A78] text-[9px]">done</span>
+          <span className="text-emerald-400 text-[9px]">done · 240ms</span>
         </div>
 
         <div className="flex items-center justify-between text-[10px] font-mono">
           <span className="text-[#9BA3AF] truncate w-24">code.generate</span>
           <div className="flex-1 mx-2 h-1.5 rounded-full bg-white/5 overflow-hidden">
-            <div className="h-full bg-[#7C5CFC] rounded-full w-[80%]" />
+            <div className="h-full bg-emerald-400 rounded-full w-full" />
           </div>
-          <span className="text-[#626A78] text-[9px]">running</span>
+          <span className="text-emerald-400 text-[9px]">done · 610ms</span>
         </div>
 
         <div className="flex items-center justify-between text-[10px] font-mono">
           <span className="text-[#9BA3AF] truncate w-24">security.check</span>
           <div className="flex-1 mx-2 h-1.5 rounded-full bg-white/5 overflow-hidden">
-            <div className="h-full bg-[#45D7FF] rounded-full w-[30%]" />
+            <div className="h-full bg-emerald-400 rounded-full w-full" />
           </div>
-          <span className="text-[#626A78] text-[9px]">queued</span>
+          <span className="text-emerald-400 text-[9px]">verified · 180ms</span>
         </div>
       </div>
 

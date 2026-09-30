@@ -4,6 +4,7 @@ import { RateLimitInfo, RepositoryItem } from '../types/connector';
 import { encryptToken, decryptToken } from './encryptionService';
 import { githubAdapter } from '../connectors/adapters/githubAdapter';
 import { vercelAdapter } from '../connectors/adapters/vercelAdapter';
+import { getConnectorById } from '../connectors/registry';
 import { logWorkspaceActivity } from './activityService';
 
 const LOCAL_CONNECTIONS_PREFIX = 'nexus_connections_';
@@ -395,6 +396,43 @@ export const connectVercelWithToken = async (
     return result;
   } catch (err: any) {
     return { connection: null, error: err.message || 'Failed to authenticate with Vercel token' };
+  }
+};
+
+/**
+ * Connects any generic connector (OpenAI, Gemini, Anthropic, Supabase, Postgres, Docker, MongoDB, etc.) with an API key/token
+ */
+export const connectGenericConnectorWithToken = async (
+  workspaceId: string,
+  connectorId: string,
+  token: string,
+  accountName?: string
+): Promise<{ connection: ConnectorConnection | null; error?: string }> => {
+  if (!workspaceId || !token.trim()) {
+    return { connection: null, error: 'API key or token is required' };
+  }
+
+  try {
+    const connDef = getConnectorById(connectorId);
+    const displayName = accountName?.trim() || `${connDef?.name || connectorId} (Direct API)`;
+
+    const result = await saveConnectorConnection(workspaceId, {
+      connectorId,
+      providerAccountId: `account_${connectorId}_${Date.now()}`,
+      providerAccountName: displayName,
+      providerAvatarUrl: null,
+      scopes: connDef?.requiredScopes || ['read', 'write'],
+      accessToken: token.trim(),
+      metadata: {
+        connectedVia: 'api_key_vault',
+        connectorName: connDef?.name || connectorId,
+        configuredAt: new Date().toISOString(),
+      },
+    });
+
+    return result;
+  } catch (err: any) {
+    return { connection: null, error: err.message || 'Failed to configure connector credentials' };
   }
 };
 

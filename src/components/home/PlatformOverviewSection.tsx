@@ -30,6 +30,7 @@ interface PlatformStep {
 
 export const PlatformOverviewSection: React.FC = () => {
   const [activeStepIndex, setActiveStepIndex] = useState(0);
+  const [approvalStatus, setApprovalStatus] = useState<'approved' | 'pending' | 'rejected'>('approved');
 
   const steps: PlatformStep[] = [
     {
@@ -339,10 +340,10 @@ export const PlatformOverviewSection: React.FC = () => {
 
                   <div className="p-3 rounded-xl bg-[#1A1D24] border border-purple-500/50 flex items-center justify-between ml-8">
                     <div className="flex items-center gap-2">
-                      <ShieldCheck className="w-3.5 h-3.5 text-purple-400" />
+                      <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
                       <span className="text-white">Node 4: Human Approval Checkpoint</span>
                     </div>
-                    <span className="text-[10px] text-amber-400 animate-pulse">AWAITING ADMIN</span>
+                    <span className="text-[10px] text-emerald-400 font-semibold">PASSED & APPROVED (100% OK)</span>
                   </div>
                 </div>
               </div>
@@ -363,7 +364,7 @@ export const PlatformOverviewSection: React.FC = () => {
                   <div className="flex items-center justify-between text-xs">
                     <span className="font-semibold text-white flex items-center gap-2">
                       <ShieldAlert className="w-3.5 h-3.5 text-purple-400" />
-                      Production Deployment Sign-Off Required
+                      Production Deployment Sign-Off
                     </span>
                     <span className="text-[10px] font-mono text-purple-300 bg-purple-950/80 px-2 py-0.5 rounded border border-purple-800">
                       ADMIN ROLE
@@ -373,12 +374,51 @@ export const PlatformOverviewSection: React.FC = () => {
                     Target: Vercel Production Release (v1.2.0) with PostgreSQL RLS migrations.
                   </p>
                   <div className="flex items-center gap-2 pt-1 font-mono text-xs">
-                    <button type="button" className="px-3 py-1 rounded-lg bg-emerald-600 text-white font-bold text-[11px]">
-                      Approve & Deploy
-                    </button>
-                    <button type="button" className="px-3 py-1 rounded-lg bg-rose-950 text-rose-300 border border-rose-800 text-[11px]">
-                      Reject
-                    </button>
+                    {approvalStatus === 'approved' ? (
+                      <div className="flex items-center gap-2">
+                        <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 text-[11px] font-bold">
+                          <CheckCircle2 className="w-3.5 h-3.5" />
+                          APPROVED & DEPLOYED (200 OK)
+                        </span>
+                        <button
+                          type="button"
+                          onClick={() => setApprovalStatus('pending')}
+                          className="text-[10px] text-[#8B919B] hover:text-white underline cursor-pointer"
+                        >
+                          Simulate Gate
+                        </button>
+                      </div>
+                    ) : approvalStatus === 'rejected' ? (
+                      <div className="flex items-center gap-2">
+                        <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-rose-500/20 text-rose-400 border border-rose-500/40 text-[11px] font-bold">
+                          DEPLOYMENT REJECTED
+                        </span>
+                        <button
+                          type="button"
+                          onClick={() => setApprovalStatus('approved')}
+                          className="text-[10px] text-[#8B919B] hover:text-white underline cursor-pointer"
+                        >
+                          Re-approve
+                        </button>
+                      </div>
+                    ) : (
+                      <>
+                        <button
+                          type="button"
+                          onClick={() => setApprovalStatus('approved')}
+                          className="px-3 py-1 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-[11px] transition-colors cursor-pointer"
+                        >
+                          Approve & Deploy
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => setApprovalStatus('rejected')}
+                          className="px-3 py-1 rounded-lg bg-rose-950 hover:bg-rose-900 text-rose-300 border border-rose-800 text-[11px] transition-colors cursor-pointer"
+                        >
+                          Reject
+                        </button>
+                      </>
+                    )}
                   </div>
                 </div>
 

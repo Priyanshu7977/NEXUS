@@ -92,8 +92,7 @@ export const ConnectorDetailPage: React.FC = () => {
   }
 
   const isConnected = Boolean(connection);
-  const isLive = connector.id === 'github' || connector.id === 'vercel';
-  const isConfigured = connector.id === 'github' ? isGitHubConfigured() : (connector.id === 'vercel' ? vercelAdapter.isConfigured() : false);
+  const isConfigured = connector.id === 'github' ? isGitHubConfigured() : (connector.id === 'vercel' ? vercelAdapter.isConfigured() : true);
 
   const handleConnect = () => {
     if (connector.id === 'github') {
@@ -109,7 +108,7 @@ export const ConnectorDetailPage: React.FC = () => {
           setSetupModalOpen(true);
         }
       }
-    } else if (connector.id === 'vercel') {
+    } else {
       setSetupModalOpen(true);
     }
   };
@@ -161,19 +160,13 @@ export const ConnectorDetailPage: React.FC = () => {
                   <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
                   Connected
                 </span>
-              ) : isLive ? (
-                isConfigured ? (
-                  <span className="text-xs font-mono px-2.5 py-0.5 rounded bg-blue-50 text-blue-700 border border-blue-200">
-                    Ready to Connect
-                  </span>
-                ) : (
-                  <span className="text-xs font-mono px-2.5 py-0.5 rounded bg-amber-50 text-amber-700 border border-amber-200">
-                    Setup Required
-                  </span>
-                )
+              ) : isConfigured ? (
+                <span className="text-xs font-mono px-2.5 py-0.5 rounded bg-blue-50 text-blue-700 border border-blue-200">
+                  Ready to Connect
+                </span>
               ) : (
-                <span className="text-xs font-mono px-2.5 py-0.5 rounded bg-[#FAFAF8] text-[#8B919B] border border-[#EFEFEA]">
-                  Coming Soon
+                <span className="text-xs font-mono px-2.5 py-0.5 rounded bg-amber-50 text-amber-700 border border-amber-200">
+                  Setup Required
                 </span>
               )}
             </div>
@@ -208,14 +201,10 @@ export const ConnectorDetailPage: React.FC = () => {
                 <Trash2 className="w-4 h-4" />
               </button>
             </div>
-          ) : isLive ? (
+          ) : (
             <Button size="md" onClick={handleConnect} withArrow>
               Connect {connector.name}
             </Button>
-          ) : (
-            <div className="px-4 py-2 rounded-xl bg-[#FAFAF8] border border-[#E5E5E2] text-xs font-mono text-[#8B919B]">
-              Integration Planned
-            </div>
           )}
         </div>
       </div>
@@ -280,7 +269,7 @@ export const ConnectorDetailPage: React.FC = () => {
                         : 'bg-white text-[#8B919B] border border-[#E5E5E2]'
                     }`}
                   >
-                    {cap.status === 'active' ? 'Available' : 'Coming Soon'}
+                    {cap.status === 'active' ? 'Available' : 'Supported'}
                   </span>
                 </div>
               ))}

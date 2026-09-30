@@ -43,18 +43,18 @@ export const MissionControl: React.FC = () => {
     {
       id: 'step-04',
       agent: 'Test Agent',
-      action: 'Running typecheck and build validation suite',
-      status: 'RUNNING',
+      action: 'Ran typecheck and build validation suite',
+      status: 'COMPLETED',
       duration: '1.8s',
-      output: 'Executing tsc -b && vite build (1684 modules)'
+      output: 'Build passed: 0 lint errors, 1779 modules transformed'
     },
     {
       id: 'step-05',
       agent: 'Security Agent',
-      action: 'Scanning RLS policies for auth.uid() boundary leaks',
-      status: 'WAITING',
-      duration: '—',
-      output: 'Queued for post-build verification'
+      action: 'Scanned RLS policies for auth.uid() boundary leaks',
+      status: 'COMPLETED',
+      duration: '520ms',
+      output: 'Zero boundary leaks detected. 6/6 RLS policies verified'
     }
   ];
 
@@ -98,7 +98,7 @@ export const MissionControl: React.FC = () => {
 
             <div className="flex items-center gap-2">
               <div className="flex items-center gap-1 bg-white border border-[#E5E5E2] p-0.5 rounded-lg text-xs">
-                {['ALL', 'COMPLETED', 'RUNNING', 'WAITING'].map((f) => (
+                {['ALL', 'COMPLETED'].map((f) => (
                   <button
                     key={f}
                     onClick={() => setFilter(f)}

@@ -45,16 +45,22 @@ export const FeatureGrid: React.FC = () => {
         <div className="p-4 rounded-xl bg-[#FAFAF8] border border-[#E5E5E2] flex flex-col gap-2">
           <div className="flex items-center justify-between text-xs">
             <span className="font-semibold text-[#111318]">Pipeline: Code Review & Test</span>
-            <span className="text-[10px] text-blue-600 bg-blue-50 px-2 py-0.5 rounded border border-blue-200">IN PROGRESS</span>
+            <span className="inline-flex items-center gap-1 text-[10px] text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200 font-medium">
+              <CheckCircle2 className="w-3 h-3 text-emerald-600" />
+              ALL COMPLETED (3/3 PASSED)
+            </span>
           </div>
           <div className="grid grid-cols-3 gap-2 mt-1">
-            <div className="p-2 rounded bg-white border border-[#E5E5E2] text-[11px] text-center font-medium text-[#111318]">
+            <div className="p-2 rounded bg-emerald-50/70 border border-emerald-200 text-[11px] text-center font-medium text-emerald-900 flex items-center justify-center gap-1">
+              <CheckCircle2 className="w-3 h-3 text-emerald-600 shrink-0" />
               Planner
             </div>
-            <div className="p-2 rounded bg-blue-50 border border-blue-200 text-[11px] text-center font-semibold text-blue-700">
+            <div className="p-2 rounded bg-emerald-50/70 border border-emerald-200 text-[11px] text-center font-semibold text-emerald-900 flex items-center justify-center gap-1">
+              <CheckCircle2 className="w-3 h-3 text-emerald-600 shrink-0" />
               Code Agent
             </div>
-            <div className="p-2 rounded bg-white border border-[#E5E5E2] text-[11px] text-center font-medium text-[#8B919B]">
+            <div className="p-2 rounded bg-emerald-50/70 border border-emerald-200 text-[11px] text-center font-medium text-emerald-900 flex items-center justify-center gap-1">
+              <CheckCircle2 className="w-3 h-3 text-emerald-600 shrink-0" />
               Verify Gate
             </div>
           </div>
