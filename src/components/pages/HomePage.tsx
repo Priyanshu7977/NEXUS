@@ -1,9 +1,9 @@
 import React from 'react';
 import { Hero } from '../hero/Hero';
-import { LiveAgentPlayground } from '../home/LiveAgentPlayground';
+import { SimpleHowItWorks } from '../home/SimpleHowItWorks';
 import { MultiModelSwarm } from '../swarm/MultiModelSwarm';
 import { EcosystemStrip } from '../ecosystem/EcosystemStrip';
-import { PlatformOverviewSection } from '../home/PlatformOverviewSection';
+import { LiveAgentPlayground } from '../home/LiveAgentPlayground';
 import { WorkflowPreview } from '../workflow/WorkflowPreview';
 import { ConnectorShowcase } from '../connectors/ConnectorShowcase';
 import { MissionControl } from '../observability/MissionControl';
@@ -12,28 +12,28 @@ import { FinalCTA } from '../cta/FinalCTA';
 export const HomePage: React.FC = () => {
   return (
     <div className="relative text-[#111318] font-sans selection:bg-[#6D4AFF]/20 selection:text-[#111318] antialiased">
-      {/* 1. Hero & Physical System Orchestration Map */}
+      {/* 1. Claude / ChatGPT Style Hero with Live AI Studio Omnibox */}
       <Hero />
 
-      {/* 2. Flagship Interactive AI Agent Studio (Live token streaming, code generation, UI preview) */}
-      <LiveAgentPlayground />
+      {/* 2. How It Works in 3 Simple Steps (Crystal clear, zero jargon) */}
+      <SimpleHowItWorks />
 
-      {/* 3. Industry First: Multi-Model Swarm Arena (GPT-4o + Claude 3.5 + Gemini + DeepSeek Consensus) */}
+      {/* 3. Multi-Model Swarm Arena (GPT-4o + Claude + Gemini + DeepSeek Consensus) */}
       <MultiModelSwarm />
 
-      {/* 4. Connected Developer Stack - Ecosystem Strip */}
+      {/* 4. Supported Developer Tools & Ecosystem Strip */}
       <EcosystemStrip />
 
-      {/* 5. End-to-End Application Overview (BYOK Vault, MCP Mesh, DAG Engine, Human Approval) */}
-      <PlatformOverviewSection />
+      {/* 5. Live Interactive Agent Studio (Token streaming, code synthesis, app preview) */}
+      <LiveAgentPlayground />
 
-      {/* 6. Visual Workflow Studio Canvas (Interactive Simulation, YAML Spec, Terminal Logs) */}
+      {/* 6. Visual Workflow Studio Canvas (Interactive Simulation, YAML Spec, Terminal) */}
       <WorkflowPreview />
 
-      {/* 7. Connector Ecosystem Directory */}
+      {/* 7. Connectors Directory */}
       <ConnectorShowcase />
 
-      {/* 8. Structured Execution Observability */}
+      {/* 8. Observability & Mission Control */}
       <MissionControl />
 
       {/* 9. Final Call to Action */}
