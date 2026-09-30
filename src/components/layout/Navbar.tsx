@@ -9,11 +9,11 @@ import {
   Cable, 
   Network, 
   Activity, 
-  ShieldCheck,
-  ArrowRight,
+  ShieldCheck, 
   Monitor,
   Layers,
-  Flame
+  Flame,
+  Sparkles
 } from 'lucide-react';
 import { Button } from '../ui/Button';
 import { DesktopAppModal } from '../desktop/DesktopAppModal';
@@ -23,7 +23,7 @@ export const NexusLogo: React.FC<{ className?: string; size?: number; dark?: boo
   size = 26,
   dark = false
 }) => (
-  <div className={`flex items-center gap-2.5 ${className}`}>
+  <div className={`flex items-center gap-2.5 shrink-0 ${className}`}>
     <div className="relative flex items-center justify-center shrink-0">
       <svg
         width={size}
@@ -57,8 +57,8 @@ export const NexusLogo: React.FC<{ className?: string; size?: number; dark?: boo
         <circle cx="4" cy="22" r="1.6" fill={dark ? "#45D7FF" : "#2563EB"} />
       </svg>
     </div>
-    <div className="flex flex-col">
-      <span className={`font-bold tracking-tight text-base font-sans ${dark ? 'text-white' : 'text-[#111318]'}`}>
+    <div className="flex flex-col shrink-0">
+      <span className={`font-bold tracking-tight text-base font-sans whitespace-nowrap select-none ${dark ? 'text-white' : 'text-[#111318]'}`}>
         NEXUS
       </span>
     </div>
@@ -112,60 +112,69 @@ export const Navbar: React.FC = () => {
 
   const productItems = [
     {
-      title: 'How NEXUS Works',
-      description: 'End-to-end walkthrough: BYOK APIs, MCP tools, DAG pipelines, and governance.',
-      to: '/#how-it-works',
-      icon: Layers,
-      color: 'text-indigo-600',
-      bg: 'bg-indigo-50'
-    },
-    {
-      title: 'Swarm Arena',
-      description: 'Run GPT-4o, Claude 3.5, Gemini & DeepSeek in parallel consensus.',
+      title: 'Swarm Consensus Arena',
+      description: 'Run GPT-4o, Claude 3.5, Gemini & DeepSeek in parallel arbitration.',
       to: '/swarm',
       icon: Flame,
       color: 'text-amber-500',
-      bg: 'bg-amber-50'
+      bg: 'bg-amber-50',
+      badge: 'NEW'
     },
     {
-      title: 'Agents',
-      description: 'Specialized autonomous AI agents for code, research, and analysis.',
-      to: '/explore?tab=agents',
-      icon: Bot,
+      title: 'Prompt-to-Workflow Compiler',
+      description: 'Generate runnable visual DAG orchestration from natural language.',
+      to: '/#workflow',
+      icon: Sparkles,
       color: 'text-[#6D4AFF]',
       bg: 'bg-purple-50'
     },
     {
-      title: 'Connectors',
-      description: 'Unified integrations for developer tools, models, and databases.',
-      to: '/explore?tab=connectors',
-      icon: Cable,
-      color: 'text-[#3B82F6]',
-      bg: 'bg-blue-50'
+      title: 'Autonomous Agents',
+      description: 'Specialized frontier AI workers for architecture, red teaming, and code.',
+      to: '/explore?tab=agents',
+      icon: Bot,
+      color: 'text-indigo-600',
+      bg: 'bg-indigo-50'
     },
     {
-      title: 'Workflows',
-      description: 'Visual DAG pipelines with parallel stages and human verification gates.',
+      title: 'Visual Workflow Studio',
+      description: 'DAG pipelines with parallel execution and human approval gates.',
       to: '/#workflow',
       icon: Network,
       color: 'text-emerald-600',
       bg: 'bg-emerald-50'
     },
     {
-      title: 'Observability',
-      description: 'Full execution telemetry, step latency metrics, and audit logs.',
-      to: '/#observability',
-      icon: Activity,
-      color: 'text-amber-600',
-      bg: 'bg-amber-50'
+      title: 'Connectors & MCP Tools',
+      description: 'Standardized Model Context Protocol servers and live integrations.',
+      to: '/explore?tab=connectors',
+      icon: Cable,
+      color: 'text-blue-600',
+      bg: 'bg-blue-50'
     },
     {
-      title: 'Security',
-      description: 'Granular permissions, credential isolation, and auditability.',
+      title: 'Observability & Telemetry',
+      description: 'Full execution traces, per-node latency, and step audit logs.',
+      to: '/#observability',
+      icon: Activity,
+      color: 'text-rose-600',
+      bg: 'bg-rose-50'
+    },
+    {
+      title: 'Security Architecture',
+      description: 'Zero-trust sandboxing, BYOK encryption, and prompt injection defense.',
       to: '/security',
       icon: ShieldCheck,
       color: 'text-[#111318]',
       bg: 'bg-neutral-100'
+    },
+    {
+      title: 'How NEXUS Works',
+      description: 'End-to-end architectural guide: APIs, Swarm consensus, and execution.',
+      to: '/#how-it-works',
+      icon: Layers,
+      color: 'text-cyan-600',
+      bg: 'bg-cyan-50'
     }
   ];
 
@@ -178,42 +187,45 @@ export const Navbar: React.FC = () => {
     <>
       <header
         className={`fixed top-0 left-0 right-0 z-50 flex justify-center transition-all duration-300 ${
-          scrolled ? 'py-2.5' : 'py-3.5'
+          scrolled ? 'py-2 sm:py-2.5' : 'py-3 sm:py-3.5'
         }`}
       >
-        <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="w-full max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
           <nav
-            className={`flex items-center justify-between mx-auto transition-all duration-300 rounded-xl border px-4 sm:px-5 ${
+            className={`flex items-center justify-between mx-auto transition-all duration-300 rounded-2xl border px-3.5 sm:px-5 py-2.5 ${
               scrolled
-                ? 'bg-white/90 border-[#E5E5E2] shadow-[0_4px_20px_rgba(0,0,0,0.06)] backdrop-blur-md py-2.5 max-w-5xl'
-                : 'bg-white/75 border-[#E5E5E2]/80 shadow-[0_2px_10px_rgba(0,0,0,0.03)] backdrop-blur-sm py-2.5 max-w-6xl'
+                ? 'bg-white/95 border-[#E5E5E2] shadow-[0_8px_30px_rgba(0,0,0,0.06)] backdrop-blur-md'
+                : 'bg-white/80 border-[#E5E5E2]/80 shadow-[0_2px_12px_rgba(0,0,0,0.03)] backdrop-blur-sm'
             }`}
           >
             {/* Brand Logo */}
-            <Link to="/" className="group flex items-center gap-2 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#6D4AFF] rounded-lg">
+            <Link 
+              to="/" 
+              className="group flex items-center shrink-0 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#6D4AFF] rounded-lg mr-2 lg:mr-4"
+            >
               <NexusLogo />
             </Link>
 
-            {/* Desktop Navigation Links */}
-            <div className="hidden md:flex items-center gap-1 lg:gap-1.5">
+            {/* Streamlined Desktop Navigation Links */}
+            <div className="hidden md:flex items-center gap-1 lg:gap-2">
               {/* Product Dropdown */}
-              <div className="relative" ref={dropdownRef}>
+              <div className="relative shrink-0" ref={dropdownRef}>
                 <button
                   type="button"
                   onClick={() => setProductDropdownOpen(!productDropdownOpen)}
-                  className={`px-3 py-1.5 text-xs lg:text-sm font-medium transition-colors rounded-lg flex items-center gap-1 cursor-pointer ${
+                  className={`px-3 py-1.5 text-xs lg:text-sm font-medium transition-colors rounded-lg flex items-center gap-1 cursor-pointer whitespace-nowrap ${
                     productDropdownOpen || location.pathname === '/security'
-                      ? 'text-[#111318] bg-black/[0.04]'
+                      ? 'text-[#111318] bg-black/[0.05]'
                       : 'text-[#626873] hover:text-[#111318] hover:bg-black/[0.03]'
                   }`}
                 >
-                  <span>Product</span>
-                  <ChevronDown className={`w-3.5 h-3.5 transition-transform duration-200 ${productDropdownOpen ? 'rotate-180' : ''}`} />
+                  <span className="whitespace-nowrap">Product</span>
+                  <ChevronDown className={`w-3.5 h-3.5 transition-transform duration-200 shrink-0 ${productDropdownOpen ? 'rotate-180' : ''}`} />
                 </button>
 
                 {/* Dropdown Menu */}
                 {productDropdownOpen && (
-                  <div className="absolute top-full left-0 mt-2 w-80 bg-white border border-[#E5E5E2] rounded-2xl p-2.5 shadow-[0_12px_36px_rgba(0,0,0,0.1)] animate-in fade-in zoom-in-95 duration-150">
+                  <div className="absolute top-full left-0 mt-2 w-88 bg-white border border-[#E5E5E2] rounded-2xl p-2.5 shadow-[0_16px_40px_rgba(0,0,0,0.12)] animate-in fade-in zoom-in-95 duration-150 z-50">
                     <div className="text-[10px] font-mono uppercase tracking-wider text-[#8B919B] px-2.5 py-1 mb-1">
                       Platform Capabilities
                     </div>
@@ -225,17 +237,21 @@ export const Navbar: React.FC = () => {
                             key={item.title}
                             to={item.to}
                             onClick={() => setProductDropdownOpen(false)}
-                            className="flex items-start gap-3 p-2.5 rounded-xl hover:bg-[#FAFAF8] transition-colors group text-left"
+                            className="flex items-start gap-3 p-2 rounded-xl hover:bg-[#FAFAF8] transition-colors group text-left"
                           >
-                            <div className={`w-8 h-8 rounded-lg ${item.bg} ${item.color} flex items-center justify-center flex-shrink-0 mt-0.5`}>
-                              <Icon className="w-4 h-4" />
+                            <div className={`w-7 h-7 rounded-lg ${item.bg} ${item.color} flex items-center justify-center shrink-0 mt-0.5`}>
+                              <Icon className="w-3.5 h-3.5" />
                             </div>
-                            <div>
-                              <div className="text-xs font-bold text-[#111318] group-hover:text-[#6D4AFF] transition-colors flex items-center gap-1">
-                                <span>{item.title}</span>
-                                <ArrowRight className="w-3 h-3 opacity-0 -translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 transition-all text-[#6D4AFF]" />
+                            <div className="min-w-0 flex-1">
+                              <div className="text-xs font-semibold text-[#111318] group-hover:text-[#6D4AFF] transition-colors flex items-center justify-between gap-1">
+                                <span className="truncate">{item.title}</span>
+                                {item.badge && (
+                                  <span className="text-[9px] font-mono font-bold px-1.5 py-0.2 rounded bg-amber-500/15 text-amber-700 shrink-0">
+                                    {item.badge}
+                                  </span>
+                                )}
                               </div>
-                              <p className="text-[11px] text-[#626873] leading-snug line-clamp-1">
+                              <p className="text-[11px] text-[#626873] leading-snug line-clamp-1 mt-0.5">
                                 {item.description}
                               </p>
                             </div>
@@ -247,93 +263,81 @@ export const Navbar: React.FC = () => {
                 )}
               </div>
 
-              {/* Standard Links */}
-              <Link
-                to="/#how-it-works"
-                className="px-3 py-1.5 text-xs lg:text-sm font-medium transition-colors rounded-lg cursor-pointer text-[#626873] hover:text-[#111318] hover:bg-black/[0.03]"
-              >
-                Overview
-              </Link>
-
+              {/* Swarm Arena Highlight */}
               <Link
                 to="/swarm"
-                className={`px-3 py-1.5 text-xs lg:text-sm font-medium transition-colors rounded-lg cursor-pointer flex items-center gap-1.5 ${
+                className={`px-3 py-1.5 text-xs lg:text-sm font-medium transition-colors rounded-lg cursor-pointer flex items-center gap-1.5 shrink-0 whitespace-nowrap ${
                   isActive('/swarm')
                     ? 'text-[#6D4AFF] bg-[#6D4AFF]/10 font-semibold'
                     : 'text-[#626873] hover:text-[#6D4AFF] hover:bg-black/[0.03]'
                 }`}
               >
-                <Flame className="w-3.5 h-3.5 text-amber-500" />
-                <span>Swarm Arena</span>
-                <span className="text-[9px] font-mono px-1.5 py-0.2 rounded bg-amber-500/15 text-amber-700 font-bold">
+                <Flame className="w-3.5 h-3.5 text-amber-500 shrink-0" />
+                <span className="whitespace-nowrap">Swarm</span>
+                <span className="text-[9px] font-mono px-1.5 py-0.2 rounded-full bg-amber-500/15 text-amber-700 font-bold whitespace-nowrap">
                   NEW
                 </span>
               </Link>
 
+              {/* Explore */}
               <Link
                 to="/explore"
-                className={`px-3 py-1.5 text-xs lg:text-sm font-medium transition-colors rounded-lg cursor-pointer ${
+                className={`px-3 py-1.5 text-xs lg:text-sm font-medium transition-colors rounded-lg cursor-pointer shrink-0 whitespace-nowrap ${
                   isActive('/explore')
-                    ? 'text-[#111318] bg-black/[0.04] font-semibold'
+                    ? 'text-[#111318] bg-black/[0.05] font-semibold'
                     : 'text-[#626873] hover:text-[#111318] hover:bg-black/[0.03]'
                 }`}
               >
-                Explore
+                <span className="whitespace-nowrap">Explore</span>
               </Link>
 
-              <Link
-                to="/developers"
-                className={`px-3 py-1.5 text-xs lg:text-sm font-medium transition-colors rounded-lg cursor-pointer ${
-                  isActive('/developers')
-                    ? 'text-[#111318] bg-black/[0.04] font-semibold'
-                    : 'text-[#626873] hover:text-[#111318] hover:bg-black/[0.03]'
-                }`}
-              >
-                Developers
-              </Link>
-
+              {/* Docs */}
               <Link
                 to="/docs"
-                className={`px-3 py-1.5 text-xs lg:text-sm font-medium transition-colors rounded-lg cursor-pointer ${
+                className={`px-3 py-1.5 text-xs lg:text-sm font-medium transition-colors rounded-lg cursor-pointer shrink-0 whitespace-nowrap ${
                   isActive('/docs')
-                    ? 'text-[#111318] bg-black/[0.04] font-semibold'
+                    ? 'text-[#111318] bg-black/[0.05] font-semibold'
                     : 'text-[#626873] hover:text-[#111318] hover:bg-black/[0.03]'
                 }`}
               >
-                Docs
+                <span className="whitespace-nowrap">Docs</span>
               </Link>
 
+              {/* Pricing */}
               <Link
                 to="/pricing"
-                className={`px-3 py-1.5 text-xs lg:text-sm font-medium transition-colors rounded-lg cursor-pointer ${
+                className={`px-3 py-1.5 text-xs lg:text-sm font-medium transition-colors rounded-lg cursor-pointer shrink-0 whitespace-nowrap ${
                   isActive('/pricing')
-                    ? 'text-[#111318] bg-black/[0.04] font-semibold'
+                    ? 'text-[#111318] bg-black/[0.05] font-semibold'
                     : 'text-[#626873] hover:text-[#111318] hover:bg-black/[0.03]'
                 }`}
               >
-                Pricing
+                <span className="whitespace-nowrap">Pricing</span>
               </Link>
             </div>
 
             {/* Right CTAs */}
-            <div className="hidden md:flex items-center gap-2.5">
+            <div className="hidden md:flex items-center gap-2 lg:gap-2.5 shrink-0">
               <button
                 type="button"
                 onClick={() => setDesktopModalOpen(true)}
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs lg:text-sm font-semibold text-[#111318] hover:text-[#6D4AFF] bg-white border border-[#E5E5E2] hover:border-[#D4D4CE] rounded-lg transition-colors shadow-2xs hover:bg-[#FAFAF8] cursor-pointer"
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs lg:text-sm font-medium text-[#111318] hover:text-[#6D4AFF] bg-white border border-[#E5E5E2] hover:border-[#D4D4CE] rounded-lg transition-colors shadow-2xs hover:bg-[#FAFAF8] cursor-pointer shrink-0 whitespace-nowrap"
+                title="Download or install NEXUS Desktop App"
               >
-                <Monitor className="w-3.5 h-3.5 text-[#6D4AFF]" />
-                <span>Desktop App</span>
+                <Monitor className="w-3.5 h-3.5 text-[#6D4AFF] shrink-0" />
+                <span className="hidden lg:inline whitespace-nowrap">Desktop App</span>
+                <span className="lg:hidden whitespace-nowrap">Desktop</span>
               </button>
 
               <Link
                 to="/login"
-                className="px-3.5 py-1.5 text-xs lg:text-sm font-medium text-[#626873] hover:text-[#111318] transition-colors rounded-lg hover:bg-black/[0.03] cursor-pointer"
+                className="px-2.5 lg:px-3 py-1.5 text-xs lg:text-sm font-medium text-[#626873] hover:text-[#111318] transition-colors rounded-lg hover:bg-black/[0.03] cursor-pointer shrink-0 whitespace-nowrap"
               >
-                Log in
+                <span className="whitespace-nowrap">Log in</span>
               </Link>
-              <Link to="/signup">
-                <Button size="sm" withArrow>
+
+              <Link to="/signup" className="shrink-0 whitespace-nowrap">
+                <Button size="sm" withArrow className="whitespace-nowrap text-xs lg:text-sm">
                   Get Started
                 </Button>
               </Link>
@@ -358,15 +362,30 @@ export const Navbar: React.FC = () => {
         <div className="fixed inset-0 h-[100dvh] z-40 md:hidden bg-[#F6F6F3]/98 backdrop-blur-2xl pt-20 px-5 flex flex-col justify-between pb-[max(1.5rem,env(safe-area-inset-bottom))] overflow-y-auto overscroll-contain">
           <div className="flex flex-col gap-1">
             <div className="text-xs uppercase tracking-wider text-[#8B919B] font-mono mb-2 px-3">
-              Public Navigation
+              Platform Navigation
             </div>
+
+            <Link
+              to="/swarm"
+              onClick={() => setMobileMenuOpen(false)}
+              className="flex items-center justify-between px-3 py-3 min-h-[44px] text-sm text-[#6D4AFF] font-semibold border-b border-[#E5E5E2] hover:bg-purple-50/50 rounded-lg text-left w-full"
+            >
+              <div className="flex items-center gap-2">
+                <Flame className="w-4 h-4 text-amber-500" />
+                <span>Swarm Arena</span>
+                <span className="text-[10px] font-mono px-1.5 py-0.2 rounded bg-amber-500/15 text-amber-700 font-bold">
+                  NEW
+                </span>
+              </div>
+              <ChevronRight className="w-4 h-4 text-[#8B919B]" />
+            </Link>
 
             <Link
               to="/"
               onClick={() => setMobileMenuOpen(false)}
-              className="flex items-center justify-between px-3 py-3 min-h-[44px] text-sm text-[#111318] font-medium border-b border-[#E5E5E2] hover:bg-black/[0.02] rounded-lg text-left w-full"
+              className="flex items-center justify-between px-3 py-2.5 min-h-[44px] text-sm text-[#111318] font-medium border-b border-[#E5E5E2] hover:bg-black/[0.02] rounded-lg text-left w-full"
             >
-              <span>Home</span>
+              <span>Home & Architecture</span>
               <ChevronRight className="w-4 h-4 text-[#8B919B]" />
             </Link>
 
@@ -375,7 +394,16 @@ export const Navbar: React.FC = () => {
               onClick={() => setMobileMenuOpen(false)}
               className="flex items-center justify-between px-3 py-2.5 text-sm text-[#111318] font-medium border-b border-[#E5E5E2] hover:bg-black/[0.02] rounded-lg text-left w-full"
             >
-              <span>Explore Ecosystem</span>
+              <span>Explore Marketplace</span>
+              <ChevronRight className="w-4 h-4 text-[#8B919B]" />
+            </Link>
+
+            <Link
+              to="/docs"
+              onClick={() => setMobileMenuOpen(false)}
+              className="flex items-center justify-between px-3 py-2.5 text-sm text-[#111318] font-medium border-b border-[#E5E5E2] hover:bg-black/[0.02] rounded-lg text-left w-full"
+            >
+              <span>Documentation & API</span>
               <ChevronRight className="w-4 h-4 text-[#8B919B]" />
             </Link>
 
@@ -398,29 +426,11 @@ export const Navbar: React.FC = () => {
             </Link>
 
             <Link
-              to="/docs"
-              onClick={() => setMobileMenuOpen(false)}
-              className="flex items-center justify-between px-3 py-2.5 text-sm text-[#111318] font-medium border-b border-[#E5E5E2] hover:bg-black/[0.02] rounded-lg text-left w-full"
-            >
-              <span>Documentation</span>
-              <ChevronRight className="w-4 h-4 text-[#8B919B]" />
-            </Link>
-
-            <Link
               to="/security"
               onClick={() => setMobileMenuOpen(false)}
               className="flex items-center justify-between px-3 py-2.5 text-sm text-[#111318] font-medium border-b border-[#E5E5E2] hover:bg-black/[0.02] rounded-lg text-left w-full"
             >
-              <span>Security Architecture</span>
-              <ChevronRight className="w-4 h-4 text-[#8B919B]" />
-            </Link>
-
-            <Link
-              to="/open-source"
-              onClick={() => setMobileMenuOpen(false)}
-              className="flex items-center justify-between px-3 py-2.5 text-sm text-[#111318] font-medium border-b border-[#E5E5E2] hover:bg-black/[0.02] rounded-lg text-left w-full"
-            >
-              <span>Open Source Core</span>
+              <span>Security & Sandboxing</span>
               <ChevronRight className="w-4 h-4 text-[#8B919B]" />
             </Link>
 
@@ -430,15 +440,6 @@ export const Navbar: React.FC = () => {
               className="flex items-center justify-between px-3 py-2.5 text-sm text-[#111318] font-medium border-b border-[#E5E5E2] hover:bg-black/[0.02] rounded-lg text-left w-full"
             >
               <span>Changelog</span>
-              <ChevronRight className="w-4 h-4 text-[#8B919B]" />
-            </Link>
-
-            <Link
-              to="/about"
-              onClick={() => setMobileMenuOpen(false)}
-              className="flex items-center justify-between px-3 py-2.5 text-sm text-[#111318] font-medium border-b border-[#E5E5E2] hover:bg-black/[0.02] rounded-lg text-left w-full"
-            >
-              <span>About NEXUS</span>
               <ChevronRight className="w-4 h-4 text-[#8B919B]" />
             </Link>
           </div>
