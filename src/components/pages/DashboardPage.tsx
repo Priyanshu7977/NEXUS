@@ -142,18 +142,27 @@ export const DashboardPage: React.FC = () => {
             </span>
           </div>
           <p className="text-xs text-[#626873]">
-            Orchestrate <strong>GitHub</strong>, <strong>Vercel</strong>, <strong>Supabase</strong>, and <strong>Slack</strong> together or run parallel multi-model arbitration across GPT-4o, Claude 3.5, Gemini & DeepSeek.
+            Build full-stack applications with 1 prompt: direct <strong>Supabase</strong> for PostgreSQL schema via API, <strong>Claude</strong> for UI/UX frontend, and <strong>GPT-4o</strong> for backend routes.
           </p>
         </div>
 
         <div className="flex items-center gap-2 flex-wrap shrink-0">
           <button
             type="button"
+            onClick={() => navigate('/app/studio')}
+            className="px-3.5 py-1.5 rounded-xl bg-[#6D4AFF] hover:bg-[#5B3CE8] text-white text-xs font-semibold shadow-xs flex items-center gap-1.5 cursor-pointer transition-colors"
+          >
+            <Sparkles className="w-3.5 h-3.5" />
+            <span>Launch AI Studio</span>
+          </button>
+
+          <button
+            type="button"
             onClick={() => navigate('/app/connectors')}
             className="px-3 py-1.5 rounded-xl bg-white hover:bg-[#FAFAF8] border border-[#E5E5E2] text-xs font-semibold text-[#111318] shadow-xs flex items-center gap-1.5 cursor-pointer transition-colors"
           >
             <Cable className="w-3.5 h-3.5 text-[#6D4AFF]" />
-            <span>Test 4-App Builder</span>
+            <span>Connectors</span>
           </button>
 
           <button
@@ -162,16 +171,7 @@ export const DashboardPage: React.FC = () => {
             className="px-3 py-1.5 rounded-xl bg-white hover:bg-[#FAFAF8] border border-[#E5E5E2] text-xs font-semibold text-[#111318] shadow-xs flex items-center gap-1.5 cursor-pointer transition-colors"
           >
             <Bot className="w-3.5 h-3.5 text-blue-600" />
-            <span>Launch Swarm Arena</span>
-          </button>
-
-          <button
-            type="button"
-            onClick={() => window.dispatchEvent(new KeyboardEvent('keydown', { key: 'k', ctrlKey: true }))}
-            className="px-3 py-1.5 rounded-xl bg-[#6D4AFF] hover:bg-[#5B3CE8] text-white text-xs font-semibold shadow-xs flex items-center gap-1.5 cursor-pointer transition-colors"
-          >
-            <Sparkles className="w-3.5 h-3.5" />
-            <span>Co-Pilot (⌘K)</span>
+            <span>Swarm Arena</span>
           </button>
         </div>
       </div>

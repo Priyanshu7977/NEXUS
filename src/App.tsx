@@ -16,6 +16,7 @@ import { OpenSourcePage } from './components/pages/OpenSourcePage';
 import { ChangelogPage } from './components/pages/ChangelogPage';
 import { AboutPage } from './components/pages/AboutPage';
 import { SwarmPage } from './components/pages/SwarmPage';
+import { StudioPage } from './components/pages/StudioPage';
 
 // Public Auth Pages
 import { LoginPage } from './components/pages/LoginPage';
@@ -59,6 +60,7 @@ export const App: React.FC = () => {
             <Route path="/changelog" element={<ChangelogPage />} />
             <Route path="/about" element={<AboutPage />} />
             <Route path="/swarm" element={<SwarmPage />} />
+            <Route path="/studio" element={<StudioPage />} />
           </Route>
 
           {/* Public Authentication Pages */}
@@ -82,6 +84,8 @@ export const App: React.FC = () => {
           >
             {/* Overview / Dashboard */}
             <Route index element={<DashboardPage />} />
+            <Route path="studio" element={<StudioPage />} />
+            <Route path="builder" element={<Navigate to="/app/studio" replace />} />
             <Route path="swarm" element={<SwarmPage />} />
 
             {/* Explore / Marketplace */}

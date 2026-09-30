@@ -112,13 +112,22 @@ export const Navbar: React.FC = () => {
 
   const productItems = [
     {
+      title: 'One-Prompt Multi-AI Studio',
+      description: 'Connect Supabase for DB, Claude for UI/UX, and GPT-4o for backend with 1 prompt.',
+      to: '/studio',
+      icon: Sparkles,
+      color: 'text-[#6D4AFF]',
+      bg: 'bg-purple-50',
+      badge: 'NEW'
+    },
+    {
       title: 'Swarm Consensus Arena',
       description: 'Run GPT-4o, Claude 3.5, Gemini & DeepSeek in parallel arbitration.',
       to: '/swarm',
       icon: Flame,
       color: 'text-amber-500',
       bg: 'bg-amber-50',
-      badge: 'NEW'
+      badge: 'POPULAR'
     },
     {
       title: 'Prompt-to-Workflow Compiler',
@@ -263,6 +272,19 @@ export const Navbar: React.FC = () => {
                 )}
               </div>
 
+              {/* One-Prompt Studio Highlight */}
+              <Link
+                to="/studio"
+                className={`px-3 py-1.5 text-xs lg:text-sm font-medium transition-colors rounded-lg cursor-pointer flex items-center gap-1.5 shrink-0 whitespace-nowrap ${
+                  isActive('/studio')
+                    ? 'text-[#6D4AFF] bg-[#6D4AFF]/10 font-semibold'
+                    : 'text-[#626873] hover:text-[#6D4AFF] hover:bg-black/[0.03]'
+                }`}
+              >
+                <Sparkles className="w-3.5 h-3.5 text-[#6D4AFF] shrink-0" />
+                <span className="whitespace-nowrap">AI Studio</span>
+              </Link>
+
               {/* Swarm Arena Highlight */}
               <Link
                 to="/swarm"
@@ -274,9 +296,6 @@ export const Navbar: React.FC = () => {
               >
                 <Flame className="w-3.5 h-3.5 text-amber-500 shrink-0" />
                 <span className="whitespace-nowrap">Swarm</span>
-                <span className="text-[9px] font-mono px-1.5 py-0.2 rounded-full bg-amber-500/15 text-amber-700 font-bold whitespace-nowrap">
-                  NEW
-                </span>
               </Link>
 
               {/* Explore */}

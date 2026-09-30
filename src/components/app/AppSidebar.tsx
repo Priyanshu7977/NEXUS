@@ -33,6 +33,7 @@ export const AppSidebar: React.FC<AppSidebarProps> = ({ mobileOpen, onCloseMobil
 
   const navItems = [
     { label: 'Overview', to: '/app', icon: LayoutDashboard, exact: true },
+    { label: 'AI App Studio', to: '/app/studio', icon: Sparkles },
     { label: 'Agents', to: '/app/agents', icon: Bot },
     { label: 'Connectors', to: '/app/connectors', icon: Cable },
     { label: 'Workflows', to: '/app/workflows', icon: Network },
