@@ -3,18 +3,18 @@ import {
   Sparkles,
   Database,
   Code,
-  ShieldCheck,
   Send,
   RotateCcw,
-  CheckCircle2,
-  ExternalLink,
-  Laptop,
-  Terminal,
   ShoppingBag,
   Plus,
   Search,
   Star,
-  Zap
+  ExternalLink,
+  Laptop,
+  CheckCircle2,
+  Moon,
+  Sun,
+  Bot
 } from 'lucide-react';
 
 interface ProductItem {
@@ -31,7 +31,7 @@ interface OrderItem {
   id: string;
   user_email: string;
   total_cents: number;
-  status: 'paid' | 'pending' | 'shipped';
+  status: 'paid' | 'pending';
   items_count: number;
   created_at: string;
 }
@@ -45,69 +45,70 @@ interface ReviewItem {
   created_at: string;
 }
 
-interface LogEntry {
+interface ChatMessage {
   id: string;
+  sender: 'user' | 'claude' | 'supabase' | 'gpt4o';
+  senderName: string;
+  senderRole: string;
+  text: string;
   time: string;
-  source: 'orchestrator' | 'supabase' | 'claude' | 'gpt4o' | 'deepseek';
-  message: string;
-  status: 'info' | 'success' | 'executing';
 }
 
 const INITIAL_PRODUCTS: ProductItem[] = [
   {
-    id: 'prod_901',
-    title: 'Nexus Edge Gateway X1',
+    id: 'prod_1',
+    title: 'Nexus Edge Device',
     category: 'Hardware',
-    price: 349,
-    inventory: 42,
+    price: 299,
+    inventory: 45,
     rating: 4.9,
-    description: 'Ultra-low latency edge server with dual neural processors.'
+    description: 'High-speed local AI hardware hub for instant model inference.'
   },
   {
-    id: 'prod_902',
-    title: 'Neural Inference Accelerator',
-    category: 'Developer Tools',
-    price: 189,
-    inventory: 18,
-    rating: 4.8,
-    description: 'Plug-and-play PCIe accelerator for local model arbitration.'
-  },
-  {
-    id: 'prod_903',
-    title: 'Supabase Vector Memory Pod',
-    category: 'Developer Tools',
-    price: 99,
-    inventory: 64,
-    rating: 5.0,
-    description: 'Hardware-encrypted vector indexing module for PostgreSQL.'
-  },
-  {
-    id: 'prod_904',
-    title: 'Haptic Studio Controller',
-    category: 'Accessories',
+    id: 'prod_2',
+    title: 'Supabase Vector Module',
+    category: 'Database Tools',
     price: 129,
-    inventory: 31,
-    rating: 4.7,
-    description: 'Tactile macro knob controller for multi-model workflows.'
+    inventory: 30,
+    rating: 5.0,
+    description: 'Dedicated PostgreSQL vector memory pod with hardware encryption.'
+  },
+  {
+    id: 'prod_3',
+    title: 'Claude Studio Controller',
+    category: 'Accessories',
+    price: 89,
+    inventory: 60,
+    rating: 4.8,
+    description: 'Tactile macro knob controller designed for multi-AI workflows.'
+  },
+  {
+    id: 'prod_4',
+    title: 'Developer Cloud Pass',
+    category: 'Subscriptions',
+    price: 49,
+    inventory: 120,
+    rating: 4.9,
+    description: 'Monthly unlimited compute credit across GPT-4o, Claude, and Gemini.'
   }
 ];
 
 const INITIAL_ORDERS: OrderItem[] = [
   {
-    id: 'ord_1001',
-    user_email: 'alex.chen@startup.io',
-    total_cents: 34900,
+    id: 'ord_101',
+    user_email: 'alex@startup.io',
+    total_cents: 29900,
     status: 'paid',
     items_count: 1,
-    created_at: '2026-09-30 14:22:10 UTC'
+    created_at: 'Just now'
   },
   {
-    id: 'ord_1002',
-    user_email: 'dev@acme-corp.com',
-    total_cents: 28800,
+    id: 'ord_102',
+    user_email: 'priyanshu@nexus-dev.com',
+    total_cents: 17800,
     status: 'paid',
     items_count: 2,
-    created_at: '2026-09-30 15:45:02 UTC'
+    created_at: '5 mins ago'
   }
 ];
 
@@ -115,389 +116,268 @@ export const OnePromptAppStudio: React.FC<{
   embedded?: boolean;
   onNavigateToFull?: () => void;
 }> = ({ embedded = false, onNavigateToFull }) => {
-  // 1. One Prompt & Model Mesh Selection State
-  const [prompt, setPrompt] = useState(
-    'Build an e-commerce platform with Supabase database for products and orders, and Claude designing the storefront UI/UX'
+  // 1. Initial Prompt State
+  const [promptInput, setPromptInput] = useState(
+    'Build an online store with Supabase database for products and orders, and Claude designing the frontend.'
   );
-  const [selectedModels, setSelectedModels] = useState({
-    supabase: true,
-    claude: true,
-    gpt4o: true,
-    deepseek: true
-  });
 
-  // 2. Build Lifecycle State
-  const [isBuilding, setIsBuilding] = useState(false);
-  const [hasBuilt, setHasBuilt] = useState(true); // Default to ready for immediate interactive exploration
-  const [buildProgress, setBuildProgress] = useState(100);
-  const [activeTab, setActiveTab] = useState<'preview' | 'database' | 'backend' | 'security'>('preview');
+  // 2. Chat Timeline State (Conversational AI Assistant - Like ChatGPT / Claude)
+  const [messages, setMessages] = useState<ChatMessage[]>([
+    {
+      id: 'm1',
+      sender: 'user',
+      senderName: 'You',
+      senderRole: 'Creator',
+      text: 'Build an online store with Supabase database for products and orders, and Claude designing the storefront.',
+      time: '12:00 PM'
+    },
+    {
+      id: 'm2',
+      sender: 'claude',
+      senderName: 'Claude 3.7',
+      senderRole: 'UI/UX Designer',
+      text: "👋 I'm Claude! I've designed your storefront with a modern layout, product cards, category filters, and an interactive shopping cart. Check out the live preview on the right!",
+      time: '12:00 PM'
+    },
+    {
+      id: 'm3',
+      sender: 'supabase',
+      senderName: 'Supabase',
+      senderRole: 'Database Engine via API',
+      text: "⚡ Supabase here! I connected via API and initialized your PostgreSQL database. Created the `products` and `orders` tables with Row-Level Security active.",
+      time: '12:01 PM'
+    },
+    {
+      id: 'm4',
+      sender: 'gpt4o',
+      senderName: 'GPT-4o',
+      senderRole: 'Backend Engineer',
+      text: "🚀 GPT-4o ready! I wired up the backend checkout routes. Any order placed in the preview will insert a real record into Supabase automatically.",
+      time: '12:01 PM'
+    }
+  ]);
 
-  // 3. Dynamic App State (Directly affected by prompts)
-  const [themeMode, setThemeMode] = useState<'light' | 'dark'>('light');
+  // 3. User Directive Input State
+  const [userDirective, setUserDirective] = useState('');
+  const [isAiThinking, setIsAiThinking] = useState(false);
+
+  // 4. Live App & Database State
   const [products, setProducts] = useState<ProductItem[]>(INITIAL_PRODUCTS);
   const [orders, setOrders] = useState<OrderItem[]>(INITIAL_ORDERS);
   const [reviews, setReviews] = useState<ReviewItem[]>([]);
   const [hasReviewsTable, setHasReviewsTable] = useState(false);
   const [cart, setCart] = useState<{ id: string; qty: number }[]>([]);
-  const [selectedDbTable, setSelectedDbTable] = useState<'products' | 'orders' | 'reviews'>('products');
-  const [searchQuery, setSearchQuery] = useState('');
+  const [activeCanvasTab, setActiveCanvasTab] = useState<'app' | 'database' | 'code'>('app');
+  const [activeDbTable, setActiveDbTable] = useState<'products' | 'orders' | 'reviews'>('products');
+  const [storeTheme, setStoreTheme] = useState<'light' | 'dark'>('light');
   const [categoryFilter, setCategoryFilter] = useState('All');
-  const [isCheckoutModalOpen, setIsCheckoutModalOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
   const [toastMessage, setToastMessage] = useState<string | null>(null);
+  const [isCheckoutModalOpen, setIsCheckoutModalOpen] = useState(false);
 
-  // 4. Targeted AI Prompt Directive Bar
-  const [targetAi, setTargetAi] = useState<'all' | 'supabase' | 'claude' | 'gpt4o' | 'deepseek'>('supabase');
-  const [directiveInput, setDirectiveInput] = useState('');
-  const [isExecutingDirective, setIsExecutingDirective] = useState(false);
-  const logContainerRef = useRef<HTMLDivElement>(null);
+  const chatBottomRef = useRef<HTMLDivElement>(null);
 
-  // 5. Execution Logs Stream
-  const [logs, setLogs] = useState<LogEntry[]>([
-    {
-      id: 'l1',
-      time: '16:02:11',
-      source: 'orchestrator',
-      message: 'Initialized Multi-AI Swarm Mesh: 4 frontier workers connected via MCP.',
-      status: 'info'
-    },
-    {
-      id: 'l2',
-      time: '16:02:12',
-      source: 'supabase',
-      message: 'PostgreSQL schema connected via API: Generated tables `products`, `orders`, `profiles` with Row-Level Security.',
-      status: 'success'
-    },
-    {
-      id: 'l3',
-      time: '16:02:13',
-      source: 'claude',
-      message: 'Synthesized accessible React storefront: Navigation, Product cards, Cart drawer, and Checkout modal.',
-      status: 'success'
-    },
-    {
-      id: 'l4',
-      time: '16:02:14',
-      source: 'gpt4o',
-      message: 'Backend API routes active: `GET /api/products`, `POST /api/checkout`, `POST /api/orders` with Supabase client.',
-      status: 'success'
-    },
-    {
-      id: 'l5',
-      time: '16:02:15',
-      source: 'deepseek',
-      message: 'Security verification complete: 0 unauthenticated write vulnerabilities. RLS rules validated.',
-      status: 'success'
-    }
-  ]);
-
-  const showToast = (msg: string) => {
+  const showNotification = (msg: string) => {
     setToastMessage(msg);
     setTimeout(() => {
-      setToastMessage((cur) => (cur === msg ? null : cur));
+      setToastMessage((prev) => (prev === msg ? null : prev));
     }, 4500);
   };
 
-  // Trigger One-Prompt Build Cycle
-  const handleStartBuild = () => {
-    if (!prompt.trim()) return;
-    setIsBuilding(true);
-    setHasBuilt(false);
-    setBuildProgress(10);
-    setLogs([
-      {
-        id: `log_${Date.now()}_0`,
-        time: new Date().toLocaleTimeString(),
-        source: 'orchestrator',
-        message: `Analyzing user intent: "${prompt}"`,
-        status: 'info'
-      }
-    ]);
-
-    setTimeout(() => {
-      setBuildProgress(35);
-      if (selectedModels.supabase) {
-        setLogs((prev) => [
-          ...prev,
-          {
-            id: `log_${Date.now()}_1`,
-            time: new Date().toLocaleTimeString(),
-            source: 'supabase',
-            message: 'Supabase API: Connected to PostgreSQL schema engine. Synthesizing tables & RLS policies.',
-            status: 'executing'
-          }
-        ]);
-      }
-    }, 600);
-
-    setTimeout(() => {
-      setBuildProgress(65);
-      if (selectedModels.claude) {
-        setLogs((prev) => [
-          ...prev,
-          {
-            id: `log_${Date.now()}_2`,
-            time: new Date().toLocaleTimeString(),
-            source: 'claude',
-            message: 'Claude 3.7: Synthesizing UI/UX layout, Tailwind styling, and responsive product catalog.',
-            status: 'executing'
-          }
-        ]);
-      }
-    }, 1200);
-
-    setTimeout(() => {
-      setBuildProgress(85);
-      if (selectedModels.gpt4o) {
-        setLogs((prev) => [
-          ...prev,
-          {
-            id: `log_${Date.now()}_3`,
-            time: new Date().toLocaleTimeString(),
-            source: 'gpt4o',
-            message: 'GPT-4o: Generating Next.js server actions and database API query endpoints.',
-            status: 'executing'
-          }
-        ]);
-      }
-    }, 1800);
-
-    setTimeout(() => {
-      setBuildProgress(100);
-      setIsBuilding(false);
-      setHasBuilt(true);
-      if (selectedModels.deepseek) {
-        setLogs((prev) => [
-          ...prev,
-          {
-            id: `log_${Date.now()}_4`,
-            time: new Date().toLocaleTimeString(),
-            source: 'deepseek',
-            message: 'DeepSeek-R1: Formally audited Row-Level Security policies. 0 invariant leaks found.',
-            status: 'success'
-          },
-          {
-            id: `log_${Date.now()}_5`,
-            time: new Date().toLocaleTimeString(),
-            source: 'orchestrator',
-            message: 'Application synthesis complete! Ready for live testing and direct prompt iteration.',
-            status: 'success'
-          }
-        ]);
-      }
-      showToast('🚀 Application generated successfully! You can now direct individual AIs below.');
-    }, 2400);
-  };
-
-  // Direct AI Execution Bar (The user's core request!)
-  const handleExecuteDirective = (directiveText?: string) => {
-    const textToRun = directiveText || directiveInput;
-    if (!textToRun.trim() || isExecutingDirective) return;
-
-    setIsExecutingDirective(true);
-    const lower = textToRun.toLowerCase();
-
-    // Auto-detect target if not explicitly pinned
-    let resolvedTarget = targetAi;
-    if (lower.includes('supabase') || lower.includes('database') || lower.includes('table') || lower.includes('schema')) {
-      resolvedTarget = 'supabase';
-    } else if (lower.includes('claude') || lower.includes('ui') || lower.includes('ux') || lower.includes('theme') || lower.includes('design') || lower.includes('dark')) {
-      resolvedTarget = 'claude';
-    } else if (lower.includes('gpt') || lower.includes('backend') || lower.includes('route') || lower.includes('api') || lower.includes('webhook')) {
-      resolvedTarget = 'gpt4o';
-    } else if (lower.includes('deepseek') || lower.includes('security') || lower.includes('rls') || lower.includes('audit')) {
-      resolvedTarget = 'deepseek';
-    }
-
-    const now = new Date().toLocaleTimeString();
-
-    // Add user instruction to log
-    setLogs((prev) => [
-      ...prev,
-      {
-        id: `dir_user_${Date.now()}`,
-        time: now,
-        source: 'orchestrator',
-        message: `Command sent to @${resolvedTarget}: "${textToRun}"`,
-        status: 'info'
-      }
-    ]);
-
-    setTimeout(() => {
-      // Execute based on target
-      if (resolvedTarget === 'supabase') {
-        if (lower.includes('review') || !hasReviewsTable) {
-          setHasReviewsTable(true);
-          setSelectedDbTable('reviews');
-          setReviews([
-            {
-              id: 'rev_01',
-              product_id: 'prod_901',
-              user_email: 'sarah.k@developer.com',
-              rating: 5,
-              comment: 'Edge gateway latency dropped from 48ms to 4ms. Exceptional hardware!',
-              created_at: '2026-09-30 16:10:00 UTC'
-            },
-            {
-              id: 'rev_02',
-              product_id: 'prod_903',
-              user_email: 'marcus@ai-lab.org',
-              rating: 5,
-              comment: 'Supabase vector indexing with hardware acceleration is effortless.',
-              created_at: '2026-09-30 16:15:22 UTC'
-            }
-          ]);
-          setLogs((prev) => [
-            ...prev,
-            {
-              id: `dir_res_${Date.now()}`,
-              time: new Date().toLocaleTimeString(),
-              source: 'supabase',
-              message: 'Supabase API executed: Created `reviews` table with 5 columns (id, product_id, user_email, rating, comment) and RLS policy: SELECT for public, INSERT for authenticated.',
-              status: 'success'
-            }
-          ]);
-          showToast('✅ Supabase: Database schema updated via API. Added `reviews` table.');
-        } else {
-          // Add a new product or modify schema
-          const newProduct: ProductItem = {
-            id: `prod_${Date.now().toString().slice(-3)}`,
-            title: 'Neural Audio Co-Processor',
-            category: 'Accessories',
-            price: 79,
-            inventory: 50,
-            rating: 4.9,
-            description: 'Ultra-low latency speech model DSP.'
-          };
-          setProducts((prev) => [newProduct, ...prev]);
-          setLogs((prev) => [
-            ...prev,
-            {
-              id: `dir_res_${Date.now()}`,
-              time: new Date().toLocaleTimeString(),
-              source: 'supabase',
-              message: `Supabase API executed: Inserted row into \`products\` table (${newProduct.title}). Synced with live API.`,
-              status: 'success'
-            }
-          ]);
-          showToast(`✅ Supabase: Inserted new product "${newProduct.title}" into database.`);
-        }
-      } else if (resolvedTarget === 'claude') {
-        if (lower.includes('dark') || themeMode === 'light') {
-          setThemeMode('dark');
-          setLogs((prev) => [
-            ...prev,
-            {
-              id: `dir_res_${Date.now()}`,
-              time: new Date().toLocaleTimeString(),
-              source: 'claude',
-              message: 'Claude 3.7 executed: Re-rendered storefront with sleek dark theme, obsidian card surfaces, and purple micro-accents.',
-              status: 'success'
-            }
-          ]);
-          showToast('✅ Claude: UI/UX design updated live in the preview (Dark Mode applied).');
-        } else {
-          setThemeMode('light');
-          setLogs((prev) => [
-            ...prev,
-            {
-              id: `dir_res_${Date.now()}`,
-              time: new Date().toLocaleTimeString(),
-              source: 'claude',
-              message: 'Claude 3.7 executed: Restored clean editorial light theme with high-contrast slate surfaces.',
-              status: 'success'
-            }
-          ]);
-          showToast('✅ Claude: UI/UX design updated live in the preview (Light Mode applied).');
-        }
-      } else if (resolvedTarget === 'gpt4o') {
-        setLogs((prev) => [
-          ...prev,
-          {
-            id: `dir_res_${Date.now()}`,
-            time: new Date().toLocaleTimeString(),
-            source: 'gpt4o',
-            message: 'GPT-4o executed: Synthesized `POST /api/webhooks/stripe` with raw signature validation and Supabase transaction rollback.',
-            status: 'success'
-          }
-        ]);
-        showToast('✅ GPT-4o: Backend route handler and webhook signature verification generated.');
-      } else if (resolvedTarget === 'deepseek') {
-        setLogs((prev) => [
-          ...prev,
-          {
-            id: `dir_res_${Date.now()}`,
-            time: new Date().toLocaleTimeString(),
-            source: 'deepseek',
-            message: 'DeepSeek-R1 executed: Re-verified RLS invariant proofs for multi-tenant isolation. Zero leaks detected.',
-            status: 'success'
-          }
-        ]);
-        showToast('✅ DeepSeek: Security audit verified all schema invariants.');
-      } else {
-        // Broadcast to all
-        setLogs((prev) => [
-          ...prev,
-          {
-            id: `dir_res_${Date.now()}`,
-            time: new Date().toLocaleTimeString(),
-            source: 'orchestrator',
-            message: 'Coordinated broadcast update across Supabase, Claude, GPT-4o, and DeepSeek.',
-            status: 'success'
-          }
-        ]);
-        showToast('✅ Swarm: Orchestrated update across all connected models.');
-      }
-
-      setIsExecutingDirective(false);
-      setDirectiveInput('');
-    }, 700);
-  };
-
-  // Cart & Checkout Interactivity
-  const addToCart = (productId: string) => {
+  // Add Item to Cart
+  const handleAddToCart = (product: ProductItem) => {
     setCart((prev) => {
-      const existing = prev.find((item) => item.id === productId);
-      if (existing) {
-        return prev.map((item) => (item.id === productId ? { ...item, qty: item.qty + 1 } : item));
+      const match = prev.find((item) => item.id === product.id);
+      if (match) {
+        return prev.map((item) => (item.id === product.id ? { ...item, qty: item.qty + 1 } : item));
       }
-      return [...prev, { id: productId, qty: 1 }];
+      return [...prev, { id: product.id, qty: 1 }];
     });
-    const prod = products.find((p) => p.id === productId);
-    showToast(`Added ${prod?.title || 'item'} to cart!`);
+    showNotification(`🛒 Added "${product.title}" to cart!`);
   };
 
-  const totalCartCount = cart.reduce((sum, item) => sum + item.qty, 0);
-  const totalCartPrice = cart.reduce((sum, item) => {
+  const totalCartCount = cart.reduce((acc, item) => acc + item.qty, 0);
+  const totalCartAmount = cart.reduce((acc, item) => {
     const p = products.find((prod) => prod.id === item.id);
-    return sum + (p ? p.price * item.qty : 0);
+    return acc + (p ? p.price * item.qty : 0);
   }, 0);
 
-  const handleCheckout = () => {
+  // Checkout -> Inserts record into Supabase
+  const handlePlaceOrder = () => {
     if (cart.length === 0) return;
     const newOrder: OrderItem = {
       id: `ord_${Date.now().toString().slice(-4)}`,
-      user_email: 'priyanshu@nexus-dev.com',
-      total_cents: totalCartPrice * 100,
+      user_email: 'customer@nexus.ai',
+      total_cents: totalCartAmount * 100,
       status: 'paid',
       items_count: totalCartCount,
-      created_at: `${new Date().toISOString().replace('T', ' ').slice(0, 19)} UTC`
+      created_at: 'Just now'
     };
 
     setOrders((prev) => [newOrder, ...prev]);
     setCart([]);
     setIsCheckoutModalOpen(false);
 
-    setLogs((prev) => [
+    // Notify user in chat
+    const nowTime = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    setMessages((prev) => [
       ...prev,
       {
-        id: `ord_log_${Date.now()}`,
-        time: new Date().toLocaleTimeString(),
-        source: 'supabase',
-        message: `Supabase API: Received verified checkout. Inserted Order #${newOrder.id} into \`orders\` table ($${totalCartPrice}.00).`,
-        status: 'success'
+        id: `msg_${Date.now()}`,
+        sender: 'supabase',
+        senderName: 'Supabase',
+        senderRole: 'Database Engine',
+        text: `✅ Order #${newOrder.id} placed! I inserted a new row into the \`orders\` table ($${totalCartAmount}.00 for ${totalCartCount} items).`,
+        time: nowTime
       }
     ]);
-    showToast(`🎉 Order #${newOrder.id} placed! Supabase inserted new row into database.`);
+
+    showNotification(`🎉 Order #${newOrder.id} placed! Supabase inserted the row into your database.`);
+  };
+
+  // Quick Action / Directives (The user's exact request!)
+  const handleSendDirective = (customText?: string) => {
+    const textToSend = customText || userDirective;
+    if (!textToSend.trim() || isAiThinking) return;
+
+    const nowTime = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+    // 1. Add user message
+    setMessages((prev) => [
+      ...prev,
+      {
+        id: `user_${Date.now()}`,
+        sender: 'user',
+        senderName: 'You',
+        senderRole: 'Creator',
+        text: textToSend,
+        time: nowTime
+      }
+    ]);
+
+    setUserDirective('');
+    setIsAiThinking(true);
+
+    const lower = textToSend.toLowerCase();
+
+    setTimeout(() => {
+      if (lower.includes('supabase') || lower.includes('database') || lower.includes('table') || lower.includes('review') || lower.includes('product')) {
+        // Directing Supabase
+        if (!hasReviewsTable || lower.includes('review')) {
+          setHasReviewsTable(true);
+          setActiveDbTable('reviews');
+          setActiveCanvasTab('database');
+
+          setReviews([
+            {
+              id: 'rev_1',
+              product_id: 'prod_1',
+              user_email: 'sarah.engineer@ai.com',
+              rating: 5,
+              comment: 'Hardware setup took under 30 seconds. Seamless Supabase sync!',
+              created_at: 'Just now'
+            },
+            {
+              id: 'rev_2',
+              product_id: 'prod_2',
+              user_email: 'dev@nexus.dev',
+              rating: 5,
+              comment: 'Vector storage queries are ultra fast with zero downtime.',
+              created_at: '2 mins ago'
+            }
+          ]);
+
+          setMessages((prev) => [
+            ...prev,
+            {
+              id: `sup_${Date.now()}`,
+              sender: 'supabase',
+              senderName: 'Supabase',
+              senderRole: 'Database Engine',
+              text: "✅ I'm on it! I created the `reviews` table in PostgreSQL via API. It has 5 columns (id, product_id, user_email, rating, comment) and Row-Level Security enabled. I switched your view to the Database tab so you can inspect the live data!",
+              time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+            }
+          ]);
+          showNotification('✅ Supabase created the `reviews` table and synced with API!');
+        } else {
+          const newProd: ProductItem = {
+            id: `prod_${Date.now().toString().slice(-3)}`,
+            title: 'Neural Audio DSP Module',
+            category: 'Accessories',
+            price: 119,
+            inventory: 35,
+            rating: 4.9,
+            description: 'Ultra-low latency speech and audio inference co-processor.'
+          };
+          setProducts((prev) => [newProd, ...prev]);
+          setActiveDbTable('products');
+          setActiveCanvasTab('database');
+
+          setMessages((prev) => [
+            ...prev,
+            {
+              id: `sup_${Date.now()}`,
+              sender: 'supabase',
+              senderName: 'Supabase',
+              senderRole: 'Database Engine',
+              text: `✅ Added "${newProd.title}" directly to the \`products\` table via Supabase API! You can see it in both the database and the storefront.`,
+              time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+            }
+          ]);
+          showNotification(`✅ Supabase inserted "${newProd.title}" into database.`);
+        }
+      } else if (lower.includes('claude') || lower.includes('dark') || lower.includes('theme') || lower.includes('ui') || lower.includes('design')) {
+        // Directing Claude
+        const nextTheme = storeTheme === 'light' ? 'dark' : 'light';
+        setStoreTheme(nextTheme);
+        setActiveCanvasTab('app');
+
+        setMessages((prev) => [
+          ...prev,
+          {
+            id: `claude_${Date.now()}`,
+            sender: 'claude',
+            senderName: 'Claude 3.7',
+            senderRole: 'UI/UX Designer',
+            text: `🎨 Done! I updated the storefront UI design to sleek ${nextTheme === 'dark' ? 'Dark Mode' : 'Light Mode'} with high-contrast surfaces and smooth transitions. Look at the preview!`,
+            time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+          }
+        ]);
+        showNotification(`✅ Claude updated the storefront UI to ${nextTheme === 'dark' ? 'Dark Mode' : 'Light Mode'}!`);
+      } else if (lower.includes('gpt') || lower.includes('discount') || lower.includes('coupon') || lower.includes('backend') || lower.includes('api')) {
+        // Directing GPT-4o
+        setActiveCanvasTab('code');
+
+        setMessages((prev) => [
+          ...prev,
+          {
+            id: `gpt_${Date.now()}`,
+            sender: 'gpt4o',
+            senderName: 'GPT-4o',
+            senderRole: 'Backend Engineer',
+            text: "⚡ Done! I synthesized a discount coupon endpoint `POST /api/discounts/validate` that checks validity directly against your Supabase database table.",
+            time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+          }
+        ]);
+        showNotification('✅ GPT-4o created the coupon API route!');
+      } else {
+        // General Swarm instruction
+        setMessages((prev) => [
+          ...prev,
+          {
+            id: `all_${Date.now()}`,
+            sender: 'claude',
+            senderName: 'Claude 3.7',
+            senderRole: 'Team Coordinator',
+            text: `Got it! I coordinated with Supabase and GPT-4o to apply your changes: "${textToSend}".`,
+            time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+          }
+        ]);
+        showNotification('✅ AI Team updated your application.');
+      }
+
+      setIsAiThinking(false);
+    }, 700);
   };
 
   const filteredProducts = products.filter((p) => {
@@ -508,432 +388,381 @@ export const OnePromptAppStudio: React.FC<{
   });
 
   return (
-    <div className={`w-full text-left font-sans ${embedded ? '' : 'max-w-7xl mx-auto py-6'}`}>
+    <div className={`w-full text-left font-sans ${embedded ? '' : 'max-w-7xl mx-auto py-8 px-4 sm:px-6'}`}>
       {/* Toast Notification */}
       {toastMessage && (
-        <div className="fixed bottom-6 right-6 z-50 flex items-center gap-3 px-4 py-3 rounded-xl bg-[#111318] text-white text-xs font-medium shadow-2xl border border-white/10 animate-in fade-in slide-in-from-bottom-3 duration-200">
-          <Sparkles className="w-4 h-4 text-[#6D4AFF] shrink-0" />
+        <div className="fixed bottom-6 right-6 z-50 flex items-center gap-3 px-5 py-3.5 rounded-2xl bg-slate-900 text-white text-sm font-semibold shadow-2xl border border-slate-700 animate-in fade-in slide-in-from-bottom-3 duration-200">
+          <Sparkles className="w-5 h-5 text-[#6D4AFF] shrink-0" />
           <span>{toastMessage}</span>
           <button
             onClick={() => setToastMessage(null)}
-            className="ml-2 text-white/60 hover:text-white"
+            className="ml-3 text-slate-400 hover:text-white text-base font-bold cursor-pointer"
           >
-            ×
+            ✕
           </button>
         </div>
       )}
 
-      {/* HEADER SECTION */}
-      <div className="mb-6 space-y-2">
+      {/* TOP HEADER: Crystal Clear, Welcoming, Human */}
+      <div className="mb-8 space-y-3">
         <div className="flex flex-wrap items-center justify-between gap-3">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-purple-50 border border-purple-200 text-xs font-semibold text-[#6D4AFF]">
-            <Sparkles className="w-3.5 h-3.5" />
-            <span>Universal Multi-AI Application Studio</span>
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-purple-100 text-purple-800 text-xs sm:text-sm font-bold border border-purple-200">
+            <Sparkles className="w-4 h-4 text-[#6D4AFF]" />
+            <span>Universal Multi-AI Workspace</span>
           </div>
 
-          <div className="flex items-center gap-3 text-xs text-[#626873]">
-            <div className="flex items-center gap-1.5">
-              <span className={`w-2 h-2 rounded-full ${hasBuilt ? 'bg-emerald-500' : 'bg-amber-500 animate-pulse'}`} />
-              <span className="font-medium text-[#111318]">{hasBuilt ? 'Application Mesh Ready' : 'Synthesizing...'}</span>
-            </div>
+          <div className="flex items-center gap-3 text-xs sm:text-sm text-slate-600 font-medium">
+            <span className="flex items-center gap-1.5 text-emerald-700 font-bold">
+              <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse" />
+              Connected: Supabase, Claude &amp; GPT-4o
+            </span>
             {onNavigateToFull && (
               <button
                 type="button"
                 onClick={onNavigateToFull}
-                className="px-2.5 py-1 rounded-lg bg-white border border-[#E5E5E2] hover:bg-[#FAFAF8] text-xs font-semibold text-[#6D4AFF] flex items-center gap-1 cursor-pointer transition-colors shadow-2xs"
+                className="px-3 py-1 rounded-xl bg-white border border-slate-300 hover:bg-slate-50 text-xs font-bold text-[#6D4AFF] flex items-center gap-1.5 shadow-xs cursor-pointer transition-colors"
               >
-                <span>Open in App</span>
-                <ExternalLink className="w-3 h-3" />
+                <span>Full Studio</span>
+                <ExternalLink className="w-3.5 h-3.5" />
               </button>
             )}
           </div>
         </div>
 
-        <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-[#111318]">
-          One Prompt. Connect Any AI. Build the Whole App.
+        <h2 className="text-2xl sm:text-4xl font-extrabold text-slate-900 tracking-tight leading-tight">
+          Talk to your whole AI team in one place.
         </h2>
-        <p className="text-sm sm:text-base text-[#626873] max-w-3xl leading-relaxed">
-          Tell <strong>Supabase</strong> to start working on the database via API, tell <strong>Claude</strong> to design the UI/UX frontend, and tell <strong>GPT-4o</strong> to wire backend server actions—all collaborating in one application.
+        <p className="text-base sm:text-lg text-slate-600 max-w-3xl leading-relaxed">
+          Tell <strong>Supabase</strong> to create your database, tell <strong>Claude</strong> to design the UI, and tell <strong>GPT-4o</strong> to wire up the backend. One simple chat, with a live working app right next to it.
         </p>
       </div>
 
-      {/* SECTION 1: THE ONE-PROMPT DIRECTIVE & CONNECTED MESH BAR */}
-      <div className="p-5 sm:p-6 rounded-2xl bg-white border border-[#E5E5E2] shadow-sm mb-6 space-y-5">
-        <div className="space-y-2">
-          <div className="flex items-center justify-between">
-            <label className="text-xs font-bold uppercase tracking-wider text-[#626873] flex items-center gap-1.5">
-              <Terminal className="w-3.5 h-3.5 text-[#6D4AFF]" />
-              <span>Step 1: Application Directive (One Single Prompt)</span>
-            </label>
-            <span className="text-[11px] text-[#8B919B]">Natural language orchestration</span>
+      {/* THE PROMPT BAR: Big, Prominent, Consumer-Friendly like ChatGPT/v0 */}
+      <div className="mb-6 p-4 sm:p-5 rounded-3xl bg-white border border-slate-200 shadow-sm space-y-3">
+        <div className="flex flex-col sm:flex-row items-stretch gap-3">
+          <div className="relative flex-1">
+            <input
+              type="text"
+              value={promptInput}
+              onChange={(e) => setPromptInput(e.target.value)}
+              placeholder="What do you want your AI team to build? (e.g. Build an e-commerce store with Supabase and Claude)"
+              className="w-full px-5 py-3.5 rounded-2xl bg-slate-50 border border-slate-300 text-sm sm:text-base text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#6D4AFF]/20 focus:border-[#6D4AFF] placeholder-slate-400 font-medium"
+            />
           </div>
-
-          <div className="relative flex flex-col sm:flex-row items-stretch gap-2.5">
-            <div className="relative flex-1">
-              <textarea
-                value={prompt}
-                onChange={(e) => setPrompt(e.target.value)}
-                placeholder="What application do you want to build? (e.g. Build an e-commerce platform with Supabase database for products and Claude designing the frontend)..."
-                rows={2}
-                className="w-full px-4 py-3 rounded-xl bg-[#FAFAF8] border border-[#E5E5E2] text-sm text-[#111318] focus:outline-none focus:ring-2 focus:ring-[#6D4AFF]/20 focus:border-[#6D4AFF] placeholder-[#8B919B] resize-none transition-all"
-              />
-            </div>
-
-            <button
-              type="button"
-              onClick={handleStartBuild}
-              disabled={isBuilding}
-              className={`px-6 py-3.5 rounded-xl font-semibold text-sm text-white shadow-md flex items-center justify-center gap-2 cursor-pointer transition-all shrink-0 ${
-                isBuilding
-                  ? 'bg-purple-400 cursor-not-allowed'
-                  : 'bg-[#6D4AFF] hover:bg-[#5B3CE8] shadow-[#6D4AFF]/25 active:scale-[0.98]'
-              }`}
-            >
-              {isBuilding ? (
-                <>
-                  <RotateCcw className="w-4 h-4 animate-spin" />
-                  <span>Connecting &amp; Building...</span>
-                </>
-              ) : (
-                <>
-                  <Zap className="w-4 h-4" />
-                  <span>Connect &amp; Build App</span>
-                </>
-              )}
-            </button>
-          </div>
-
-          {isBuilding && (
-            <div className="space-y-1.5 pt-2">
-              <div className="flex items-center justify-between text-xs font-mono text-[#626873]">
-                <span>Synthesizing application mesh...</span>
-                <span>{buildProgress}%</span>
-              </div>
-              <div className="w-full bg-[#E5E5E2] rounded-full h-1.5 overflow-hidden">
-                <div
-                  className="bg-[#6D4AFF] h-full transition-all duration-300 rounded-full"
-                  style={{ width: `${buildProgress}%` }}
-                />
-              </div>
-            </div>
-          )}
-
-          {/* Quick Preset Prompts */}
-          <div className="flex items-center gap-2 flex-wrap pt-1 text-xs">
-            <span className="text-[#8B919B] font-medium">Try templates:</span>
-            <button
-              type="button"
-              onClick={() => {
-                setPrompt('Build an e-commerce storefront with Supabase database for products/orders and Claude designing the storefront');
-              }}
-              className="px-2.5 py-1 rounded-lg bg-[#FAFAF8] hover:bg-[#F2F2EE] border border-[#E5E5E2] text-[#111318] transition-colors cursor-pointer"
-            >
-              🛍️ E-Commerce with Supabase
-            </button>
-            <button
-              type="button"
-              onClick={() => {
-                setPrompt('Build a SaaS analytics portal with customer metrics, API keys table, and Claude dark dashboard');
-              }}
-              className="px-2.5 py-1 rounded-lg bg-[#FAFAF8] hover:bg-[#F2F2EE] border border-[#E5E5E2] text-[#111318] transition-colors cursor-pointer"
-            >
-              📊 SaaS Analytics Portal
-            </button>
-            <button
-              type="button"
-              onClick={() => {
-                setPrompt('Build a team collaboration kanban board with real-time audit logs and user roles');
-              }}
-              className="px-2.5 py-1 rounded-lg bg-[#FAFAF8] hover:bg-[#F2F2EE] border border-[#E5E5E2] text-[#111318] transition-colors cursor-pointer"
-            >
-              📋 Kanban Task Hub
-            </button>
-          </div>
+          <button
+            type="button"
+            onClick={() => handleSendDirective(promptInput)}
+            disabled={isAiThinking || !promptInput.trim()}
+            className="px-6 py-3.5 rounded-2xl bg-[#6D4AFF] hover:bg-[#5B3CE8] text-white text-sm sm:text-base font-bold shadow-md shadow-[#6D4AFF]/25 flex items-center justify-center gap-2 cursor-pointer transition-all shrink-0 active:scale-95"
+          >
+            <Sparkles className="w-4 h-4" />
+            <span>Build with AI Team</span>
+          </button>
         </div>
 
-        {/* CONNECTED AI MESH TOGGLES */}
-        <div className="pt-3 border-t border-[#E5E5E2]/70">
-          <div className="flex items-center justify-between mb-3">
-            <span className="text-xs font-bold uppercase tracking-wider text-[#626873]">
-              Step 2: Connected Multi-AI Workers (Active in this Mesh)
-            </span>
-            <span className="text-[11px] text-emerald-600 font-medium">All APIs ready for dual-way communication</span>
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
-            {/* 1. Supabase */}
-            <div
-              onClick={() => setSelectedModels((p) => ({ ...p, supabase: !p.supabase }))}
-              className={`p-3.5 rounded-xl border transition-all cursor-pointer select-none flex items-start gap-3 ${
-                selectedModels.supabase
-                  ? 'bg-emerald-50/60 border-emerald-300 ring-1 ring-emerald-300/30'
-                  : 'bg-[#FAFAF8] border-[#E5E5E2] opacity-60'
-              }`}
-            >
-              <div className="p-2 rounded-lg bg-emerald-600 text-white shrink-0 mt-0.5">
-                <Database className="w-4 h-4" />
-              </div>
-              <div className="flex-1 min-w-0">
-                <div className="flex items-center justify-between">
-                  <span className="text-xs font-bold text-[#111318]">Supabase API</span>
-                  <span className={`w-2 h-2 rounded-full ${selectedModels.supabase ? 'bg-emerald-500' : 'bg-stone-300'}`} />
-                </div>
-                <p className="text-[11px] text-[#626873] leading-snug mt-0.5">
-                  PostgreSQL schema, tables, migrations &amp; RLS security policies.
-                </p>
-                <span className="inline-block mt-1 text-[10px] font-mono text-emerald-700 bg-emerald-100/70 px-1.5 py-0.2 rounded font-semibold">
-                  Database Engine
-                </span>
-              </div>
-            </div>
-
-            {/* 2. Claude */}
-            <div
-              onClick={() => setSelectedModels((p) => ({ ...p, claude: !p.claude }))}
-              className={`p-3.5 rounded-xl border transition-all cursor-pointer select-none flex items-start gap-3 ${
-                selectedModels.claude
-                  ? 'bg-purple-50/60 border-purple-300 ring-1 ring-purple-300/30'
-                  : 'bg-[#FAFAF8] border-[#E5E5E2] opacity-60'
-              }`}
-            >
-              <div className="p-2 rounded-lg bg-[#6D4AFF] text-white shrink-0 mt-0.5">
-                <Sparkles className="w-4 h-4" />
-              </div>
-              <div className="flex-1 min-w-0">
-                <div className="flex items-center justify-between">
-                  <span className="text-xs font-bold text-[#111318]">Claude 3.7</span>
-                  <span className={`w-2 h-2 rounded-full ${selectedModels.claude ? 'bg-purple-500' : 'bg-stone-300'}`} />
-                </div>
-                <p className="text-[11px] text-[#626873] leading-snug mt-0.5">
-                  Lead UI/UX architect, Tailwind responsive layout &amp; frontend state.
-                </p>
-                <span className="inline-block mt-1 text-[10px] font-mono text-purple-700 bg-purple-100/70 px-1.5 py-0.2 rounded font-semibold">
-                  UI/UX Architect
-                </span>
-              </div>
-            </div>
-
-            {/* 3. GPT-4o */}
-            <div
-              onClick={() => setSelectedModels((p) => ({ ...p, gpt4o: !p.gpt4o }))}
-              className={`p-3.5 rounded-xl border transition-all cursor-pointer select-none flex items-start gap-3 ${
-                selectedModels.gpt4o
-                  ? 'bg-blue-50/60 border-blue-300 ring-1 ring-blue-300/30'
-                  : 'bg-[#FAFAF8] border-[#E5E5E2] opacity-60'
-              }`}
-            >
-              <div className="p-2 rounded-lg bg-blue-600 text-white shrink-0 mt-0.5">
-                <Code className="w-4 h-4" />
-              </div>
-              <div className="flex-1 min-w-0">
-                <div className="flex items-center justify-between">
-                  <span className="text-xs font-bold text-[#111318]">GPT-4o</span>
-                  <span className={`w-2 h-2 rounded-full ${selectedModels.gpt4o ? 'bg-blue-500' : 'bg-stone-300'}`} />
-                </div>
-                <p className="text-[11px] text-[#626873] leading-snug mt-0.5">
-                  Backend API routes, server actions, webhooks &amp; validation.
-                </p>
-                <span className="inline-block mt-1 text-[10px] font-mono text-blue-700 bg-blue-100/70 px-1.5 py-0.2 rounded font-semibold">
-                  Backend &amp; Routes
-                </span>
-              </div>
-            </div>
-
-            {/* 4. DeepSeek-R1 */}
-            <div
-              onClick={() => setSelectedModels((p) => ({ ...p, deepseek: !p.deepseek }))}
-              className={`p-3.5 rounded-xl border transition-all cursor-pointer select-none flex items-start gap-3 ${
-                selectedModels.deepseek
-                  ? 'bg-stone-100 border-stone-300 ring-1 ring-stone-300/30'
-                  : 'bg-[#FAFAF8] border-[#E5E5E2] opacity-60'
-              }`}
-            >
-              <div className="p-2 rounded-lg bg-[#111318] text-white shrink-0 mt-0.5">
-                <ShieldCheck className="w-4 h-4" />
-              </div>
-              <div className="flex-1 min-w-0">
-                <div className="flex items-center justify-between">
-                  <span className="text-xs font-bold text-[#111318]">DeepSeek-R1</span>
-                  <span className={`w-2 h-2 rounded-full ${selectedModels.deepseek ? 'bg-stone-700' : 'bg-stone-300'}`} />
-                </div>
-                <p className="text-[11px] text-[#626873] leading-snug mt-0.5">
-                  Security invariants, Row-Level Security policy proofs &amp; zero-trust audit.
-                </p>
-                <span className="inline-block mt-1 text-[10px] font-mono text-stone-700 bg-stone-200 px-1.5 py-0.2 rounded font-semibold">
-                  Security Auditor
-                </span>
-              </div>
-            </div>
-          </div>
+        {/* 1-Click Prompt Templates */}
+        <div className="flex items-center gap-2 flex-wrap pt-1 text-xs text-slate-600">
+          <span className="font-bold text-slate-500">Quick start prompts:</span>
+          <button
+            type="button"
+            onClick={() => {
+              const p = 'Build an online storefront with Supabase database for products and Claude designing the frontend';
+              setPromptInput(p);
+              handleSendDirective(p);
+            }}
+            className="px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold cursor-pointer transition-colors"
+          >
+            🛍️ E-Commerce Store with Supabase
+          </button>
+          <button
+            type="button"
+            onClick={() => {
+              const p = 'Build a SaaS dashboard with Supabase user auth and Claude dark mode charts';
+              setPromptInput(p);
+              handleSendDirective(p);
+            }}
+            className="px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold cursor-pointer transition-colors"
+          >
+            📊 SaaS Analytics Portal
+          </button>
+          <button
+            type="button"
+            onClick={() => {
+              const p = 'Build a team task manager with Supabase real-time updates and Claude kanban UI';
+              setPromptInput(p);
+              handleSendDirective(p);
+            }}
+            className="px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold cursor-pointer transition-colors"
+          >
+            📋 Team Kanban Board
+          </button>
         </div>
       </div>
 
-      {/* SECTION 2: WORKSPACE TABS & INTERACTIVE PREVIEW */}
-      <div className="bg-white border border-[#E5E5E2] rounded-2xl shadow-sm overflow-hidden mb-6">
-        {/* Workspace Toolbar Tabs */}
-        <div className="px-4 py-3 border-b border-[#E5E5E2] bg-[#FAFAF8] flex flex-wrap items-center justify-between gap-3">
-          <div className="flex items-center gap-1.5 overflow-x-auto">
-            <button
-              type="button"
-              onClick={() => setActiveTab('preview')}
-              className={`px-3.5 py-1.5 rounded-xl text-xs font-semibold flex items-center gap-2 cursor-pointer transition-colors ${
-                activeTab === 'preview'
-                  ? 'bg-white text-[#111318] shadow-xs border border-[#E5E5E2]'
-                  : 'text-[#626873] hover:text-[#111318] hover:bg-white/60'
-              }`}
-            >
-              <Laptop className="w-3.5 h-3.5 text-[#6D4AFF]" />
-              <span>🖥️ Live App Preview</span>
-              <span className="px-1.5 py-0.2 text-[10px] font-mono bg-purple-100 text-purple-700 rounded-full font-bold">
-                Claude
-              </span>
-            </button>
+      {/* MAIN TWO-COLUMN STUDIO: LEFT (CHAT & PROMPTS) | RIGHT (LIVE PREVIEW & DATABASE) */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+        
+        {/* ============================================================ */}
+        {/* LEFT COLUMN: THE AI ASSISTANT CONVERSATION (5 OF 12 COLS)     */}
+        {/* ============================================================ */}
+        <div className="lg:col-span-5 flex flex-col bg-white border border-slate-200 rounded-3xl shadow-sm overflow-hidden h-[680px]">
+          {/* Chat Header */}
+          <div className="px-5 py-4 bg-slate-50 border-b border-slate-200 flex items-center justify-between">
+            <div className="flex items-center gap-2.5">
+              <div className="w-9 h-9 rounded-2xl bg-[#6D4AFF] text-white flex items-center justify-center shadow-xs">
+                <Bot className="w-5 h-5" />
+              </div>
+              <div>
+                <h3 className="text-sm font-bold text-slate-900">AI Team Assistant</h3>
+                <div className="flex items-center gap-2 text-xs text-slate-500 font-medium">
+                  <span className="text-purple-600 font-semibold">Claude</span> · 
+                  <span className="text-emerald-600 font-semibold">Supabase</span> · 
+                  <span className="text-blue-600 font-semibold">GPT-4o</span>
+                </div>
+              </div>
+            </div>
 
-            <button
-              type="button"
-              onClick={() => setActiveTab('database')}
-              className={`px-3.5 py-1.5 rounded-xl text-xs font-semibold flex items-center gap-2 cursor-pointer transition-colors ${
-                activeTab === 'database'
-                  ? 'bg-white text-[#111318] shadow-xs border border-[#E5E5E2]'
-                  : 'text-[#626873] hover:text-[#111318] hover:bg-white/60'
-              }`}
-            >
-              <Database className="w-3.5 h-3.5 text-emerald-600" />
-              <span>🗄️ Supabase Database</span>
-              <span className="px-1.5 py-0.2 text-[10px] font-mono bg-emerald-100 text-emerald-800 rounded-full font-bold">
-                API Live
-              </span>
-            </button>
-
-            <button
-              type="button"
-              onClick={() => setActiveTab('backend')}
-              className={`px-3.5 py-1.5 rounded-xl text-xs font-semibold flex items-center gap-2 cursor-pointer transition-colors ${
-                activeTab === 'backend'
-                  ? 'bg-white text-[#111318] shadow-xs border border-[#E5E5E2]'
-                  : 'text-[#626873] hover:text-[#111318] hover:bg-white/60'
-              }`}
-            >
-              <Code className="w-3.5 h-3.5 text-blue-600" />
-              <span>⚡ Backend Routes</span>
-              <span className="px-1.5 py-0.2 text-[10px] font-mono bg-blue-100 text-blue-800 rounded-full font-bold">
-                GPT-4o
-              </span>
-            </button>
-
-            <button
-              type="button"
-              onClick={() => setActiveTab('security')}
-              className={`px-3.5 py-1.5 rounded-xl text-xs font-semibold flex items-center gap-2 cursor-pointer transition-colors ${
-                activeTab === 'security'
-                  ? 'bg-white text-[#111318] shadow-xs border border-[#E5E5E2]'
-                  : 'text-[#626873] hover:text-[#111318] hover:bg-white/60'
-              }`}
-            >
-              <ShieldCheck className="w-3.5 h-3.5 text-stone-700" />
-              <span>🛡️ Security Verification</span>
-              <span className="px-1.5 py-0.2 text-[10px] font-mono bg-stone-200 text-stone-800 rounded-full font-bold">
-                DeepSeek
-              </span>
-            </button>
+            <span className="px-2.5 py-1 rounded-full bg-emerald-100 text-emerald-800 text-xs font-bold font-mono">
+              Live
+            </span>
           </div>
 
-          <div className="flex items-center gap-2">
-            <span className="text-xs text-[#8B919B] hidden sm:inline">Theme:</span>
-            <button
-              type="button"
-              onClick={() => setThemeMode((m) => (m === 'light' ? 'dark' : 'light'))}
-              className="px-2.5 py-1 rounded-lg bg-white border border-[#E5E5E2] hover:bg-[#FAFAF8] text-xs font-medium text-[#111318] cursor-pointer shadow-2xs"
-            >
-              {themeMode === 'light' ? '🌙 Dark Mode' : '☀️ Light Mode'}
-            </button>
+          {/* Chat Messages Timeline */}
+          <div className="flex-1 p-4 sm:p-5 overflow-y-auto space-y-4 bg-slate-50/50">
+            {messages.map((msg) => {
+              const isUser = msg.sender === 'user';
+              const senderColors: Record<string, { bg: string; text: string; badge: string }> = {
+                user: { bg: 'bg-[#6D4AFF] text-white', text: 'text-white', badge: 'bg-white/20 text-white' },
+                claude: { bg: 'bg-white text-slate-800 border border-purple-200', text: 'text-purple-700', badge: 'bg-purple-100 text-purple-800' },
+                supabase: { bg: 'bg-white text-slate-800 border border-emerald-200', text: 'text-emerald-700', badge: 'bg-emerald-100 text-emerald-800' },
+                gpt4o: { bg: 'bg-white text-slate-800 border border-blue-200', text: 'text-blue-700', badge: 'bg-blue-100 text-blue-800' }
+              };
+              const style = senderColors[msg.sender] || senderColors.claude;
+
+              return (
+                <div
+                  key={msg.id}
+                  className={`flex flex-col ${isUser ? 'items-end' : 'items-start'} space-y-1`}
+                >
+                  <div className="flex items-center gap-2 px-1">
+                    <span className={`text-xs font-bold ${isUser ? 'text-slate-600' : style.text}`}>
+                      {msg.senderName}
+                    </span>
+                    <span className={`text-[11px] px-2 py-0.5 rounded-full font-semibold ${style.badge}`}>
+                      {msg.senderRole}
+                    </span>
+                    <span className="text-[11px] text-slate-400">{msg.time}</span>
+                  </div>
+
+                  <div
+                    className={`max-w-[92%] p-4 rounded-2xl text-sm leading-relaxed shadow-xs ${style.bg}`}
+                  >
+                    {msg.text}
+                  </div>
+                </div>
+              );
+            })}
+
+            {isAiThinking && (
+              <div className="flex items-center gap-2 p-3.5 rounded-2xl bg-white border border-slate-200 text-slate-600 text-xs font-medium animate-pulse">
+                <RotateCcw className="w-4 h-4 animate-spin text-[#6D4AFF]" />
+                <span>AI Team is executing your directive...</span>
+              </div>
+            )}
+            <div ref={chatBottomRef} />
           </div>
+
+          {/* Quick 1-Click Suggestion Directives (The user's exact examples!) */}
+          <div className="px-4 py-3 bg-white border-t border-slate-200 space-y-2">
+            <div className="text-xs font-bold uppercase tracking-wider text-slate-500">
+              Quick Instructions (Click to test):
+            </div>
+            <div className="flex flex-wrap gap-2">
+              <button
+                type="button"
+                onClick={() => handleSendDirective('tell supabase pls start working on database and create a reviews table')}
+                disabled={isAiThinking}
+                className="px-3 py-1.5 rounded-xl bg-emerald-50 hover:bg-emerald-100 border border-emerald-300 text-emerald-800 text-xs font-semibold flex items-center gap-1.5 cursor-pointer transition-all active:scale-95"
+              >
+                <Database className="w-3.5 h-3.5 text-emerald-600" />
+                <span>"Supabase, add reviews table"</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => handleSendDirective('tell claude make it dark mode')}
+                disabled={isAiThinking}
+                className="px-3 py-1.5 rounded-xl bg-purple-50 hover:bg-purple-100 border border-purple-300 text-purple-800 text-xs font-semibold flex items-center gap-1.5 cursor-pointer transition-all active:scale-95"
+              >
+                <Sparkles className="w-3.5 h-3.5 text-[#6D4AFF]" />
+                <span>"Claude, switch to dark mode"</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => handleSendDirective('tell gpt-4o add a discount coupon code API')}
+                disabled={isAiThinking}
+                className="px-3 py-1.5 rounded-xl bg-blue-50 hover:bg-blue-100 border border-blue-300 text-blue-800 text-xs font-semibold flex items-center gap-1.5 cursor-pointer transition-all active:scale-95"
+              >
+                <Code className="w-3.5 h-3.5 text-blue-600" />
+                <span>"GPT-4o, add coupon API"</span>
+              </button>
+            </div>
+          </div>
+
+          {/* Big, Friendly Chat Input */}
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              handleSendDirective();
+            }}
+            className="p-3 bg-slate-50 border-t border-slate-200 flex items-center gap-2"
+          >
+            <input
+              type="text"
+              value={userDirective}
+              onChange={(e) => setUserDirective(e.target.value)}
+              placeholder="Ask your AI team... (e.g. tell supabase add a discounts table)"
+              className="flex-1 px-4 py-3 rounded-2xl bg-white border border-slate-300 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#6D4AFF]/20 focus:border-[#6D4AFF] placeholder-slate-400 shadow-2xs font-medium"
+            />
+            <button
+              type="submit"
+              disabled={isAiThinking || !userDirective.trim()}
+              className={`p-3 rounded-2xl font-bold text-white transition-all cursor-pointer flex items-center justify-center ${
+                isAiThinking || !userDirective.trim()
+                  ? 'bg-slate-300 cursor-not-allowed'
+                  : 'bg-[#6D4AFF] hover:bg-[#5B3CE8] shadow-md shadow-[#6D4AFF]/20 active:scale-95'
+              }`}
+            >
+              <Send className="w-4 h-4" />
+            </button>
+          </form>
         </div>
 
-        {/* TAB 1: LIVE APP PREVIEW (CLAUDE UI/UX ARCHITECT) */}
-        {activeTab === 'preview' && (
-          <div className="p-4 sm:p-6 bg-[#F6F6F3]">
-            {/* Mock Application Container */}
-            <div
-              className={`rounded-2xl border transition-all duration-300 shadow-md overflow-hidden ${
-                themeMode === 'dark'
-                  ? 'bg-[#111318] border-stone-800 text-white'
-                  : 'bg-white border-[#E5E5E2] text-[#111318]'
-              }`}
-            >
-              {/* App Browser Chrome */}
-              <div
-                className={`px-4 py-2.5 border-b flex items-center justify-between ${
-                  themeMode === 'dark' ? 'bg-[#181A20] border-stone-800' : 'bg-[#FAFAF8] border-[#E5E5E2]'
+        {/* ============================================================ */}
+        {/* RIGHT COLUMN: THE LIVE CANVAS (APP PREVIEW & DATABASE)        */}
+        {/* (7 OF 12 COLS)                                               */}
+        {/* ============================================================ */}
+        <div className="lg:col-span-7 flex flex-col bg-white border border-slate-200 rounded-3xl shadow-sm overflow-hidden h-[680px]">
+          
+          {/* Canvas Navigation Tabs */}
+          <div className="px-5 py-3.5 bg-slate-100 border-b border-slate-200 flex flex-wrap items-center justify-between gap-3">
+            <div className="flex items-center gap-2">
+              <button
+                type="button"
+                onClick={() => setActiveCanvasTab('app')}
+                className={`px-4 py-2 rounded-xl text-xs sm:text-sm font-bold flex items-center gap-2 cursor-pointer transition-all ${
+                  activeCanvasTab === 'app'
+                    ? 'bg-white text-slate-900 shadow-xs border border-slate-300'
+                    : 'text-slate-600 hover:text-slate-900 hover:bg-white/50'
                 }`}
               >
-                <div className="flex items-center gap-1.5">
-                  <div className="w-3 h-3 rounded-full bg-red-400" />
-                  <div className="w-3 h-3 rounded-full bg-amber-400" />
-                  <div className="w-3 h-3 rounded-full bg-emerald-400" />
-                  <span className="ml-2 text-xs font-mono opacity-60">nexus-store.preview.internal</span>
+                <Laptop className="w-4 h-4 text-[#6D4AFF]" />
+                <span>🖥️ Live App Preview</span>
+                <span className="px-2 py-0.5 rounded-full bg-purple-100 text-purple-700 text-xs font-bold">
+                  Claude
+                </span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setActiveCanvasTab('database')}
+                className={`px-4 py-2 rounded-xl text-xs sm:text-sm font-bold flex items-center gap-2 cursor-pointer transition-all ${
+                  activeCanvasTab === 'database'
+                    ? 'bg-white text-slate-900 shadow-xs border border-slate-300'
+                    : 'text-slate-600 hover:text-slate-900 hover:bg-white/50'
+                }`}
+              >
+                <Database className="w-4 h-4 text-emerald-600" />
+                <span>🗄️ Supabase Database</span>
+                <span className="px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 text-xs font-bold">
+                  Live API
+                </span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setActiveCanvasTab('code')}
+                className={`px-4 py-2 rounded-xl text-xs sm:text-sm font-bold flex items-center gap-2 cursor-pointer transition-all ${
+                  activeCanvasTab === 'code'
+                    ? 'bg-white text-slate-900 shadow-xs border border-slate-300'
+                    : 'text-slate-600 hover:text-slate-900 hover:bg-white/50'
+                }`}
+              >
+                <Code className="w-4 h-4 text-blue-600" />
+                <span>⚡ Backend API</span>
+                <span className="px-2 py-0.5 rounded-full bg-blue-100 text-blue-800 text-xs font-bold">
+                  GPT-4o
+                </span>
+              </button>
+            </div>
+
+            {/* Quick Theme Toggle inside Preview */}
+            {activeCanvasTab === 'app' && (
+              <button
+                type="button"
+                onClick={() => setStoreTheme((t) => (t === 'light' ? 'dark' : 'light'))}
+                className="px-3 py-1.5 rounded-xl bg-white border border-slate-300 text-xs font-bold text-slate-700 hover:bg-slate-50 flex items-center gap-1.5 cursor-pointer shadow-2xs"
+              >
+                {storeTheme === 'light' ? (
+                  <>
+                    <Moon className="w-3.5 h-3.5 text-purple-600" />
+                    <span>Dark View</span>
+                  </>
+                ) : (
+                  <>
+                    <Sun className="w-3.5 h-3.5 text-amber-500" />
+                    <span>Light View</span>
+                  </>
+                )}
+              </button>
+            )}
+          </div>
+
+          {/* ============================================================ */}
+          {/* TAB 1: LIVE APP PREVIEW (CLAUDE FRONTEND)                     */}
+          {/* ============================================================ */}
+          {activeCanvasTab === 'app' && (
+            <div className={`flex-1 p-5 sm:p-6 overflow-y-auto transition-colors duration-300 ${
+              storeTheme === 'dark' ? 'bg-slate-950 text-white' : 'bg-slate-50 text-slate-900'
+            }`}>
+              {/* App Bar */}
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-200/40 mb-6">
+                <div>
+                  <h3 className="text-lg sm:text-xl font-extrabold tracking-tight">
+                    Nexus Hardware &amp; AI Tools
+                  </h3>
+                  <p className={`text-xs ${storeTheme === 'dark' ? 'text-slate-400' : 'text-slate-500'}`}>
+                    Designed by Claude 3.7 · Powered by Supabase PostgreSQL API
+                  </p>
                 </div>
 
-                {/* Cart Badge Button */}
+                {/* Cart Button */}
                 <button
                   type="button"
                   onClick={() => setIsCheckoutModalOpen(true)}
-                  className={`px-3 py-1 rounded-xl text-xs font-semibold flex items-center gap-2 transition-all cursor-pointer ${
-                    totalCartCount > 0
-                      ? 'bg-[#6D4AFF] text-white shadow-xs'
-                      : themeMode === 'dark'
-                      ? 'bg-stone-800 text-stone-300'
-                      : 'bg-stone-100 text-stone-700'
-                  }`}
+                  className="px-4 py-2 rounded-2xl bg-[#6D4AFF] hover:bg-[#5B3CE8] text-white text-xs sm:text-sm font-bold flex items-center gap-2 cursor-pointer shadow-md shadow-[#6D4AFF]/20 transition-all self-start sm:self-auto"
                 >
-                  <ShoppingBag className="w-3.5 h-3.5" />
+                  <ShoppingBag className="w-4 h-4" />
                   <span>Cart ({totalCartCount})</span>
-                  {totalCartCount > 0 && <span>· ${totalCartPrice}</span>}
+                  {totalCartCount > 0 && <span>· ${totalCartAmount}</span>}
                 </button>
               </div>
 
-              {/* App Content */}
-              <div className="p-4 sm:p-6 space-y-6">
-                {/* Store Header & Search */}
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                  <div>
-                    <h3 className="text-xl font-bold tracking-tight">Frontier AI Hardware &amp; Tooling</h3>
-                    <p className={`text-xs mt-0.5 ${themeMode === 'dark' ? 'text-stone-400' : 'text-[#626873]'}`}>
-                      Designed by Claude 3.7 · Powered by Supabase Database API
-                    </p>
-                  </div>
-
-                  <div className="flex items-center gap-2">
-                    <div className="relative">
-                      <Search className="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-stone-400" />
-                      <input
-                        type="text"
-                        value={searchQuery}
-                        onChange={(e) => setSearchQuery(e.target.value)}
-                        placeholder="Search products..."
-                        className={`pl-8 pr-3 py-1.5 rounded-xl text-xs border focus:outline-none transition-colors w-44 sm:w-56 ${
-                          themeMode === 'dark'
-                            ? 'bg-stone-900 border-stone-700 text-white placeholder-stone-500'
-                            : 'bg-[#FAFAF8] border-[#E5E5E2] text-[#111318] placeholder-[#8B919B]'
-                        }`}
-                      />
-                    </div>
-                  </div>
-                </div>
-
-                {/* Category Pills */}
+              {/* Category Pills & Search */}
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6">
                 <div className="flex items-center gap-2 overflow-x-auto pb-1">
-                  {['All', 'Hardware', 'Developer Tools', 'Accessories'].map((cat) => (
+                  {['All', 'Hardware', 'Database Tools', 'Accessories', 'Subscriptions'].map((cat) => (
                     <button
                       key={cat}
                       type="button"
                       onClick={() => setCategoryFilter(cat)}
-                      className={`px-3 py-1 rounded-lg text-xs font-medium cursor-pointer transition-colors ${
+                      className={`px-3 py-1.5 rounded-xl text-xs font-bold cursor-pointer transition-colors whitespace-nowrap ${
                         categoryFilter === cat
-                          ? 'bg-[#6D4AFF] text-white font-semibold'
-                          : themeMode === 'dark'
-                          ? 'bg-stone-800 text-stone-300 hover:bg-stone-700'
-                          : 'bg-[#FAFAF8] text-[#626873] hover:bg-[#F2F2EE]'
+                          ? 'bg-[#6D4AFF] text-white'
+                          : storeTheme === 'dark'
+                          ? 'bg-slate-800 text-slate-300 hover:bg-slate-700'
+                          : 'bg-white text-slate-600 hover:bg-slate-200 border border-slate-200'
                       }`}
                     >
                       {cat}
@@ -941,256 +770,270 @@ export const OnePromptAppStudio: React.FC<{
                   ))}
                 </div>
 
-                {/* Products Grid */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                  {filteredProducts.map((p) => (
-                    <div
-                      key={p.id}
-                      className={`p-4 rounded-xl border flex flex-col justify-between transition-all hover:shadow-md ${
-                        themeMode === 'dark'
-                          ? 'bg-stone-900/80 border-stone-800'
-                          : 'bg-white border-[#E5E5E2]'
-                      }`}
-                    >
-                      <div className="space-y-2">
-                        <div className="flex items-center justify-between">
-                          <span className="text-[10px] font-mono px-2 py-0.5 rounded-md bg-[#6D4AFF]/10 text-[#6D4AFF] font-semibold">
-                            {p.category}
-                          </span>
-                          <div className="flex items-center gap-1 text-[11px] text-amber-500 font-semibold">
-                            <Star className="w-3 h-3 fill-amber-500" />
-                            <span>{p.rating}</span>
-                          </div>
-                        </div>
-
-                        <h4 className="font-bold text-sm leading-snug">{p.title}</h4>
-                        <p className={`text-xs line-clamp-2 ${themeMode === 'dark' ? 'text-stone-400' : 'text-[#626873]'}`}>
-                          {p.description}
-                        </p>
-                      </div>
-
-                      <div className="mt-4 pt-3 border-t border-stone-200/50 flex items-center justify-between">
-                        <div>
-                          <div className="text-base font-bold">${p.price}</div>
-                          <div className="text-[10px] text-emerald-600 font-medium">In stock ({p.inventory})</div>
-                        </div>
-
-                        <button
-                          type="button"
-                          onClick={() => addToCart(p.id)}
-                          className="px-3 py-1.5 rounded-xl bg-[#6D4AFF] hover:bg-[#5B3CE8] text-white text-xs font-semibold shadow-xs flex items-center gap-1.5 cursor-pointer active:scale-95 transition-all"
-                        >
-                          <Plus className="w-3.5 h-3.5" />
-                          <span>Add</span>
-                        </button>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-
-                {/* Customer Reviews Section (Dynamically Rendered when Reviews table exists) */}
-                {hasReviewsTable && reviews.length > 0 && (
-                  <div className={`mt-6 pt-5 border-t ${themeMode === 'dark' ? 'border-stone-800' : 'border-[#E5E5E2]'}`}>
-                    <div className="flex items-center justify-between mb-3">
-                      <div className="flex items-center gap-2">
-                        <h4 className="text-sm font-bold">Verified Customer Reviews</h4>
-                        <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-100 text-emerald-800 font-semibold">
-                          Supabase `reviews` Table
-                        </span>
-                      </div>
-                      <span className="text-xs text-[#8B919B]">Updated via AI directive</span>
-                    </div>
-
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                      {reviews.map((rev) => (
-                        <div
-                          key={rev.id}
-                          className={`p-3.5 rounded-xl border text-xs space-y-1.5 ${
-                            themeMode === 'dark' ? 'bg-stone-900 border-stone-800' : 'bg-[#FAFAF8] border-[#E5E5E2]'
-                          }`}
-                        >
-                          <div className="flex items-center justify-between">
-                            <span className="font-semibold text-xs">{rev.user_email}</span>
-                            <div className="flex items-center gap-0.5 text-amber-500">
-                              {[...Array(rev.rating)].map((_, i) => (
-                                <Star key={i} className="w-3 h-3 fill-amber-500" />
-                              ))}
-                            </div>
-                          </div>
-                          <p className={themeMode === 'dark' ? 'text-stone-300' : 'text-[#626873]'}>
-                            "{rev.comment}"
-                          </p>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* TAB 2: SUPABASE DATABASE (POSTGRESQL TABLES & ROWS) */}
-        {activeTab === 'database' && (
-          <div className="p-4 sm:p-6 space-y-4">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-[#E5E5E2]">
-              <div className="flex items-center gap-3">
-                <div className="p-2 rounded-xl bg-emerald-100 text-emerald-800">
-                  <Database className="w-5 h-5" />
-                </div>
-                <div>
-                  <h3 className="text-base font-bold text-[#111318] flex items-center gap-2">
-                    <span>Supabase Schema &amp; Data Explorer</span>
-                    <span className="text-xs font-mono font-medium px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">
-                      Connected via REST API
-                    </span>
-                  </h3>
-                  <p className="text-xs text-[#626873]">
-                    Managed autonomously by Supabase AI engine with Row-Level Security (RLS) enforcement.
-                  </p>
+                <div className="relative">
+                  <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+                  <input
+                    type="text"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    placeholder="Search store..."
+                    className={`pl-9 pr-4 py-1.5 rounded-xl text-xs border focus:outline-none transition-colors w-full sm:w-48 ${
+                      storeTheme === 'dark'
+                        ? 'bg-slate-900 border-slate-800 text-white placeholder-slate-500'
+                        : 'bg-white border-slate-300 text-slate-900 placeholder-slate-400'
+                    }`}
+                  />
                 </div>
               </div>
 
-              {/* Table Switcher */}
-              <div className="flex items-center gap-1.5">
-                <span className="text-xs text-[#8B919B] font-mono">TABLE:</span>
-                <button
-                  type="button"
-                  onClick={() => setSelectedDbTable('products')}
-                  className={`px-3 py-1 rounded-lg text-xs font-mono font-semibold cursor-pointer transition-colors ${
-                    selectedDbTable === 'products'
-                      ? 'bg-emerald-600 text-white'
-                      : 'bg-[#FAFAF8] text-[#626873] border border-[#E5E5E2]'
-                  }`}
-                >
-                  products ({products.length})
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setSelectedDbTable('orders')}
-                  className={`px-3 py-1 rounded-lg text-xs font-mono font-semibold cursor-pointer transition-colors ${
-                    selectedDbTable === 'orders'
-                      ? 'bg-emerald-600 text-white'
-                      : 'bg-[#FAFAF8] text-[#626873] border border-[#E5E5E2]'
-                  }`}
-                >
-                  orders ({orders.length})
-                </button>
-                {hasReviewsTable && (
-                  <button
-                    type="button"
-                    onClick={() => setSelectedDbTable('reviews')}
-                    className={`px-3 py-1 rounded-lg text-xs font-mono font-semibold cursor-pointer transition-colors ${
-                      selectedDbTable === 'reviews'
-                        ? 'bg-emerald-600 text-white'
-                        : 'bg-[#FAFAF8] text-[#626873] border border-[#E5E5E2]'
+              {/* Product Cards Grid */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                {filteredProducts.map((p) => (
+                  <div
+                    key={p.id}
+                    className={`p-4 rounded-2xl border flex flex-col justify-between transition-all hover:shadow-md ${
+                      storeTheme === 'dark'
+                        ? 'bg-slate-900 border-slate-800 text-white'
+                        : 'bg-white border-slate-200 text-slate-900'
                     }`}
                   >
-                    reviews ({reviews.length})
+                    <div className="space-y-2">
+                      <div className="flex items-center justify-between">
+                        <span className="text-xs font-bold font-mono px-2 py-0.5 rounded-md bg-purple-100 text-purple-800">
+                          {p.category}
+                        </span>
+                        <div className="flex items-center gap-1 text-xs text-amber-500 font-bold">
+                          <Star className="w-3.5 h-3.5 fill-amber-500" />
+                          <span>{p.rating}</span>
+                        </div>
+                      </div>
+
+                      <h4 className="font-extrabold text-base leading-snug">{p.title}</h4>
+                      <p className={`text-xs leading-relaxed ${storeTheme === 'dark' ? 'text-slate-400' : 'text-slate-600'}`}>
+                        {p.description}
+                      </p>
+                    </div>
+
+                    <div className="mt-4 pt-3 border-t border-slate-200/50 flex items-center justify-between">
+                      <div>
+                        <div className="text-lg font-black">${p.price}</div>
+                        <div className="text-[11px] text-emerald-600 font-bold">In stock ({p.inventory})</div>
+                      </div>
+
+                      <button
+                        type="button"
+                        onClick={() => handleAddToCart(p)}
+                        className="px-3.5 py-2 rounded-xl bg-[#6D4AFF] hover:bg-[#5B3CE8] text-white text-xs font-bold shadow-xs flex items-center gap-1.5 cursor-pointer active:scale-95 transition-all"
+                      >
+                        <Plus className="w-3.5 h-3.5" />
+                        <span>Add to Cart</span>
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              {/* Verified Customer Reviews Section (Dynamically active when Supabase adds reviews table) */}
+              {hasReviewsTable && reviews.length > 0 && (
+                <div className={`mt-6 pt-5 border-t ${storeTheme === 'dark' ? 'border-slate-800' : 'border-slate-200'}`}>
+                  <div className="flex items-center justify-between mb-3">
+                    <div className="flex items-center gap-2">
+                      <h4 className="text-sm font-extrabold">Verified Reviews</h4>
+                      <span className="text-xs font-mono font-bold px-2 py-0.5 rounded bg-emerald-100 text-emerald-800">
+                        Supabase `reviews` Table
+                      </span>
+                    </div>
+                    <span className="text-xs text-slate-400">Synced via API</span>
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    {reviews.map((rev) => (
+                      <div
+                        key={rev.id}
+                        className={`p-3.5 rounded-2xl border text-xs space-y-1.5 ${
+                          storeTheme === 'dark' ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-200'
+                        }`}
+                      >
+                        <div className="flex items-center justify-between">
+                          <span className="font-bold text-xs">{rev.user_email}</span>
+                          <div className="flex items-center gap-0.5 text-amber-500">
+                            {[...Array(rev.rating)].map((_, i) => (
+                              <Star key={i} className="w-3 h-3 fill-amber-500" />
+                            ))}
+                          </div>
+                        </div>
+                        <p className={storeTheme === 'dark' ? 'text-slate-300' : 'text-slate-600'}>
+                          "{rev.comment}"
+                        </p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* ============================================================ */}
+          {/* TAB 2: SUPABASE DATABASE EXPLORER (TABLES & ROWS)            */}
+          {/* ============================================================ */}
+          {activeCanvasTab === 'database' && (
+            <div className="flex-1 p-5 sm:p-6 overflow-y-auto bg-slate-50 space-y-4">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-slate-200">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-2xl bg-emerald-100 text-emerald-800 flex items-center justify-center font-bold">
+                    <Database className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <h3 className="text-base font-extrabold text-slate-900">
+                      Supabase PostgreSQL Schema &amp; Data
+                    </h3>
+                    <p className="text-xs text-slate-500">
+                      Live connection via REST API · Row-Level Security active
+                    </p>
+                  </div>
+                </div>
+
+                {/* Table Switcher */}
+                <div className="flex items-center gap-1.5">
+                  <span className="text-xs font-bold text-slate-500 font-mono">TABLE:</span>
+                  <button
+                    type="button"
+                    onClick={() => setActiveDbTable('products')}
+                    className={`px-3 py-1.5 rounded-xl text-xs font-bold font-mono cursor-pointer transition-colors ${
+                      activeDbTable === 'products'
+                        ? 'bg-emerald-600 text-white'
+                        : 'bg-white text-slate-700 border border-slate-300 hover:bg-slate-100'
+                    }`}
+                  >
+                    products ({products.length})
                   </button>
+                  <button
+                    type="button"
+                    onClick={() => setActiveDbTable('orders')}
+                    className={`px-3 py-1.5 rounded-xl text-xs font-bold font-mono cursor-pointer transition-colors ${
+                      activeDbTable === 'orders'
+                        ? 'bg-emerald-600 text-white'
+                        : 'bg-white text-slate-700 border border-slate-300 hover:bg-slate-100'
+                    }`}
+                  >
+                    orders ({orders.length})
+                  </button>
+                  {hasReviewsTable && (
+                    <button
+                      type="button"
+                      onClick={() => setActiveDbTable('reviews')}
+                      className={`px-3 py-1.5 rounded-xl text-xs font-bold font-mono cursor-pointer transition-colors ${
+                        activeDbTable === 'reviews'
+                          ? 'bg-emerald-600 text-white'
+                          : 'bg-white text-slate-700 border border-slate-300 hover:bg-slate-100'
+                      }`}
+                    >
+                      reviews ({reviews.length})
+                    </button>
+                  )}
+                </div>
+              </div>
+
+              {/* Data Table with Large, Readable Font Size */}
+              <div className="bg-white border border-slate-200 rounded-2xl shadow-xs overflow-x-auto">
+                {activeDbTable === 'products' && (
+                  <table className="w-full text-left text-xs sm:text-sm font-mono">
+                    <thead className="bg-slate-100 border-b border-slate-200 text-slate-700">
+                      <tr>
+                        <th className="px-4 py-3 font-bold">id</th>
+                        <th className="px-4 py-3 font-bold">title</th>
+                        <th className="px-4 py-3 font-bold">category</th>
+                        <th className="px-4 py-3 font-bold">price</th>
+                        <th className="px-4 py-3 font-bold">inventory</th>
+                        <th className="px-4 py-3 font-bold">rating</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-slate-100">
+                      {products.map((p) => (
+                        <tr key={p.id} className="hover:bg-slate-50 transition-colors">
+                          <td className="px-4 py-3 text-[#6D4AFF] font-bold">{p.id}</td>
+                          <td className="px-4 py-3 text-slate-900 font-semibold">{p.title}</td>
+                          <td className="px-4 py-3 text-slate-600">{p.category}</td>
+                          <td className="px-4 py-3 font-extrabold text-slate-900">${p.price}</td>
+                          <td className="px-4 py-3 text-emerald-600 font-bold">{p.inventory}</td>
+                          <td className="px-4 py-3 text-amber-600 font-bold">★ {p.rating}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                )}
+
+                {activeDbTable === 'orders' && (
+                  <table className="w-full text-left text-xs sm:text-sm font-mono">
+                    <thead className="bg-slate-100 border-b border-slate-200 text-slate-700">
+                      <tr>
+                        <th className="px-4 py-3 font-bold">id</th>
+                        <th className="px-4 py-3 font-bold">user_email</th>
+                        <th className="px-4 py-3 font-bold">total</th>
+                        <th className="px-4 py-3 font-bold">status</th>
+                        <th className="px-4 py-3 font-bold">items</th>
+                        <th className="px-4 py-3 font-bold">created_at</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-slate-100">
+                      {orders.map((o) => (
+                        <tr key={o.id} className="hover:bg-slate-50 transition-colors">
+                          <td className="px-4 py-3 text-[#6D4AFF] font-bold">{o.id}</td>
+                          <td className="px-4 py-3 text-slate-900">{o.user_email}</td>
+                          <td className="px-4 py-3 font-extrabold text-slate-900">
+                            ${(o.total_cents / 100).toFixed(2)}
+                          </td>
+                          <td className="px-4 py-3">
+                            <span className="px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 text-xs font-bold font-sans">
+                              {o.status.toUpperCase()}
+                            </span>
+                          </td>
+                          <td className="px-4 py-3">{o.items_count}</td>
+                          <td className="px-4 py-3 text-slate-500">{o.created_at}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                )}
+
+                {activeDbTable === 'reviews' && hasReviewsTable && (
+                  <table className="w-full text-left text-xs sm:text-sm font-mono">
+                    <thead className="bg-slate-100 border-b border-slate-200 text-slate-700">
+                      <tr>
+                        <th className="px-4 py-3 font-bold">id</th>
+                        <th className="px-4 py-3 font-bold">user_email</th>
+                        <th className="px-4 py-3 font-bold">rating</th>
+                        <th className="px-4 py-3 font-bold">comment</th>
+                        <th className="px-4 py-3 font-bold">created_at</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-slate-100">
+                      {reviews.map((r) => (
+                        <tr key={r.id} className="hover:bg-slate-50 transition-colors">
+                          <td className="px-4 py-3 text-[#6D4AFF] font-bold">{r.id}</td>
+                          <td className="px-4 py-3 text-slate-900">{r.user_email}</td>
+                          <td className="px-4 py-3 text-amber-600 font-bold">★ {r.rating}/5</td>
+                          <td className="px-4 py-3 text-slate-800 font-sans">{r.comment}</td>
+                          <td className="px-4 py-3 text-slate-500">{r.created_at}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
                 )}
               </div>
-            </div>
 
-            {/* Live Data Grid */}
-            <div className="border border-[#E5E5E2] rounded-xl overflow-x-auto shadow-2xs">
-              {selectedDbTable === 'products' && (
-                <table className="w-full text-left text-xs font-mono">
-                  <thead className="bg-[#FAFAF8] border-b border-[#E5E5E2] text-[#626873]">
-                    <tr>
-                      <th className="px-4 py-2.5 font-semibold">id (uuid)</th>
-                      <th className="px-4 py-2.5 font-semibold">title (text)</th>
-                      <th className="px-4 py-2.5 font-semibold">category (text)</th>
-                      <th className="px-4 py-2.5 font-semibold">price (numeric)</th>
-                      <th className="px-4 py-2.5 font-semibold">inventory (int)</th>
-                      <th className="px-4 py-2.5 font-semibold">rating (numeric)</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-[#E5E5E2]">
-                    {products.map((p) => (
-                      <tr key={p.id} className="hover:bg-[#FAFAF8] transition-colors">
-                        <td className="px-4 py-2.5 text-[#6D4AFF] font-bold">{p.id}</td>
-                        <td className="px-4 py-2.5 text-[#111318]">{p.title}</td>
-                        <td className="px-4 py-2.5 text-[#626873]">{p.category}</td>
-                        <td className="px-4 py-2.5 font-bold text-[#111318]">${p.price}</td>
-                        <td className="px-4 py-2.5 text-emerald-600">{p.inventory}</td>
-                        <td className="px-4 py-2.5 text-amber-600">★ {p.rating}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              )}
-
-              {selectedDbTable === 'orders' && (
-                <table className="w-full text-left text-xs font-mono">
-                  <thead className="bg-[#FAFAF8] border-b border-[#E5E5E2] text-[#626873]">
-                    <tr>
-                      <th className="px-4 py-2.5 font-semibold">id (uuid)</th>
-                      <th className="px-4 py-2.5 font-semibold">user_email (text)</th>
-                      <th className="px-4 py-2.5 font-semibold">total_cents (int)</th>
-                      <th className="px-4 py-2.5 font-semibold">status (text)</th>
-                      <th className="px-4 py-2.5 font-semibold">items_count (int)</th>
-                      <th className="px-4 py-2.5 font-semibold">created_at (timestamptz)</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-[#E5E5E2]">
-                    {orders.map((o) => (
-                      <tr key={o.id} className="hover:bg-[#FAFAF8] transition-colors">
-                        <td className="px-4 py-2.5 text-[#6D4AFF] font-bold">{o.id}</td>
-                        <td className="px-4 py-2.5 text-[#111318]">{o.user_email}</td>
-                        <td className="px-4 py-2.5 font-bold text-[#111318]">${(o.total_cents / 100).toFixed(2)}</td>
-                        <td className="px-4 py-2.5">
-                          <span className="px-2 py-0.5 rounded bg-emerald-100 text-emerald-800 text-[10px] font-semibold">
-                            {o.status.toUpperCase()}
-                          </span>
-                        </td>
-                        <td className="px-4 py-2.5">{o.items_count}</td>
-                        <td className="px-4 py-2.5 text-[#626873]">{o.created_at}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              )}
-
-              {selectedDbTable === 'reviews' && hasReviewsTable && (
-                <table className="w-full text-left text-xs font-mono">
-                  <thead className="bg-[#FAFAF8] border-b border-[#E5E5E2] text-[#626873]">
-                    <tr>
-                      <th className="px-4 py-2.5 font-semibold">id (uuid)</th>
-                      <th className="px-4 py-2.5 font-semibold">product_id (uuid)</th>
-                      <th className="px-4 py-2.5 font-semibold">user_email (text)</th>
-                      <th className="px-4 py-2.5 font-semibold">rating (int)</th>
-                      <th className="px-4 py-2.5 font-semibold">comment (text)</th>
-                      <th className="px-4 py-2.5 font-semibold">created_at (timestamptz)</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-[#E5E5E2]">
-                    {reviews.map((r) => (
-                      <tr key={r.id} className="hover:bg-[#FAFAF8] transition-colors">
-                        <td className="px-4 py-2.5 text-[#6D4AFF] font-bold">{r.id}</td>
-                        <td className="px-4 py-2.5 text-[#626873]">{r.product_id}</td>
-                        <td className="px-4 py-2.5 text-[#111318]">{r.user_email}</td>
-                        <td className="px-4 py-2.5 text-amber-600 font-bold">★ {r.rating}/5</td>
-                        <td className="px-4 py-2.5 text-[#111318]">{r.comment}</td>
-                        <td className="px-4 py-2.5 text-[#626873]">{r.created_at}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              )}
-            </div>
-
-            {/* Supabase Migration SQL Preview */}
-            <div className="p-3.5 rounded-xl bg-[#FAFAF8] border border-[#E5E5E2] space-y-2">
-              <div className="flex items-center justify-between text-xs">
-                <span className="font-bold text-[#111318] font-mono">
-                  migration: supabase/migrations/20260930_nexus_init.sql
-                </span>
-                <span className="text-[11px] font-mono text-emerald-600 font-semibold">RLS ENABLED</span>
-              </div>
-              <pre className="text-[11px] font-mono bg-white p-3 rounded-lg border border-[#E5E5E2] text-stone-700 overflow-x-auto">
-{`-- Generated by Supabase AI via NEXUS Orchestrator
-CREATE TABLE IF NOT EXISTS public.products (
+              {/* Supabase SQL Migration Info Box */}
+              <div className="p-4 rounded-2xl bg-white border border-slate-200 space-y-2">
+                <div className="flex items-center justify-between text-xs font-bold text-slate-700">
+                  <span className="font-mono">SQL Migration: supabase/migrations/init.sql</span>
+                  <span className="text-emerald-700 flex items-center gap-1 font-bold">
+                    <CheckCircle2 className="w-3.5 h-3.5" />
+                    Row-Level Security Active
+                  </span>
+                </div>
+                <pre className="text-xs font-mono bg-slate-900 text-slate-200 p-4 rounded-xl overflow-x-auto leading-relaxed">
+{`-- Generated by Supabase AI Engine via NEXUS
+CREATE TABLE public.products (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   title TEXT NOT NULL,
   category TEXT NOT NULL,
@@ -1199,7 +1042,7 @@ CREATE TABLE IF NOT EXISTS public.products (
   rating NUMERIC(2, 1) DEFAULT 5.0
 );
 
-CREATE TABLE IF NOT EXISTS public.orders (
+CREATE TABLE public.orders (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   user_email TEXT NOT NULL,
   total_cents INT NOT NULL,
@@ -1208,37 +1051,38 @@ CREATE TABLE IF NOT EXISTS public.orders (
   created_at TIMESTAMPTZ DEFAULT now()
 );
 
--- Enable Row Level Security (RLS)
 ALTER TABLE public.products ENABLE ROW LEVEL SECURITY;
-ALTER TABLE public.orders ENABLE ROW LEVEL SECURITY;
-CREATE POLICY "Public products are viewable by everyone" ON public.products FOR SELECT USING (true);
-CREATE POLICY "Users can view their own orders" ON public.orders FOR SELECT USING (auth.email() = user_email);`}
-              </pre>
-            </div>
-          </div>
-        )}
-
-        {/* TAB 3: BACKEND ROUTES (GPT-4o) */}
-        {activeTab === 'backend' && (
-          <div className="p-4 sm:p-6 space-y-4">
-            <div className="flex items-center justify-between pb-3 border-b border-[#E5E5E2]">
-              <div className="flex items-center gap-3">
-                <div className="p-2 rounded-xl bg-blue-100 text-blue-800">
-                  <Code className="w-5 h-5" />
-                </div>
-                <div>
-                  <h3 className="text-base font-bold text-[#111318]">GPT-4o Server Actions &amp; API Routes</h3>
-                  <p className="text-xs text-[#626873]">
-                    TypeScript API routes with Supabase client bindings, parameter validation, and rate limiting.
-                  </p>
-                </div>
+ALTER TABLE public.orders ENABLE ROW LEVEL SECURITY;`}
+                </pre>
               </div>
-              <span className="text-xs font-mono px-2.5 py-1 rounded-lg bg-blue-50 text-blue-700 border border-blue-200 font-semibold">
-                3 Endpoints Active
-              </span>
             </div>
+          )}
 
-            <pre className="text-xs font-mono bg-[#FAFAF8] p-4 rounded-xl border border-[#E5E5E2] text-stone-800 overflow-x-auto leading-relaxed">
+          {/* ============================================================ */}
+          {/* TAB 3: BACKEND API (GPT-4o)                                  */}
+          {/* ============================================================ */}
+          {activeCanvasTab === 'code' && (
+            <div className="flex-1 p-5 sm:p-6 overflow-y-auto bg-slate-50 space-y-4">
+              <div className="flex items-center justify-between pb-3 border-b border-slate-200">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-2xl bg-blue-100 text-blue-800 flex items-center justify-center font-bold">
+                    <Code className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <h3 className="text-base font-extrabold text-slate-900">
+                      GPT-4o Server Action &amp; API Routes
+                    </h3>
+                    <p className="text-xs text-slate-500">
+                      Next.js API route connected directly to Supabase client
+                    </p>
+                  </div>
+                </div>
+                <span className="px-3 py-1 rounded-xl bg-blue-50 text-blue-800 font-mono text-xs font-bold border border-blue-200">
+                  POST /api/checkout
+                </span>
+              </div>
+
+              <pre className="text-xs font-mono bg-slate-900 text-slate-200 p-5 rounded-2xl overflow-x-auto leading-relaxed">
 {`// app/api/checkout/route.ts - Synthesized by GPT-4o
 import { createServerClient } from '@supabase/ssr';
 import { NextResponse } from 'next/server';
@@ -1247,17 +1091,17 @@ export async function POST(req: Request) {
   const { cartItems, userEmail } = await req.json();
   const supabase = createServerClient(process.env.SUPABASE_URL!, process.env.SUPABASE_ANON_KEY!);
 
-  // Calculate order total and verify inventory
+  // Verify inventory & calculate total
   let totalCents = 0;
   for (const item of cartItems) {
     const { data: prod } = await supabase.from('products').select('price, inventory').eq('id', item.id).single();
     if (!prod || prod.inventory < item.qty) {
-      return NextResponse.json({ error: 'Insufficient inventory' }, { status: 400 });
+      return NextResponse.json({ error: 'Item out of stock' }, { status: 400 });
     }
     totalCents += Math.round(prod.price * 100) * item.qty;
   }
 
-  // Insert order record into Supabase
+  // Insert verified order into Supabase
   const { data: order, error } = await supabase
     .from('orders')
     .insert({ user_email: userEmail, total_cents: totalCents, status: 'paid', items_count: cartItems.length })
@@ -1267,279 +1111,73 @@ export async function POST(req: Request) {
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
   return NextResponse.json({ success: true, orderId: order.id });
 }`}
-            </pre>
-          </div>
-        )}
-
-        {/* TAB 4: SECURITY VERIFICATION (DEEPSEEK-R1) */}
-        {activeTab === 'security' && (
-          <div className="p-4 sm:p-6 space-y-4">
-            <div className="flex items-center justify-between pb-3 border-b border-[#E5E5E2]">
-              <div className="flex items-center gap-3">
-                <div className="p-2 rounded-xl bg-stone-100 text-stone-800">
-                  <ShieldCheck className="w-5 h-5 text-emerald-600" />
-                </div>
-                <div>
-                  <h3 className="text-base font-bold text-[#111318]">DeepSeek-R1 Formal Security Audit</h3>
-                  <p className="text-xs text-[#626873]">
-                    Automated invariant verification: Row Level Security, authorization leaks, and SQL constraints.
-                  </p>
-                </div>
-              </div>
-              <span className="text-xs font-mono px-2.5 py-1 rounded-lg bg-emerald-50 text-emerald-700 border border-emerald-200 font-semibold">
-                Audit Status: 100% Passed
-              </span>
+              </pre>
             </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-              <div className="p-3.5 rounded-xl border border-emerald-200 bg-emerald-50/40 space-y-1">
-                <div className="flex items-center gap-2 text-xs font-bold text-emerald-800">
-                  <CheckCircle2 className="w-4 h-4 text-emerald-600" />
-                  <span>Row-Level Security (RLS) Tenant Isolation</span>
-                </div>
-                <p className="text-xs text-[#626873] leading-relaxed">
-                  Verified that table <code>orders</code> rejects direct client UPDATE/DELETE queries without authenticated session tokens.
-                </p>
-              </div>
-
-              <div className="p-3.5 rounded-xl border border-emerald-200 bg-emerald-50/40 space-y-1">
-                <div className="flex items-center gap-2 text-xs font-bold text-emerald-800">
-                  <CheckCircle2 className="w-4 h-4 text-emerald-600" />
-                  <span>SQL Injection Invariant Check</span>
-                </div>
-                <p className="text-xs text-[#626873] leading-relaxed">
-                  All queries utilize PostgREST parameterized query builders. Raw string concatenation is blocked by default.
-                </p>
-              </div>
-
-              <div className="p-3.5 rounded-xl border border-emerald-200 bg-emerald-50/40 space-y-1">
-                <div className="flex items-center gap-2 text-xs font-bold text-emerald-800">
-                  <CheckCircle2 className="w-4 h-4 text-emerald-600" />
-                  <span>API Rate Limiting &amp; SSRF Shield</span>
-                </div>
-                <p className="text-xs text-[#626873] leading-relaxed">
-                  Private IP address spaces (RFC 1918) blocked on outbound webhooks. Token bucket rate limiter active.
-                </p>
-              </div>
-
-              <div className="p-3.5 rounded-xl border border-emerald-200 bg-emerald-50/40 space-y-1">
-                <div className="flex items-center gap-2 text-xs font-bold text-emerald-800">
-                  <CheckCircle2 className="w-4 h-4 text-emerald-600" />
-                  <span>Private Zero-Data-Retention (BYOK)</span>
-                </div>
-                <p className="text-xs text-[#626873] leading-relaxed">
-                  All model inference executed with zero retention agreements. Local schema keys never sent to public telemetry.
-                </p>
-              </div>
-            </div>
-          </div>
-        )}
-      </div>
-
-      {/* SECTION 3: THE TARGETED AI DIRECTIVE BAR (USER'S EXACT GOAL!) */}
-      <div className="p-5 sm:p-6 rounded-2xl bg-white border border-[#E5E5E2] shadow-sm mb-6 space-y-4">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-          <div>
-            <h3 className="text-sm font-bold uppercase tracking-wider text-[#111318] flex items-center gap-2">
-              <Sparkles className="w-4 h-4 text-[#6D4AFF]" />
-              <span>Step 3: Direct Any Connected AI in Real-Time</span>
-            </h3>
-            <p className="text-xs text-[#626873]">
-              Send targeted instructions to Supabase for database schema, Claude for UI/UX, or GPT-4o for backend routes.
-            </p>
-          </div>
-
-          {/* Model Target Chips */}
-          <div className="flex items-center gap-1.5 flex-wrap">
-            <span className="text-xs font-mono text-[#8B919B]">Target:</span>
-            {[
-              { id: 'supabase', label: '@supabase (DB)', color: 'text-emerald-700 bg-emerald-50 border-emerald-300' },
-              { id: 'claude', label: '@claude (UI)', color: 'text-purple-700 bg-purple-50 border-purple-300' },
-              { id: 'gpt4o', label: '@gpt-4o (API)', color: 'text-blue-700 bg-blue-50 border-blue-300' },
-              { id: 'deepseek', label: '@deepseek (Sec)', color: 'text-stone-700 bg-stone-100 border-stone-300' },
-              { id: 'all', label: '@all (Broadcast)', color: 'text-[#111318] bg-stone-100 border-[#E5E5E2]' }
-            ].map((m) => (
-              <button
-                key={m.id}
-                type="button"
-                onClick={() => setTargetAi(m.id as any)}
-                className={`px-2.5 py-1 rounded-lg text-xs font-mono font-semibold border transition-all cursor-pointer ${
-                  targetAi === m.id
-                    ? `${m.color} ring-2 ring-[#6D4AFF]/20 shadow-2xs`
-                    : 'bg-white text-[#626873] border-[#E5E5E2] hover:bg-[#FAFAF8]'
-                }`}
-              >
-                {m.label}
-              </button>
-            ))}
-          </div>
-        </div>
-
-        {/* 1-Click Example Directives (What the user literally asked for) */}
-        <div className="space-y-1.5">
-          <div className="text-[11px] font-mono text-[#8B919B] uppercase">Quick Directives (1-Click Execution):</div>
-          <div className="flex flex-wrap gap-2 text-xs">
-            <button
-              type="button"
-              onClick={() => handleExecuteDirective('tell supabase please start working on database and create a reviews table')}
-              disabled={isExecutingDirective}
-              className="px-3 py-1.5 rounded-xl bg-emerald-50 hover:bg-emerald-100/80 border border-emerald-200 text-emerald-800 font-medium transition-colors cursor-pointer text-left"
-            >
-              ⚡ "tell supabase pls start working on database &amp; add reviews table"
-            </button>
-            <button
-              type="button"
-              onClick={() => handleExecuteDirective('tell claude switch storefront to dark aesthetic with purple glow')}
-              disabled={isExecutingDirective}
-              className="px-3 py-1.5 rounded-xl bg-purple-50 hover:bg-purple-100/80 border border-purple-200 text-purple-800 font-medium transition-colors cursor-pointer text-left"
-            >
-              🎨 "tell claude toggle dark UI mode &amp; update product styling"
-            </button>
-            <button
-              type="button"
-              onClick={() => handleExecuteDirective('tell gpt-4o add stripe webhook route for payment verification')}
-              disabled={isExecutingDirective}
-              className="px-3 py-1.5 rounded-xl bg-blue-50 hover:bg-blue-100/80 border border-blue-200 text-blue-800 font-medium transition-colors cursor-pointer text-left"
-            >
-              🔌 "tell gpt-4o add stripe webhook route"
-            </button>
-          </div>
-        </div>
-
-        {/* Custom Directive Input */}
-        <form
-          onSubmit={(e) => {
-            e.preventDefault();
-            handleExecuteDirective();
-          }}
-          className="flex items-center gap-2"
-        >
-          <div className="relative flex-1">
-            <input
-              type="text"
-              value={directiveInput}
-              onChange={(e) => setDirectiveInput(e.target.value)}
-              placeholder={`Prompt @${targetAi}... (e.g. tell supabase add a discount_code column, tell claude make cart slide in)...`}
-              className="w-full px-4 py-2.5 rounded-xl bg-[#FAFAF8] border border-[#E5E5E2] text-xs sm:text-sm text-[#111318] focus:outline-none focus:ring-2 focus:ring-[#6D4AFF]/20 focus:border-[#6D4AFF] placeholder-[#8B919B]"
-            />
-          </div>
-
-          <button
-            type="submit"
-            disabled={isExecutingDirective || !directiveInput.trim()}
-            className={`px-4 sm:px-5 py-2.5 rounded-xl text-xs sm:text-sm font-semibold text-white flex items-center gap-2 cursor-pointer transition-all ${
-              isExecutingDirective || !directiveInput.trim()
-                ? 'bg-stone-300 cursor-not-allowed'
-                : 'bg-[#6D4AFF] hover:bg-[#5B3CE8] shadow-xs active:scale-95'
-            }`}
-          >
-            {isExecutingDirective ? (
-              <RotateCcw className="w-3.5 h-3.5 animate-spin" />
-            ) : (
-              <Send className="w-3.5 h-3.5" />
-            )}
-            <span className="hidden sm:inline">Send Directive</span>
-          </button>
-        </form>
-
-        {/* Live Multi-AI Execution Log Stream */}
-        <div className="mt-4 pt-3 border-t border-[#E5E5E2]/80 space-y-2">
-          <div className="flex items-center justify-between text-xs">
-            <span className="font-bold text-[#626873] uppercase tracking-wider font-mono flex items-center gap-1.5">
-              <Terminal className="w-3.5 h-3.5 text-[#6D4AFF]" />
-              <span>Real-Time Execution Event Stream</span>
-            </span>
-            <span className="text-[11px] font-mono text-[#8B919B]">{logs.length} events logged</span>
-          </div>
-
-          <div
-            ref={logContainerRef}
-            className="max-h-48 overflow-y-auto rounded-xl bg-[#FAFAF8] border border-[#E5E5E2] p-3 space-y-2 font-mono text-xs text-stone-700"
-          >
-            {logs.slice(-6).map((log) => {
-              const badgeColors: Record<string, string> = {
-                orchestrator: 'bg-stone-200 text-stone-800',
-                supabase: 'bg-emerald-100 text-emerald-800',
-                claude: 'bg-purple-100 text-purple-800',
-                gpt4o: 'bg-blue-100 text-blue-800',
-                deepseek: 'bg-stone-300 text-stone-900'
-              };
-
-              return (
-                <div key={log.id} className="flex items-start gap-2.5 leading-snug">
-                  <span className="text-[#8B919B] text-[10px] shrink-0 pt-0.5">{log.time}</span>
-                  <span className={`px-1.5 py-0.2 rounded text-[10px] uppercase font-bold shrink-0 ${badgeColors[log.source] || 'bg-stone-100'}`}>
-                    {log.source}
-                  </span>
-                  <span className="text-stone-800 flex-1">{log.message}</span>
-                </div>
-              );
-            })}
-          </div>
+          )}
         </div>
       </div>
 
-      {/* CHECKOUT MODAL (INTERACTIVE PREVIEW) */}
+      {/* CHECKOUT MODAL (INTERACTIVE ORDER PLACEMENT) */}
       {isCheckoutModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-xs">
-          <div className="w-full max-w-md bg-white rounded-2xl p-6 shadow-2xl border border-[#E5E5E2] space-y-4 text-left">
-            <div className="flex items-center justify-between pb-3 border-b border-[#E5E5E2]">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs">
+          <div className="w-full max-w-md bg-white rounded-3xl p-6 sm:p-7 shadow-2xl border border-slate-200 space-y-4 text-left animate-in fade-in zoom-in-95 duration-150">
+            <div className="flex items-center justify-between pb-3 border-b border-slate-200">
               <div className="flex items-center gap-2">
                 <ShoppingBag className="w-5 h-5 text-[#6D4AFF]" />
-                <h3 className="text-base font-bold text-[#111318]">Your Shopping Cart</h3>
+                <h3 className="text-lg font-extrabold text-slate-900">Your Cart</h3>
               </div>
               <button
                 type="button"
                 onClick={() => setIsCheckoutModalOpen(false)}
-                className="text-[#626873] hover:text-[#111318] text-sm"
+                className="text-slate-400 hover:text-slate-900 text-lg font-bold cursor-pointer"
               >
                 ✕
               </button>
             </div>
 
             {cart.length === 0 ? (
-              <p className="text-sm text-[#626873] py-4 text-center">Your cart is currently empty.</p>
+              <p className="text-sm text-slate-500 py-6 text-center font-medium">Your cart is currently empty.</p>
             ) : (
-              <div className="space-y-3">
-                <div className="max-h-48 overflow-y-auto space-y-2">
+              <div className="space-y-4">
+                <div className="max-h-52 overflow-y-auto space-y-2">
                   {cart.map((item) => {
                     const prod = products.find((p) => p.id === item.id);
                     if (!prod) return null;
                     return (
-                      <div key={item.id} className="flex items-center justify-between text-xs py-1 border-b border-stone-100">
+                      <div key={item.id} className="flex items-center justify-between text-sm py-1.5 border-b border-slate-100">
                         <div>
-                          <div className="font-bold text-[#111318]">{prod.title}</div>
-                          <div className="text-[#626873] font-mono">Qty: {item.qty} × ${prod.price}</div>
+                          <div className="font-bold text-slate-900">{prod.title}</div>
+                          <div className="text-xs text-slate-500 font-mono">Qty: {item.qty} × ${prod.price}</div>
                         </div>
-                        <div className="font-bold">${prod.price * item.qty}</div>
+                        <div className="font-extrabold text-slate-900">${prod.price * item.qty}</div>
                       </div>
                     );
                   })}
                 </div>
 
-                <div className="pt-2 border-t border-[#E5E5E2] flex items-center justify-between text-sm font-bold">
-                  <span>Total Due:</span>
-                  <span className="text-[#6D4AFF] text-base">${totalCartPrice}</span>
+                <div className="pt-3 border-t border-slate-200 flex items-center justify-between text-base font-extrabold text-slate-900">
+                  <span>Total:</span>
+                  <span className="text-[#6D4AFF] text-xl font-black">${totalCartAmount}</span>
                 </div>
 
-                <p className="text-[11px] text-[#626873]">
-                  Clicking "Place Order" will test the live flow: <strong>GPT-4o</strong> calls <strong>Supabase API</strong> to insert the record into the <code>orders</code> table!
+                <p className="text-xs text-slate-500 leading-relaxed bg-slate-50 p-3 rounded-xl border border-slate-200">
+                  ⚡ When you click below, <strong>GPT-4o</strong> calls <strong>Supabase API</strong> to insert the order into your live database!
                 </p>
 
                 <div className="flex items-center gap-2 pt-2">
                   <button
                     type="button"
                     onClick={() => setIsCheckoutModalOpen(false)}
-                    className="flex-1 py-2.5 rounded-xl border border-[#E5E5E2] hover:bg-[#FAFAF8] text-xs font-semibold text-[#626873] cursor-pointer"
+                    className="flex-1 py-3 rounded-2xl border border-slate-300 hover:bg-slate-50 text-xs sm:text-sm font-bold text-slate-600 cursor-pointer"
                   >
                     Cancel
                   </button>
                   <button
                     type="button"
-                    onClick={handleCheckout}
-                    className="flex-1 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold shadow-xs cursor-pointer"
+                    onClick={handlePlaceOrder}
+                    className="flex-1 py-3 rounded-2xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs sm:text-sm font-bold shadow-md shadow-emerald-600/20 cursor-pointer transition-all active:scale-95"
                   >
-                    Place Order &amp; Insert into Supabase
+                    Place Order Now
                   </button>
                 </div>
               </div>
@@ -1550,3 +1188,5 @@ export async function POST(req: Request) {
     </div>
   );
 };
+
+export default OnePromptAppStudio;

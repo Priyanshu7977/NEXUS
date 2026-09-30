@@ -1,7 +1,6 @@
 import React from 'react';
 import { Hero } from '../hero/Hero';
 import { SimpleHowItWorks } from '../home/SimpleHowItWorks';
-import { OnePromptAppStudio } from '../studio/OnePromptAppStudio';
 import { MultiModelSwarm } from '../swarm/MultiModelSwarm';
 import { EcosystemStrip } from '../ecosystem/EcosystemStrip';
 import { WorkflowPreview } from '../workflow/WorkflowPreview';
@@ -17,12 +16,7 @@ export const HomePage: React.FC = () => {
       {/* 2. Three Simple Steps: How NEXUS Works (No Jargon) */}
       <SimpleHowItWorks />
 
-      {/* 3. Flagship Interactive Multi-AI Studio: One Prompt, Connect All, Live Directives */}
-      <section id="studio" className="py-12 sm:py-16 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
-        <OnePromptAppStudio embedded onNavigateToFull={() => window.location.href = '/studio'} />
-      </section>
-
-      {/* 4. The Multi-Model Swarm Arena (Single Premier Interactive Debate Showcase) */}
+      {/* 3. The Multi-Model Swarm Arena (Single Premier Interactive Debate Showcase) */}
       <MultiModelSwarm />
 
       {/* 4. Supported Developer Tools & Ecosystem Strip */}
