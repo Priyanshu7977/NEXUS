@@ -4,6 +4,7 @@ import { SimpleHowItWorks } from '../home/SimpleHowItWorks';
 import { MultiModelSwarm } from '../swarm/MultiModelSwarm';
 import { EcosystemStrip } from '../ecosystem/EcosystemStrip';
 import { WorkflowPreview } from '../workflow/WorkflowPreview';
+import { MissionControl } from '../observability/MissionControl';
 import { ConnectorShowcase } from '../connectors/ConnectorShowcase';
 import { FinalCTA } from '../cta/FinalCTA';
 
@@ -25,10 +26,13 @@ export const HomePage: React.FC = () => {
       {/* 5. Visual Workflow Studio Canvas (DAG Pipelines & YAML Spec) */}
       <WorkflowPreview />
 
-      {/* 6. Connector Integrations Directory */}
+      {/* 6. Real-time Observability & Telemetry Traces (#observability) */}
+      <MissionControl />
+
+      {/* 7. Connector Integrations Directory */}
       <ConnectorShowcase />
 
-      {/* 7. Clean, Human Call to Action */}
+      {/* 8. Clean, Human Call to Action */}
       <FinalCTA />
     </div>
   );

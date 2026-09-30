@@ -46,7 +46,7 @@ export const LoginPage: React.FC = () => {
     try {
       const res = await login('demo@nexus.dev', 'DemoPass123!');
       if (res.success) {
-        navigate('/app/connectors', { replace: true });
+        navigate(from || '/app', { replace: true });
       } else {
         setError(res.error || 'Failed to authenticate demo workspace.');
       }

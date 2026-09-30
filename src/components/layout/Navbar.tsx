@@ -385,6 +385,21 @@ export const Navbar: React.FC = () => {
             </div>
 
             <Link
+              to="/studio"
+              onClick={() => setMobileMenuOpen(false)}
+              className="flex items-center justify-between px-3 py-3 min-h-[44px] text-sm text-[#6D4AFF] font-bold border-b border-[#E5E5E2] hover:bg-purple-50/50 rounded-lg text-left w-full"
+            >
+              <div className="flex items-center gap-2">
+                <Sparkles className="w-4 h-4 text-[#6D4AFF]" />
+                <span>AI App Studio</span>
+                <span className="text-[10px] font-mono px-1.5 py-0.2 rounded bg-purple-100 text-purple-800 font-bold">
+                  NEW
+                </span>
+              </div>
+              <ChevronRight className="w-4 h-4 text-[#8B919B]" />
+            </Link>
+
+            <Link
               to="/swarm"
               onClick={() => setMobileMenuOpen(false)}
               className="flex items-center justify-between px-3 py-3 min-h-[44px] text-sm text-[#6D4AFF] font-semibold border-b border-[#E5E5E2] hover:bg-purple-50/50 rounded-lg text-left w-full"
@@ -393,7 +408,7 @@ export const Navbar: React.FC = () => {
                 <Flame className="w-4 h-4 text-amber-500" />
                 <span>Swarm Arena</span>
                 <span className="text-[10px] font-mono px-1.5 py-0.2 rounded bg-amber-500/15 text-amber-700 font-bold">
-                  NEW
+                  POPULAR
                 </span>
               </div>
               <ChevronRight className="w-4 h-4 text-[#8B919B]" />

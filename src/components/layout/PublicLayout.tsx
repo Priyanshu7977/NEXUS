@@ -1,11 +1,13 @@
-import React, { useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Outlet, useLocation } from 'react-router-dom';
 import { Navbar } from './Navbar';
 import { Footer } from './Footer';
 import { AgentCommandOrb } from '../agent/AgentCommandOrb';
+import { DesktopAppModal } from '../desktop/DesktopAppModal';
 
 const PAGE_TITLES: Record<string, string> = {
-  '/': 'NEXUS · Connect every agent. Make them work together.',
+  '/': 'NEXUS · Universal Multi-AI Platform | Supabase, Claude & GPT-4o',
+  '/studio': 'NEXUS Studio · Universal Multi-AI Application Workspace',
   '/explore': 'Explore Ecosystem · NEXUS Agents & Connectors',
   '/pricing': 'Pricing & Plans · NEXUS Orchestration',
   '/developers': 'Developers · NEXUS Agent SDK & Architecture',
@@ -19,9 +21,15 @@ const PAGE_TITLES: Record<string, string> = {
 
 export const PublicLayout: React.FC = () => {
   const location = useLocation();
+  const [desktopModalOpen, setDesktopModalOpen] = useState(false);
 
   // Scroll to targeted anchor or top on route/hash change
   useEffect(() => {
+    if (location.hash === '#download') {
+      setDesktopModalOpen(true);
+      return;
+    }
+
     if (location.hash) {
       const targetId = location.hash.replace('#', '');
       const scrollToTarget = () => {
@@ -42,9 +50,16 @@ export const PublicLayout: React.FC = () => {
     }
   }, [location.pathname, location.hash]);
 
+  // Global listener for desktop download modal
+  useEffect(() => {
+    const handleOpenDesktop = () => setDesktopModalOpen(true);
+    window.addEventListener('open-desktop-modal', handleOpenDesktop);
+    return () => window.removeEventListener('open-desktop-modal', handleOpenDesktop);
+  }, []);
+
   // Set document title
   useEffect(() => {
-    const title = PAGE_TITLES[location.pathname] || 'NEXUS · The AI Agent Orchestration Layer';
+    const title = PAGE_TITLES[location.pathname] || 'NEXUS · Universal Multi-AI Platform';
     document.title = title;
   }, [location.pathname]);
 
@@ -57,6 +72,11 @@ export const PublicLayout: React.FC = () => {
       <Footer />
       {/* Global AI Agent Command Orb & Co-Pilot */}
       <AgentCommandOrb />
+      {/* Global Desktop Download Modal */}
+      <DesktopAppModal
+        isOpen={desktopModalOpen}
+        onClose={() => setDesktopModalOpen(false)}
+      />
     </div>
   );
 };
