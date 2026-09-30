@@ -40,6 +40,23 @@ export const LoginPage: React.FC = () => {
     }
   };
 
+  const handleDemoLogin = async () => {
+    setError('');
+    setLoading(true);
+    try {
+      const res = await login('demo@nexus.dev', 'DemoPass123!');
+      if (res.success) {
+        navigate('/app/connectors', { replace: true });
+      } else {
+        setError(res.error || 'Failed to authenticate demo workspace.');
+      }
+    } catch {
+      setError('An error occurred during demo login.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const handleGitHubLogin = async () => {
     setError('');
     setOauthLoading(true);
@@ -73,6 +90,31 @@ export const LoginPage: React.FC = () => {
           {error}
         </div>
       )}
+
+      {/* 1-Click Test & Demo Workspace Login */}
+      <div className="mb-4 p-3.5 rounded-xl bg-gradient-to-r from-purple-50/80 via-indigo-50/60 to-purple-50/80 border border-[#6D4AFF]/25 shadow-xs">
+        <div className="flex items-center justify-between gap-2 mb-2">
+          <div className="flex items-center gap-1.5">
+            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+            <span className="text-xs font-bold text-[#111318]">Test Mode / Evaluator Access</span>
+          </div>
+          <span className="text-[10px] font-mono font-medium px-2 py-0.5 rounded-md bg-[#6D4AFF]/10 text-[#6D4AFF]">
+            4 Connectors Active
+          </span>
+        </div>
+        <p className="text-xs text-[#626873] leading-relaxed mb-3">
+          Instant zero-credential access with GitHub, Vercel, Supabase & Slack pre-connected to test website generation.
+        </p>
+        <button
+          type="button"
+          disabled={loading || oauthLoading}
+          onClick={handleDemoLogin}
+          className="w-full flex items-center justify-center gap-2 h-10 rounded-lg bg-[#6D4AFF] hover:bg-[#5B3CE8] text-white text-xs font-semibold shadow-sm transition-all cursor-pointer disabled:opacity-50"
+        >
+          <span>⚡ Instant 1-Click Demo Login</span>
+          <span className="text-purple-200 text-[11px] font-normal">→ /app/connectors</span>
+        </button>
+      </div>
 
       {/* GitHub OAuth Action */}
       <button

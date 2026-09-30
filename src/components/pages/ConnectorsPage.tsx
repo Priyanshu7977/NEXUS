@@ -12,6 +12,9 @@ import {
   Bot,
   Layers,
   ShieldAlert,
+  Play,
+  RotateCcw,
+  CheckCircle2,
 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { getAllConnectors } from '../../connectors/registry';
@@ -22,6 +25,7 @@ import { ExternalAgentConfig } from '../../types/a2a';
 import {
   getWorkspaceConnections,
   disconnectConnector,
+  seedFourConnectedApplications,
 } from '../../services/connectorService';
 import {
   isGitHubConfigured,
@@ -39,6 +43,7 @@ import { AddMcpServerModal } from '../mcp/AddMcpServerModal';
 import { McpServerDetailsModal } from '../mcp/McpServerDetailsModal';
 import { AddExternalAgentModal } from '../a2a/AddExternalAgentModal';
 import { ExternalAgentDetailsModal } from '../a2a/ExternalAgentDetailsModal';
+import { WebsiteBuilderModal } from '../workflows/WebsiteBuilderModal';
 import { vercelAdapter } from '../../connectors/adapters/vercelAdapter';
 
 type ActiveTab = 'native' | 'mcp' | 'a2a';
@@ -77,7 +82,25 @@ export const ConnectorsPage: React.FC = () => {
   const [selectedExternalAgent, setSelectedExternalAgent] = useState<ExternalAgentConfig | null>(null);
   const [a2aDetailsModalOpen, setA2ADetailsModalOpen] = useState(false);
 
+  // 4 Connected Apps Website Builder Modal State
+  const [websiteBuilderOpen, setWebsiteBuilderOpen] = useState(false);
+  const [seedingLoading, setSeedingLoading] = useState(false);
+  const [seedSuccessNotice, setSeedSuccessNotice] = useState(false);
+
   const categories = ['All', 'Development', 'AI', 'Data', 'CMS', 'Communication', 'Analytics'] as const;
+
+  const handleReSeedFourApps = async () => {
+    setSeedingLoading(true);
+    try {
+      const wsId = currentWorkspace?.id || 'demo-production-workspace';
+      seedFourConnectedApplications(wsId);
+      await loadAllData();
+      setSeedSuccessNotice(true);
+      setTimeout(() => setSeedSuccessNotice(false), 3500);
+    } finally {
+      setSeedingLoading(false);
+    }
+  };
 
   const loadAllData = useCallback(async () => {
     if (!currentWorkspace?.id) return;
@@ -326,7 +349,98 @@ export const ConnectorsPage: React.FC = () => {
       {/* TAB 1: NATIVE CONNECTORS GRID                                  */}
       {/* ------------------------------------------------------------- */}
       {activeTab === 'native' && (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 items-stretch">
+        <div className="flex flex-col gap-6">
+          {/* 4 Connected Applications Test Banner */}
+          <div className="p-5 rounded-2xl bg-gradient-to-r from-purple-50/70 via-stone-50/50 to-indigo-50/70 border border-[#6D4AFF]/30 shadow-xs relative overflow-hidden">
+            <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+              <div className="space-y-1.5 max-w-2xl">
+                <div className="flex items-center gap-2">
+                  <span className="flex h-2 w-2 relative">
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#6D4AFF] opacity-75"></span>
+                    <span className="relative inline-flex rounded-full h-2 w-2 bg-[#6D4AFF]"></span>
+                  </span>
+                  <span className="text-[11px] font-mono uppercase tracking-wider font-bold text-[#6D4AFF]">
+                    Multi-Connector Integration Test Suite
+                  </span>
+                  <span className="px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 text-[10px] font-semibold">
+                    4 Apps Ready
+                  </span>
+                </div>
+                <h3 className="text-base font-bold text-[#111318]">
+                  Test Autonomous Website Generation using 4 Connected Applications
+                </h3>
+                <p className="text-xs text-[#626873] leading-relaxed">
+                  Orchestrate <strong>GitHub</strong> (starter repo), <strong>Claude 3.5</strong> (code synthesis), <strong>Supabase</strong> (PostgreSQL schema & RLS), <strong>Vercel</strong> (edge deployment), and <strong>Slack</strong> (instant alerts) into an end-to-end website builder.
+                </p>
+              </div>
+
+              <div className="flex items-center gap-2.5 flex-wrap shrink-0">
+                <button
+                  type="button"
+                  disabled={seedingLoading}
+                  onClick={handleReSeedFourApps}
+                  className="px-3.5 py-2 rounded-xl bg-white hover:bg-[#FAFAF8] border border-[#E5E5E2] text-[#111318] text-xs font-semibold shadow-xs flex items-center gap-1.5 cursor-pointer disabled:opacity-50 transition-colors"
+                  title="Reset and verify 4 connected apps"
+                >
+                  <RotateCcw className={`w-3.5 h-3.5 text-[#626873] ${seedingLoading ? 'animate-spin' : ''}`} />
+                  <span>{seedingLoading ? 'Seeding...' : 'Re-Seed 4 Apps'}</span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => setWebsiteBuilderOpen(true)}
+                  className="px-4 py-2 rounded-xl bg-[#6D4AFF] hover:bg-[#5B3CE8] text-white text-xs font-semibold shadow-sm flex items-center gap-2 cursor-pointer transition-all hover:shadow-md"
+                >
+                  <Play className="w-3.5 h-3.5 fill-current" />
+                  <span>Test Website Builder Pipeline</span>
+                </button>
+              </div>
+            </div>
+
+            {seedSuccessNotice && (
+              <div className="mt-3 py-1.5 px-3 rounded-lg bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs flex items-center gap-2 font-medium">
+                <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
+                <span>4 applications successfully verified & linked: GitHub, Vercel, Supabase, and Slack!</span>
+              </div>
+            )}
+
+            {/* 4 Apps Status Cards Strip */}
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-4 pt-4 border-t border-[#E5E5E2]/60">
+              <div className="flex items-center gap-2.5 p-2 rounded-xl bg-white/80 border border-[#E5E5E2]/80">
+                <BrandLogo brand="github" size={18} />
+                <div className="min-w-0">
+                  <div className="text-[11px] font-semibold text-[#111318] truncate">GitHub</div>
+                  <div className="text-[10px] text-emerald-600 font-mono truncate">@nexus-demo-builder</div>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-2.5 p-2 rounded-xl bg-white/80 border border-[#E5E5E2]/80">
+                <BrandLogo brand="vercel" size={18} />
+                <div className="min-w-0">
+                  <div className="text-[11px] font-semibold text-[#111318] truncate">Vercel</div>
+                  <div className="text-[10px] text-emerald-600 font-mono truncate">nexus-deployments</div>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-2.5 p-2 rounded-xl bg-white/80 border border-[#E5E5E2]/80">
+                <BrandLogo brand="supabase" size={18} />
+                <div className="min-w-0">
+                  <div className="text-[11px] font-semibold text-[#111318] truncate">Supabase</div>
+                  <div className="text-[10px] text-emerald-600 font-mono truncate">nexus-production-db</div>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-2.5 p-2 rounded-xl bg-white/80 border border-[#E5E5E2]/80">
+                <BrandLogo brand="slack" size={18} />
+                <div className="min-w-0">
+                  <div className="text-[11px] font-semibold text-[#111318] truncate">Slack</div>
+                  <div className="text-[10px] text-emerald-600 font-mono truncate">#nexus-alerts</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 items-stretch">
           {filteredNative.map((item) => {
             const connection = getConnectionForConnector(item.id);
             const isConnected = Boolean(connection);
@@ -465,6 +579,7 @@ export const ConnectorsPage: React.FC = () => {
               </div>
             );
           })}
+        </div>
         </div>
       )}
 
@@ -797,6 +912,12 @@ export const ConnectorsPage: React.FC = () => {
           }}
         />
       )}
+
+      {/* Website Builder Pipeline Modal (4 Connected Applications) */}
+      <WebsiteBuilderModal
+        isOpen={websiteBuilderOpen}
+        onClose={() => setWebsiteBuilderOpen(false)}
+      />
     </div>
   );
 };

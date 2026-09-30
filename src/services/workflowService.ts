@@ -265,6 +265,146 @@ export const DEFAULT_WORKFLOWS_LIST: Workflow[] = [
   },
 ];
 
+export const WEBSITE_BUILDER_4_APPS_WORKFLOW: Workflow = {
+  id: 'wf_4_apps_autonomous_website_builder',
+  workspace_id: 'default-workspace',
+  name: 'Multi-App Website Builder (GitHub → Claude → Supabase → DeepSeek → Vercel → Slack)',
+  slug: '4-apps-autonomous-website-builder',
+  description: 'Connects 4 applications together: Clones GitHub template, synthesizes full-stack SaaS UI via Claude 3.5, provisions Supabase database & RLS schema, performs DeepSeek security audit, deploys to Vercel edge, and notifies team via Slack.',
+  status: 'active',
+  trigger_type: 'manual',
+  trigger_config: {
+    event: 'website.build',
+    topic: 'Frontier AI Agent Orchestrator SaaS',
+  },
+  nodes: [
+    {
+      id: 'node_github_clone',
+      node_key: 'node_github_clone',
+      node_type: 'TOOL',
+      name: 'GitHub: Clone Starter Template',
+      position_x: 60,
+      position_y: 180,
+      config: {
+        toolName: 'github_clone_repo',
+        args: {
+          owner: 'nexus-org',
+          repo: 'saas-website-template',
+          branch: 'main',
+        },
+      },
+      status: 'idle',
+    },
+    {
+      id: 'node_claude_synthesis',
+      node_key: 'node_claude_synthesis',
+      node_type: 'AGENT',
+      name: 'Claude 3.5 Sonnet: UI Synthesis',
+      position_x: 320,
+      position_y: 180,
+      config: {
+        agent_name: 'Claude 3.5 Code Synthesizer',
+        directive: 'Synthesize responsive React & Tailwind components with modern editorial light aesthetics, Hero section, feature cards, and newsletter signup.',
+        model: 'claude',
+      },
+      status: 'idle',
+    },
+    {
+      id: 'node_supabase_db',
+      node_key: 'node_supabase_db',
+      node_type: 'TOOL',
+      name: 'Supabase: Migrate Schema & RLS',
+      position_x: 580,
+      position_y: 180,
+      config: {
+        toolName: 'supabase_apply_migration',
+        args: {
+          table: 'subscribers',
+          policies: ['ENABLE_RLS', 'ALLOW_ANON_INSERT'],
+        },
+      },
+      status: 'idle',
+    },
+    {
+      id: 'node_deepseek_security',
+      node_key: 'node_deepseek_security',
+      node_type: 'AGENT',
+      name: 'DeepSeek-R1: Pre-Deploy Audit',
+      position_x: 840,
+      position_y: 180,
+      config: {
+        agent_name: 'DeepSeek-R1 Security Auditor',
+        directive: 'Audit generated code and database policies for secret leakage, SQL injection vulnerabilities, and OWASP Top 10 compliance.',
+        model: 'deepseek',
+      },
+      status: 'idle',
+    },
+    {
+      id: 'node_vercel_deploy',
+      node_key: 'node_vercel_deploy',
+      node_type: 'TOOL',
+      name: 'Vercel: Edge Production Deploy',
+      position_x: 1100,
+      position_y: 180,
+      config: {
+        toolName: 'vercel_create_deployment',
+        args: {
+          project: 'nexus-saas-website',
+          target: 'production',
+        },
+      },
+      status: 'idle',
+    },
+    {
+      id: 'node_slack_alert',
+      node_key: 'node_slack_alert',
+      node_type: 'TOOL',
+      name: 'Slack: Live Release Broadcast',
+      position_x: 1360,
+      position_y: 180,
+      config: {
+        toolName: 'slack_send_message',
+        args: {
+          channel: '#nexus-alerts',
+          message: '🚀 Autonomous Website Build v2.4 successfully deployed to Vercel production edge! Database and RLS policies active.',
+        },
+      },
+      status: 'idle',
+    },
+  ],
+  edges: [
+    {
+      id: 'e1',
+      source_node_key: 'node_github_clone',
+      target_node_key: 'node_claude_synthesis',
+    },
+    {
+      id: 'e2',
+      source_node_key: 'node_claude_synthesis',
+      target_node_key: 'node_supabase_db',
+    },
+    {
+      id: 'e3',
+      source_node_key: 'node_supabase_db',
+      target_node_key: 'node_deepseek_security',
+    },
+    {
+      id: 'e4',
+      source_node_key: 'node_deepseek_security',
+      target_node_key: 'node_vercel_deploy',
+    },
+    {
+      id: 'e5',
+      source_node_key: 'node_vercel_deploy',
+      target_node_key: 'node_slack_alert',
+    },
+  ],
+  created_at: new Date().toISOString(),
+  updated_at: new Date().toISOString(),
+};
+
+DEFAULT_WORKFLOWS_LIST.push(WEBSITE_BUILDER_4_APPS_WORKFLOW);
+
 // ----------------------------------------------------------------------
 // Local Storage Fallback Helpers
 // ----------------------------------------------------------------------
@@ -285,8 +425,13 @@ const getLocalWorkflows = (): Workflow[] => {
         const hasKiller = parsed.some((w: any) => w.id === KILLER_DEMO_WORKFLOW.id || w.slug === KILLER_DEMO_WORKFLOW.slug);
         if (!hasKiller) {
           parsed.unshift(KILLER_DEMO_WORKFLOW);
-          localStorage.setItem(WORKFLOWS_STORAGE_KEY, JSON.stringify(parsed));
         }
+        // Ensure 4 Apps Website Builder workflow is present
+        const hasBuilder = parsed.some((w: any) => w.id === WEBSITE_BUILDER_4_APPS_WORKFLOW.id || w.slug === WEBSITE_BUILDER_4_APPS_WORKFLOW.slug);
+        if (!hasBuilder) {
+          parsed.splice(1, 0, WEBSITE_BUILDER_4_APPS_WORKFLOW);
+        }
+        localStorage.setItem(WORKFLOWS_STORAGE_KEY, JSON.stringify(parsed));
         return parsed;
       }
     }
