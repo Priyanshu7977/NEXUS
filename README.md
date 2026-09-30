@@ -3,15 +3,26 @@
 <div align="center">
 
 ![NEXUS Platform Banner](https://img.shields.io/badge/NEXUS-v2.5.0--frontier-blueviolet?style=for-the-badge&logo=probot&logoColor=white)
+[![Vercel Production](https://img.shields.io/badge/Vercel-Live%20Production-000000?style=for-the-badge&logo=vercel&logoColor=white)](https://nexus-cyan-xi.vercel.app/)
 ![Runtime](https://img.shields.io/badge/Runtime-Web%20%7C%20Windows%20Desktop%20(PWA)-0ea5e9?style=for-the-badge&logo=windows&logoColor=white)
 ![License](https://img.shields.io/badge/License-Apache%202.0-emerald?style=for-the-badge&logo=apache&logoColor=white)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5.5-3178c6?style=for-the-badge&logo=typescript&logoColor=white)
 
 **The World's First Unified Multi-Model Consensus Arena, Autonomous Agent Swarm, and Universal Protocol Engine (MCP + A2A).**
 
-[Live Swarm Arena](#-omni-swarm-multi-model-consensus-arena) • [Prompt-to-Workflow Compiler](#-prompt-to-workflow-ai-compiler) • [Autonomous Agent Fleet](#-autonomous-frontier-agent-fleet) • [Desktop Installation](#-desktop-experience--pwa) • [Quick Start](#-quick-start)
+[🌐 Live Production Website](https://nexus-cyan-xi.vercel.app/) • [Live Swarm Arena](#-omni-swarm-multi-model-consensus-arena) • [Prompt-to-Workflow Compiler](#-prompt-to-workflow-ai-compiler) • [Autonomous Agent Fleet](#-autonomous-frontier-agent-fleet) • [Quick Start](#-quick-start)
 
 </div>
+
+---
+
+## 🌐 Live Production Deployment
+
+> **Production Application**: [https://nexus-cyan-xi.vercel.app/](https://nexus-cyan-xi.vercel.app/)
+
+- **⚡ 1-Click Instant Demo Login**: Instant zero-credential access via the Login page (`demo@nexus.dev`) into the active workspace.
+- **🔌 4 Connected Applications Verified**: Pre-seeded with active credentials for **GitHub** (`@nexus-demo-builder`), **Vercel** (`nexus-deployments`), **Supabase** (`nexus-production-db`), and **Slack** (`#nexus-alerts`).
+- **🚀 Autonomous Website Builder**: Live testing suite that chains all 4 connectors together to synthesize, audit, migrate, deploy, and alert on a modern full-stack SaaS application with interactive live preview.
 
 ---
 
