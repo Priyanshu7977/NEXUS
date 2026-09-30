@@ -40,9 +40,9 @@ const SWARM_MODELS: SwarmModelConfig[] = [
     role: 'System Synthesizer',
     specialty: 'DAG Decomposition & Schema',
     speed: '124 tok/s',
-    color: 'text-emerald-400',
-    borderColor: 'border-emerald-500/30',
-    accentBg: 'bg-emerald-500/10',
+    color: 'text-emerald-700',
+    borderColor: 'border-emerald-300',
+    accentBg: 'bg-emerald-50',
   },
   {
     id: 'claude-3-5',
@@ -52,8 +52,8 @@ const SWARM_MODELS: SwarmModelConfig[] = [
     specialty: 'TypeScript AST & Contracts',
     speed: '96 tok/s',
     color: 'text-[#6D4AFF]',
-    borderColor: 'border-[#6D4AFF]/30',
-    accentBg: 'bg-[#6D4AFF]/10',
+    borderColor: 'border-purple-300',
+    accentBg: 'bg-purple-50',
   },
   {
     id: 'gemini-1-5',
@@ -62,9 +62,9 @@ const SWARM_MODELS: SwarmModelConfig[] = [
     role: 'Scale Strategist',
     specialty: 'Global Edge & Distributed DAG',
     speed: '142 tok/s',
-    color: 'text-blue-400',
-    borderColor: 'border-blue-500/30',
-    accentBg: 'bg-blue-500/10',
+    color: 'text-blue-700',
+    borderColor: 'border-blue-300',
+    accentBg: 'bg-blue-50',
   },
   {
     id: 'deepseek-r1',
@@ -73,9 +73,9 @@ const SWARM_MODELS: SwarmModelConfig[] = [
     role: 'Zero-Trust Red Team',
     specialty: 'Cold Reasoning & Vulnerability Audit',
     speed: '78 tok/s',
-    color: 'text-cyan-400',
-    borderColor: 'border-cyan-500/30',
-    accentBg: 'bg-cyan-500/10',
+    color: 'text-cyan-700',
+    borderColor: 'border-cyan-300',
+    accentBg: 'bg-cyan-50',
   },
 ];
 
@@ -98,85 +98,74 @@ const SWARM_PRESETS: SwarmPreset[] = [
     title: 'Zero-Trust Multi-Tenant Auth & RLS Guardrail',
     description: 'Autonomous generation of PostgreSQL tenant isolation policies with automated adversarial injection tests.',
     prompt: 'Architect a bulletproof multi-tenant database schema with Supabase Row-Level Security, automated token rotation, and zero boundary leakage.',
-    gptOutput: `1. Entities: workspaces, profiles, workspace_members (role: 'owner'|'admin'|'member')
-2. RLS Constraint:
-   CREATE POLICY "tenant_isolation" ON public.workspaces
-   FOR ALL USING (id IN (
-     SELECT workspace_id FROM workspace_members WHERE user_id = auth.uid()
-   ));
-3. Deterministic Pipeline: Trigger -> Migrator -> Auditor -> Deploy`,
-    claudeOutput: `export interface WorkspaceMember {
-  id: string;
-  workspace_id: string;
-  user_id: string;
-  role: 'owner' | 'admin' | 'member';
-  encrypted_vault_key: string;
-}
-// Enforces strict compile-time brand typing for tenant IDs to eliminate IDOR leaks.
-export type WorkspaceId = string & { readonly __brand: unique symbol };`,
-    geminiOutput: `Architecture Blueprint:
-- Global Edge Routing: Cloudflare Workers terminate SSL & inspect JWT claims (0ms cold starts).
-- Primary Database: PostgreSQL read-replicas distributed across 3 global regions with Supabase RLS.
-- Distributed Rate Limiter: Redis Sliding Window token bucket (500 req/sec per workspace).`,
-    deepseekOutput: `[REASONING TRACE]:
-Audited GPT-4o's policy: Subquery in RLS policy causes O(N) sequential scans without composite index on (workspace_id, user_id).
-Vulnerability Detected: If user_id is updated without transaction lock, brief window allows cross-tenant query bypass.
-Fix: Add btree index & strict SECURITY DEFINER function with cached session claim.
-Consensus Status: APPROVED with patched index.`,
+    gptOutput: `Proposed PostgreSQL Schema & Partitioning:
+- CREATE TABLE workspaces (id uuid PRIMARY KEY, tenant_id uuid NOT NULL, created_at timestamptz DEFAULT now());
+- CREATE TABLE workspace_members (workspace_id uuid REFERENCES workspaces(id), user_id uuid, role text CHECK (role IN ('owner','admin','member')));
+- Enable RLS: ALTER TABLE workspaces ENABLE ROW LEVEL SECURITY;
+- Add Security Boundary: CREATE POLICY tenant_isolation ON workspaces FOR ALL USING (tenant_id = auth.jwt()->>'tenant_id');`,
+    claudeOutput: `TypeScript Type-Safety & RLS Validation Layer:
+- Strict contract interface defined in src/types/database.ts.
+- Guard against SQL injection via parameterized Prisma/Drizzle bindings.
+- Verified: RLS policy uses immutable claims from signed JWT payload.
+- Recommended AST Check: ensure all client mutations pass through authenticated server action gates.`,
+    geminiOutput: `Global Distributed Edge Latency Analysis:
+- Recommended edge caching via Cloudflare Workers / Fastly for public workspace metadata (TTL: 60s).
+- Query latency projected: 4.2ms p50, 11.8ms p99 across multi-region replica read pools.
+- Read-after-write consistency guaranteed via Supabase primary WAL stream.`,
+    deepseekOutput: `[ADVERSARIAL RED TEAM AUDIT]:
+Vulnerability Flagged: Potential cross-tenant enumeration if JWT tenant_id claim is forged or missing.
+Countermeasure Enforced: Added mandatory constraint:
+CHECK (auth.uid() IS NOT NULL AND auth.jwt()->>'tenant_id' IS NOT NULL)
+Formal Proof: Leakage probability under adversarial injection = 0.000%.`,
     consensus: `VERIFIED GOLDEN BLUEPRINT:
-1. Database Schema with optimized composite indexing on (workspace_id, user_id).
-2. Bulletproof RLS Policy preventing IDOR boundary traversal across all 4 CRUD methods.
-3. TypeScript AST contract verified with 100% test coverage.
-4. Auto-generated 4-node DAG ready to dispatch directly into Nexus Workflow Engine.`,
+1. Multi-tenant PostgreSQL table structure with row-level security enabled.
+2. Tenant boundary policy locked to authenticated JWT claims with DeepSeek zero-leak constraint.
+3. Fully-typed TypeScript interfaces generated in src/types/database.ts.
+4. Edge replica routing strategy configured for sub-12ms global read latency.`,
     dagNodesCount: 5,
   },
   {
     id: 'high-freq-fraud',
-    title: 'High-Frequency Fraud & Security Pipeline',
-    description: 'Multi-agent real-time transaction scrutiny with AI anomaly scoring and Slack human-in-the-loop gate.',
-    prompt: 'Detect high-value eCommerce fraud in under 400ms: ingest webhook, cross-reference IP velocity, and halt suspicious transfers until admin approval.',
-    gptOutput: `Pipeline DAG:
-- Node 1: Webhook Ingestion (Shopify/Stripe HMAC verification)
-- Node 2: Velocity Check (IP reputation & 10m spend volume)
-- Node 3: AI Fraud Scorer (Gemini + DeepSeek consensus)
-- Node 4: Human-in-the-Loop Slack approval gate for transactions > $2,500
-- Node 5: Settle or Void payout`,
-    claudeOutput: `async function evaluateTransactionRisk(tx: TransactionPayload): Promise<RiskAssessment> {
-  const [velocity, geoAnomaly] = await Promise.all([
-    checkIpVelocity(tx.ip_address),
-    verifyBillingZip(tx.card_fingerprint, tx.shipping_address)
-  ]);
-  const score = calculateBayesianRisk(velocity, geoAnomaly);
-  return { score, requiresHumanGate: score > 0.75 || tx.amount_cents > 250000 };
-}`,
-    geminiOutput: `Distributed Architecture:
-- P99 Latency: 184ms end-to-end edge pipeline.
-- Anomaly Engine: Evaluates order against 90-day moving baseline.
-- Fallback Circuit Breaker: Auto-quarantine if model latency exceeds 600ms.`,
-    deepseekOutput: `[SECURITY VERIFICATION]:
-Attack Vector Scanned: Fraudsters spoofing X-Forwarded-For headers.
-Mitigation Enforced: Use Cloudflare True-Client-IP header with mTLS client certificates.
-Verdict: Zero spoofing vulnerability detected. Safe to trigger approval gate.`,
+    title: 'High-Frequency Fraud Detection Pipeline',
+    description: 'Sub-50ms transaction auditing combining deterministic heuristics with probabilistic LLM risk scoring.',
+    prompt: 'Construct a resilient streaming fraud audit DAG that analyzes incoming card transactions under 50ms latency.',
+    gptOutput: `Pipeline Architecture:
+- Ingestion: Apache Kafka event stream with partition key = account_id.
+- Step 1: Redis sliding-window velocity check (transactions in last 60s > 3).
+- Step 2: Geo-IP velocity audit (distance > 500km in < 10 minutes).
+- Step 3: Probabilistic risk scorer node with fallback bypass.`,
+    claudeOutput: `Resilience & Error Boundaries:
+- Maximum timeout budget: 35ms per node.
+- Circuit breaker pattern configured with exponential backoff.
+- Fail-open fallback: flag suspicious transaction for asynchronous manual review rather than blocking user payment.`,
+    geminiOutput: `Throughput & Scalability Benchmark:
+- Sustained throughput: 25,000 transactions/sec.
+- Redis cluster memory overhead: 1.2GB per 1M active sessions.
+- AWS Lambda / Cloudflare Workers cold-start mitigations: provisioned concurrency = 50 instances.`,
+    deepseekOutput: `[SECURITY AUDIT & ZERO-DAY ADVERSARIAL ANALYSIS]:
+Vector Analyzed: Distributed card-testing attacks using randomized proxy IPs.
+Mitigation Added: Device fingerprint hash entropy checking + biometric keystroke timing verification.
+Status: Threat neutralized.`,
     consensus: `VERIFIED GOLDEN BLUEPRINT:
-1. Real-time Bayesian anomaly detection in 184ms latency budget.
-2. Zero header-spoofing vulnerability with True-Client-IP verification.
-3. Automated Slack dispatch modal with single-click admin sign-off.
-4. Production-ready DAG compiled with auto-rollback capability.`,
-    dagNodesCount: 5,
+1. Streaming Kafka DAG with Redis velocity checkpoints (<15ms).
+2. Claude circuit breaker pattern ensuring zero dropped payments.
+3. DeepSeek distributed bot-net mitigation rule integrated into edge gateway.
+4. Human approval review queue automatically populated for risk scores 65-85.`,
+    dagNodesCount: 7,
   },
   {
-    id: 'autonomous-cicd',
-    title: 'Self-Healing Autonomous CI/CD Orchestration',
-    description: 'Agents diagnose failed builds, synthesize regression fixes, re-test in micro-sandboxes, and auto-deploy.',
-    prompt: 'When unit tests fail on GitHub main, automatically diagnose stack traces, synthesize minimal AST patches, verify in sandbox, and create a verified PR.',
-    gptOutput: `Self-Healing Lifecycle:
-1. Parse Jest/Vitest failure JSON trace.
-2. Isolate failing assertion: "TypeError: Cannot read properties of undefined (reading 'workspace_id')".
-3. Dispatch targeted instruction to Claude Synthesizer Agent with file AST.`,
-    claudeOutput: `// Synthesized fix for src/context/AuthContext.tsx line 142
-- const activeWorkspaceId = user.current_workspace.id;
-+ const activeWorkspaceId = user?.current_workspace?.id ?? DEFAULT_WORKSPACE_ID;
-// Guaranteed zero regression with non-null assertion removal.`,
+    id: 'ci-cd-autoheal',
+    title: 'Autonomous Self-Healing CI/CD Pipeline',
+    description: 'Self-repairing build infrastructure that intercepts compile errors, writes AST fixes, and verifies unit tests.',
+    prompt: 'Build a self-repairing GitHub Actions workflow that catches TypeScript build failures and generates tested pull requests.',
+    gptOutput: `GitHub Actions Orchestration:
+- on: push, pull_request
+- Run: npm run build
+- On failure: Capture error stack trace and trigger NEXUS Webhook /api/v1/workflows/autoheal`,
+    claudeOutput: `AST Patch Synthesizer:
+- Parse TypeScript compiler error diagnostics (code TS2322, TS2345, TS7006).
+- Locate exact line range and AST node in source repository.
+- Apply semantic patch with nullish coalescing and optional chaining.`,
     geminiOutput: `Ephemeral Sandbox Execution:
 - Spun up microVM container in 120ms.
 - Ran test suite: 18/18 test suites passing (100% assertions satisfied).
@@ -251,30 +240,30 @@ export const MultiModelSwarm: React.FC = () => {
   };
 
   return (
-    <section id="swarm" className="relative py-16 sm:py-20 lg:py-24 px-4 sm:px-6 lg:px-8 bg-[#0D0F14] text-white border-y border-white/[0.08] overflow-hidden">
+    <section id="swarm" className="relative py-16 sm:py-20 lg:py-24 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-[#FAFAF8] via-white to-[#F6F6F3] text-[#111318] border-y border-[#E5E5E2] overflow-hidden">
       {/* Background Ambient Glow */}
-      <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[350px] bg-gradient-to-tr from-[#6D4AFF]/20 via-[#3B82F6]/15 to-cyan-500/10 blur-[120px] pointer-events-none -z-0" />
+      <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[350px] bg-gradient-to-tr from-[#6D4AFF]/10 via-[#3B82F6]/8 to-emerald-500/5 blur-[120px] pointer-events-none -z-0" />
 
       <div className="max-w-7xl mx-auto relative z-10">
         {/* Section Header */}
         <div className="max-w-3xl mb-10 text-left">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#6D4AFF]/15 border border-[#6D4AFF]/30 text-xs font-mono font-semibold text-[#A78BFA] mb-3">
-            <Flame className="w-3.5 h-3.5 text-amber-400" />
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#6D4AFF]/10 border border-[#6D4AFF]/25 text-xs font-mono font-semibold text-[#6D4AFF] mb-3">
+            <Flame className="w-3.5 h-3.5 text-amber-500" />
             <span>INDUSTRY FIRST · MULTI-MODEL SWARM ARENA</span>
           </div>
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-white leading-[1.1] mb-4">
+          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-[#111318] leading-[1.1] mb-4">
             Four frontier models.<br />
             One autonomous consensus.
           </h2>
-          <p className="text-base sm:text-lg text-[#9BA3AF] leading-relaxed">
-            Stop switching between isolated ChatGPT, Claude, and Gemini tabs. NEXUS runs <span className="text-white font-semibold">GPT-4o, Claude 3.5 Sonnet, Gemini 1.5 Pro, and DeepSeek-R1</span> in a real-time collaborative swarm where models cross-examine, audit, and mathematically verify each other before executing.
+          <p className="text-base sm:text-lg text-[#626873] leading-relaxed">
+            Stop switching between isolated ChatGPT, Claude, and Gemini tabs. NEXUS runs <span className="text-[#111318] font-semibold">GPT-4o, Claude 3.5 Sonnet, Gemini 1.5 Pro, and DeepSeek-R1</span> in a real-time collaborative swarm where models cross-examine, audit, and mathematically verify each other before executing.
           </p>
         </div>
 
         {/* Swarm Interactive Workstation Card */}
-        <div className="rounded-2xl border border-white/10 bg-[#14161E] shadow-[0_25px_70px_-15px_rgba(0,0,0,0.9)] overflow-hidden text-left">
+        <div className="rounded-2xl border border-[#E5E5E2] bg-white shadow-[0_16px_45px_rgba(0,0,0,0.06)] overflow-hidden text-left">
           {/* Top Bar: Prompt Presets & Run Action */}
-          <div className="p-4 sm:p-5 border-b border-white/[0.08] bg-[#181B26] flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-4">
+          <div className="p-4 sm:p-5 border-b border-[#E5E5E2] bg-[#FBFBFA] flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-4">
             {/* Presets Selector */}
             <div className="flex items-center gap-2 overflow-x-auto pb-1 sm:pb-0">
               <span className="text-xs font-mono uppercase tracking-wider text-[#8B919B] shrink-0 mr-1 hidden sm:inline">
@@ -289,8 +278,8 @@ export const MultiModelSwarm: React.FC = () => {
                   }}
                   className={`px-3 py-1.5 rounded-xl text-xs font-medium transition-all shrink-0 cursor-pointer ${
                     activePresetIndex === idx && !customPrompt
-                      ? 'bg-[#6D4AFF] text-white shadow-md font-semibold'
-                      : 'bg-white/5 hover:bg-white/10 text-[#9BA3AF] hover:text-white border border-white/5'
+                      ? 'bg-[#6D4AFF] text-white shadow-sm font-semibold'
+                      : 'bg-white hover:bg-[#F2F2EE] text-[#626873] hover:text-[#111318] border border-[#E5E5E2]'
                   }`}
                 >
                   {preset.title.split(' ')[0]} {preset.title.split(' ')[1]}
@@ -302,10 +291,10 @@ export const MultiModelSwarm: React.FC = () => {
             <div className="flex items-center gap-2.5 shrink-0 self-end lg:self-auto">
               <button
                 onClick={() => setShowKeyModal(true)}
-                className="px-3 py-1.5 rounded-xl bg-white/5 hover:bg-white/10 text-white text-xs font-medium flex items-center gap-1.5 border border-white/10 transition-colors cursor-pointer"
+                className="px-3 py-1.5 rounded-xl bg-white hover:bg-[#FAFAF8] text-[#111318] text-xs font-medium flex items-center gap-1.5 border border-[#E5E5E2] hover:border-[#D4D4CE] transition-colors cursor-pointer shadow-xs"
                 title="Manage API Keys"
               >
-                <Key className="w-3.5 h-3.5 text-amber-400" />
+                <Key className="w-3.5 h-3.5 text-amber-500" />
                 <span className="hidden sm:inline">API Key Vault</span>
               </button>
 
@@ -313,7 +302,7 @@ export const MultiModelSwarm: React.FC = () => {
                 size="sm"
                 onClick={handleRunSwarm}
                 disabled={isSwarmRunning}
-                className="h-9 px-4 text-xs font-semibold cursor-pointer shadow-lg shadow-[#6D4AFF]/25"
+                className="h-9 px-4 text-xs font-semibold cursor-pointer shadow-md shadow-[#6D4AFF]/20"
               >
                 {isSwarmRunning ? (
                   <>
@@ -331,27 +320,27 @@ export const MultiModelSwarm: React.FC = () => {
           </div>
 
           {/* Prompt Banner */}
-          <div className="px-5 py-3 bg-[#111319] border-b border-white/[0.06] flex items-center gap-3">
+          <div className="px-5 py-3 bg-[#F8F9FA] border-b border-[#EFEFEA] flex items-center gap-3">
             <div className="w-2 h-2 rounded-full bg-[#6D4AFF] animate-ping" />
             <div className="flex-1 min-w-0">
               <span className="text-[11px] font-mono text-[#8B919B] uppercase mr-2">Directive:</span>
-              <span className="text-xs sm:text-sm font-medium text-white truncate inline-block max-w-full">
+              <span className="text-xs sm:text-sm font-semibold text-[#111318] truncate inline-block max-w-full">
                 &quot;{customPrompt || activePreset.prompt}&quot;
               </span>
             </div>
-            <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-white/5 border border-white/10 text-[#9BA3AF] shrink-0 hidden sm:inline">
+            <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-white border border-[#E5E5E2] text-[#626873] shrink-0 hidden sm:inline">
               Consensus Protocol v3.1
             </span>
           </div>
 
           {/* Swarm Live Stage Progression Indicator */}
-          <div className="px-5 py-2.5 bg-[#14161F] border-b border-white/[0.08] flex items-center justify-between text-xs font-mono">
+          <div className="px-5 py-2.5 bg-[#FBFBFA] border-b border-[#EFEFEA] flex items-center justify-between text-xs font-mono">
             <div className="flex items-center gap-3 flex-wrap">
               <span className="text-[#8B919B]">Pipeline Phase:</span>
-              <span className={`px-2 py-0.5 rounded ${
-                swarmStage === 'reasoning' ? 'bg-blue-500/20 text-blue-300 animate-pulse' :
-                swarmStage === 'debating' ? 'bg-purple-500/20 text-purple-300 animate-pulse' :
-                'bg-emerald-500/20 text-emerald-300'
+              <span className={`px-2 py-0.5 rounded font-semibold ${
+                swarmStage === 'reasoning' ? 'bg-blue-50 border border-blue-200 text-blue-700 animate-pulse' :
+                swarmStage === 'debating' ? 'bg-purple-50 border border-purple-200 text-purple-700 animate-pulse' :
+                'bg-emerald-50 border border-emerald-200 text-emerald-800'
               }`}>
                 {swarmStage === 'reasoning' ? '1. Parallel Model Synthesis' :
                  swarmStage === 'debating' ? '2. Cross-Model Vulnerability Audit' :
@@ -359,15 +348,15 @@ export const MultiModelSwarm: React.FC = () => {
               </span>
             </div>
 
-            <div className="flex items-center gap-3 text-[11px] text-[#9BA3AF]">
+            <div className="flex items-center gap-3 text-[11px] text-[#626873]">
               <span>4 Models Synchronized</span>
               <span>•</span>
-              <span className="text-emerald-400 font-bold">0 Vulnerabilities Found</span>
+              <span className="text-emerald-700 font-bold">0 Vulnerabilities Found</span>
             </div>
           </div>
 
           {/* Model Roster Cards */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 p-4 sm:p-5 bg-[#0F1117] border-b border-white/[0.08]">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 p-4 sm:p-5 bg-[#FAFAF8] border-b border-[#E5E5E2]">
             {SWARM_MODELS.map((model) => {
               const isSelected = selectedModelTab === model.id;
               return (
@@ -376,24 +365,24 @@ export const MultiModelSwarm: React.FC = () => {
                   onClick={() => setSelectedModelTab(model.id)}
                   className={`p-3.5 rounded-xl border transition-all cursor-pointer text-left ${
                     isSelected
-                      ? `bg-[#181B26] ${model.borderColor} shadow-lg ring-1 ring-[#6D4AFF]/50`
-                      : 'bg-[#14161E] border-white/5 hover:border-white/15'
+                      ? `bg-white border-[#6D4AFF] ring-2 ring-[#6D4AFF]/20 shadow-sm`
+                      : 'bg-white/80 border-[#E5E5E2] hover:border-[#D4D4CE] hover:bg-white'
                   }`}
                 >
                   <div className="flex items-center justify-between mb-2">
                     <div className="flex items-center gap-2">
-                      <div className="w-6 h-6 rounded-lg bg-black/40 border border-white/10 flex items-center justify-center">
+                      <div className="w-6 h-6 rounded-lg bg-[#F6F6F3] border border-[#E5E5E2] flex items-center justify-center">
                         <BrandLogo brand={model.provider} size={14} />
                       </div>
-                      <span className="text-xs font-bold text-white">{model.name}</span>
+                      <span className="text-xs font-bold text-[#111318]">{model.name}</span>
                     </div>
-                    <span className="text-[10px] font-mono text-emerald-400">{model.speed}</span>
+                    <span className="text-[10px] font-mono text-emerald-700 font-semibold">{model.speed}</span>
                   </div>
 
-                  <div className={`text-[11px] font-medium ${model.color} mb-1`}>
+                  <div className={`text-[11px] font-semibold ${model.color} mb-1`}>
                     {model.role}
                   </div>
-                  <div className="text-[10px] text-[#8B919B] line-clamp-1">
+                  <div className="text-[10px] text-[#626873] line-clamp-1">
                     {model.specialty}
                   </div>
                 </div>
@@ -402,19 +391,19 @@ export const MultiModelSwarm: React.FC = () => {
           </div>
 
           {/* Workspace Output Canvas */}
-          <div className="p-5 sm:p-6 bg-[#111319]">
+          <div className="p-5 sm:p-6 bg-[#F8F9FA]">
             {/* View Mode Tabs (Consensus vs Individual Models) */}
-            <div className="flex items-center justify-between mb-4 border-b border-white/[0.08] pb-3 flex-wrap gap-2">
+            <div className="flex items-center justify-between mb-4 border-b border-[#E5E5E2] pb-3 flex-wrap gap-2">
               <div className="flex items-center gap-2">
                 <button
                   onClick={() => setSelectedModelTab('consensus')}
                   className={`px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-colors cursor-pointer ${
                     selectedModelTab === 'consensus'
-                      ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 shadow-sm'
-                      : 'text-[#8B919B] hover:text-white'
+                      ? 'bg-emerald-50 text-emerald-800 border border-emerald-300 shadow-2xs font-bold'
+                      : 'text-[#626873] hover:text-[#111318]'
                   }`}
                 >
-                  <Award className="w-3.5 h-3.5 text-emerald-400" />
+                  <Award className="w-3.5 h-3.5 text-emerald-600" />
                   <span>Golden Consensus</span>
                 </button>
 
@@ -424,8 +413,8 @@ export const MultiModelSwarm: React.FC = () => {
                     onClick={() => setSelectedModelTab(m.id)}
                     className={`px-2.5 py-1.5 rounded-lg text-xs font-mono transition-colors cursor-pointer hidden md:flex items-center gap-1 ${
                       selectedModelTab === m.id
-                        ? 'bg-[#1C202E] text-white border border-white/20'
-                        : 'text-[#8B919B] hover:text-white'
+                        ? 'bg-white text-[#111318] border border-[#D4D4CE] font-bold shadow-2xs'
+                        : 'text-[#626873] hover:text-[#111318]'
                     }`}
                   >
                     <span>{m.name}</span>
@@ -436,15 +425,15 @@ export const MultiModelSwarm: React.FC = () => {
               <div className="flex items-center gap-2">
                 <button
                   onClick={handleCopyConsensus}
-                  className="px-3 py-1.5 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 text-xs font-mono text-white flex items-center gap-1.5 transition-colors cursor-pointer"
+                  className="px-3 py-1.5 rounded-lg bg-white hover:bg-[#FAFAF8] border border-[#E5E5E2] text-xs font-mono text-[#111318] flex items-center gap-1.5 transition-colors cursor-pointer shadow-2xs"
                 >
-                  {copiedText ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
+                  {copiedText ? <Check className="w-3.5 h-3.5 text-emerald-600" /> : <Copy className="w-3.5 h-3.5" />}
                   <span>{copiedText ? 'Copied' : 'Copy Output'}</span>
                 </button>
 
                 <button
                   onClick={handleExportToWorkflow}
-                  className="px-3.5 py-1.5 rounded-lg bg-[#6D4AFF] hover:bg-[#5B3CE8] text-white text-xs font-semibold flex items-center gap-1.5 transition-all cursor-pointer shadow-md"
+                  className="px-3.5 py-1.5 rounded-lg bg-[#6D4AFF] hover:bg-[#5B3CE8] text-white text-xs font-semibold flex items-center gap-1.5 transition-all cursor-pointer shadow-sm"
                 >
                   <Layers className="w-3.5 h-3.5" />
                   <span>Convert to Workflow DAG ({activePreset.dagNodesCount} Nodes)</span>
@@ -454,54 +443,54 @@ export const MultiModelSwarm: React.FC = () => {
             </div>
 
             {/* Display Content Box */}
-            <div className="rounded-xl bg-[#0B0D12] border border-white/[0.08] p-4 sm:p-5 font-mono text-xs leading-relaxed overflow-x-auto min-h-[220px]">
+            <div className="rounded-xl bg-white border border-[#E5E5E2] shadow-sm p-4 sm:p-5 font-mono text-xs leading-relaxed overflow-x-auto min-h-[220px]">
               {selectedModelTab === 'consensus' ? (
                 <div className="space-y-3">
-                  <div className="flex items-center gap-2 pb-2 border-b border-white/[0.06] text-emerald-400 font-semibold">
-                    <CheckCircle2 className="w-4 h-4" />
+                  <div className="flex items-center gap-2 pb-2 border-b border-[#EFEFEA] text-emerald-800 font-bold">
+                    <CheckCircle2 className="w-4 h-4 text-emerald-600" />
                     <span>Unified Cross-Model Consensus Verified by Nexus Engine</span>
                   </div>
-                  <pre className="text-emerald-300/90 whitespace-pre-wrap font-mono">
+                  <pre className="text-[#1F2937] whitespace-pre-wrap font-mono leading-relaxed">
                     {activePreset.consensus}
                   </pre>
                 </div>
               ) : selectedModelTab === 'deepseek-r1' ? (
                 <div className="space-y-2">
-                  <div className="flex items-center gap-2 pb-2 border-b border-white/[0.06] text-cyan-400 font-semibold">
-                    <Shield className="w-4 h-4" />
+                  <div className="flex items-center gap-2 pb-2 border-b border-[#EFEFEA] text-cyan-800 font-bold">
+                    <Shield className="w-4 h-4 text-cyan-600" />
                     <span>DeepSeek-R1 Cold-Blooded Reasoning & Security Audit</span>
                   </div>
-                  <pre className="text-cyan-300/90 whitespace-pre-wrap font-mono">
+                  <pre className="text-[#1F2937] whitespace-pre-wrap font-mono leading-relaxed">
                     {activePreset.deepseekOutput}
                   </pre>
                 </div>
               ) : selectedModelTab === 'claude-3-5' ? (
                 <div className="space-y-2">
-                  <div className="flex items-center gap-2 pb-2 border-b border-white/[0.06] text-[#A78BFA] font-semibold">
-                    <Code2 className="w-4 h-4" />
+                  <div className="flex items-center gap-2 pb-2 border-b border-[#EFEFEA] text-purple-800 font-bold">
+                    <Code2 className="w-4 h-4 text-[#6D4AFF]" />
                     <span>Claude 3.5 Sonnet TypeScript AST & Type Constraints</span>
                   </div>
-                  <pre className="text-[#C4B5FD] whitespace-pre-wrap font-mono">
+                  <pre className="text-[#1F2937] whitespace-pre-wrap font-mono leading-relaxed">
                     {activePreset.claudeOutput}
                   </pre>
                 </div>
               ) : selectedModelTab === 'gemini-1-5' ? (
                 <div className="space-y-2">
-                  <div className="flex items-center gap-2 pb-2 border-b border-white/[0.06] text-blue-400 font-semibold">
-                    <Zap className="w-4 h-4" />
+                  <div className="flex items-center gap-2 pb-2 border-b border-[#EFEFEA] text-blue-800 font-bold">
+                    <Zap className="w-4 h-4 text-blue-600" />
                     <span>Gemini 1.5 Pro Planetary Scale & Latency Optimization</span>
                   </div>
-                  <pre className="text-blue-300/90 whitespace-pre-wrap font-mono">
+                  <pre className="text-[#1F2937] whitespace-pre-wrap font-mono leading-relaxed">
                     {activePreset.geminiOutput}
                   </pre>
                 </div>
               ) : (
                 <div className="space-y-2">
-                  <div className="flex items-center gap-2 pb-2 border-b border-white/[0.06] text-emerald-400 font-semibold">
-                    <Bot className="w-4 h-4" />
+                  <div className="flex items-center gap-2 pb-2 border-b border-[#EFEFEA] text-emerald-800 font-bold">
+                    <Bot className="w-4 h-4 text-emerald-600" />
                     <span>GPT-4o System Decomposition & Structured Flow</span>
                   </div>
-                  <pre className="text-emerald-300/90 whitespace-pre-wrap font-mono">
+                  <pre className="text-[#1F2937] whitespace-pre-wrap font-mono leading-relaxed">
                     {activePreset.gptOutput}
                   </pre>
                 </div>
@@ -510,14 +499,14 @@ export const MultiModelSwarm: React.FC = () => {
           </div>
 
           {/* Footer Callout */}
-          <div className="px-6 py-3.5 bg-[#181B26] border-t border-white/[0.08] flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-[#9BA3AF]">
+          <div className="px-6 py-3.5 bg-[#FBFBFA] border-t border-[#E5E5E2] flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-[#626873]">
             <div className="flex items-center gap-2">
-              <span className="w-2 h-2 rounded-full bg-emerald-400" />
+              <span className="w-2 h-2 rounded-full bg-emerald-500" />
               <span>Zero hallucinations: Every statement is cross-verified by independent models.</span>
             </div>
             <button
               onClick={() => navigate('/explore')}
-              className="text-[#6D4AFF] hover:text-[#8264FF] font-semibold inline-flex items-center gap-1 transition-colors cursor-pointer"
+              className="text-[#6D4AFF] hover:text-[#5B3CE8] font-semibold inline-flex items-center gap-1 transition-colors cursor-pointer"
             >
               <span>Explore 24+ Specialized Pre-Trained Swarm Agents</span>
               <ArrowRight className="w-3.5 h-3.5" />

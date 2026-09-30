@@ -201,11 +201,13 @@ export const AgentCollaboration: React.FC = () => {
                   </p>
                 </div>
 
-                <div className="p-3 rounded-lg bg-[#111318] text-[#F5F7FA] font-mono text-[11px] leading-relaxed overflow-x-auto">
-                  <span className="text-[#8B919B] block mb-1">// Execution Output Trace</span>
-                  {activeStep === 'code-agent'
-                    ? '> [GPT-4o] Wrote supabase/schema.sql with 6 RLS policies\n> [GPT-4o] Exported Database type in src/types/database.ts\n> [GPT-4o] Compilation: 0 errors'
-                    : '> [Claude 3.7] Found 3 dependent components in src/context\n> [Claude 3.7] Verified RLS compatibility with auth.uid()\n> [Claude 3.7] Ready for code synthesis'}
+                <div className="p-3 rounded-lg bg-[#F8F9FA] border border-[#E5E5E2] text-[#111318] font-mono text-[11px] leading-relaxed overflow-x-auto">
+                  <span className="text-[#6D4AFF] font-bold block mb-1">// Execution Output Trace</span>
+                  <pre className="text-[#1F2937] whitespace-pre-wrap font-mono">
+                    {activeStep === 'code-agent'
+                      ? '> [GPT-4o] Wrote supabase/schema.sql with 6 RLS policies\n> [GPT-4o] Exported Database type in src/types/database.ts\n> [GPT-4o] Compilation: 0 errors'
+                      : '> [Claude 3.7] Found 3 dependent components in src/context\n> [Claude 3.7] Verified RLS compatibility with auth.uid()\n> [Claude 3.7] Ready for code synthesis'}
+                  </pre>
                 </div>
               </div>
 

@@ -341,45 +341,45 @@ pipeline:
   };
 
   return (
-    <section id="workflow" className="relative py-14 sm:py-18 lg:py-20 px-4 sm:px-6 lg:px-8 bg-[#111318] text-[#F5F7FA]">
+    <section id="workflow" className="relative py-14 sm:py-18 lg:py-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-[#F6F6F3] via-white to-[#FAFAF8] text-[#111318] border-y border-[#E5E5E2]">
       <div className="max-w-7xl mx-auto">
         {/* Section Header */}
         <div className="max-w-3xl mb-8 lg:mb-10 text-left">
           <span className="text-xs font-mono uppercase tracking-wider text-[#6D4AFF] block mb-2 font-semibold">
             Visual Workflow Studio
           </span>
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-white leading-[1.1] mb-4">
+          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-[#111318] leading-[1.1] mb-4">
             Build workflows visually.
           </h2>
-          <p className="text-base sm:text-lg text-[#9BA3AF] leading-relaxed">
+          <p className="text-base sm:text-lg text-[#626873] leading-relaxed">
             Construct deterministic multi-agent execution pipelines using an intuitive node canvas. Connect triggers, models, automated verifications, and human approval gates with live execution simulation.
           </p>
         </div>
 
         {/* Workflow Studio Canvas Card */}
-        <div className="rounded-2xl border border-white/10 bg-[#15171C] shadow-[0_20px_60px_-15px_rgba(0,0,0,0.8)] overflow-hidden">
+        <div className="rounded-2xl border border-[#E5E5E2] bg-white shadow-[0_16px_45px_rgba(0,0,0,0.06)] overflow-hidden">
           {/* Top Canvas Bar */}
-          <div className="flex flex-wrap items-center justify-between px-5 py-3.5 border-b border-white/[0.08] bg-[#181A21] gap-3 text-left">
+          <div className="flex flex-wrap items-center justify-between px-5 py-3.5 border-b border-[#E5E5E2] bg-[#FBFBFA] gap-3 text-left">
             {/* Left: Workflow Title & View Switcher */}
             <div className="flex items-center gap-3">
               <div className="w-2.5 h-2.5 rounded-full bg-[#6D4AFF] animate-pulse" />
               <div className="flex items-center gap-2">
-                <span className="text-sm font-semibold text-white">
+                <span className="text-sm font-bold text-[#111318]">
                   {workflowSettings.name}.workflow
                 </span>
-                <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-[#6D4AFF]/10 border border-[#6D4AFF]/20 text-[#A78BFA]">
+                <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-[#6D4AFF]/10 border border-[#6D4AFF]/20 text-[#6D4AFF] font-bold">
                   DAG ENGINE v3.1
                 </span>
               </div>
 
-              {/* View Mode Toggle: Canvas vs YAML (Solves overlay problem!) */}
-              <div className="hidden sm:flex items-center bg-[#111318] p-0.5 rounded-lg border border-white/10 ml-2">
+              {/* View Mode Toggle: Canvas vs YAML */}
+              <div className="hidden sm:flex items-center bg-[#F0F0EC] p-0.5 rounded-lg border border-[#E5E5E2] ml-2">
                 <button
                   onClick={() => setViewMode('canvas')}
                   className={`px-2.5 py-1 rounded text-xs font-medium transition-colors cursor-pointer ${
                     viewMode === 'canvas'
-                      ? 'bg-[#1C1F26] text-white font-semibold shadow-sm'
-                      : 'text-[#8B919B] hover:text-white'
+                      ? 'bg-white text-[#111318] font-bold shadow-xs'
+                      : 'text-[#626873] hover:text-[#111318]'
                   }`}
                 >
                   Canvas View
@@ -388,8 +388,8 @@ pipeline:
                   onClick={() => setViewMode('yaml')}
                   className={`px-2.5 py-1 rounded text-xs font-mono transition-colors cursor-pointer flex items-center gap-1 ${
                     viewMode === 'yaml'
-                      ? 'bg-[#1C1F26] text-white font-semibold shadow-sm'
-                      : 'text-[#8B919B] hover:text-white'
+                      ? 'bg-white text-[#111318] font-bold shadow-xs'
+                      : 'text-[#626873] hover:text-[#111318]'
                   }`}
                 >
                   <FileCode className="w-3 h-3" />
@@ -405,18 +405,18 @@ pipeline:
                 onClick={() => setViewMode(viewMode === 'canvas' ? 'yaml' : 'canvas')}
                 className={`sm:hidden flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-mono border transition-colors cursor-pointer ${
                   viewMode === 'yaml'
-                    ? 'bg-[#6D4AFF]/20 border-[#6D4AFF]/40 text-white'
-                    : 'bg-white/5 border-white/10 text-[#9BA3AF]'
+                    ? 'bg-[#6D4AFF] text-white border-[#6D4AFF]'
+                    : 'bg-white border-[#E5E5E2] text-[#626873]'
                 }`}
               >
                 <FileCode className="w-3.5 h-3.5" />
                 <span>{viewMode === 'canvas' ? 'YAML' : 'Canvas'}</span>
               </button>
 
-              {/* Interactive Settings Button (Solves dead link!) */}
+              {/* Interactive Settings Button */}
               <button
                 onClick={() => setIsSettingsOpen(true)}
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white/5 border border-white/10 text-xs font-medium text-[#9BA3AF] hover:text-white hover:bg-white/10 transition-colors cursor-pointer"
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white border border-[#E5E5E2] hover:border-[#D4D4CE] text-xs font-medium text-[#111318] hover:bg-[#FAFAF8] transition-colors cursor-pointer shadow-2xs"
                 title="Configure workflow settings"
               >
                 <Settings2 className="w-3.5 h-3.5 text-[#6D4AFF]" />
@@ -427,29 +427,29 @@ pipeline:
               {simStatus !== 'idle' && (
                 <button
                   onClick={handleResetSimulation}
-                  className="p-1.5 rounded-lg bg-white/5 border border-white/10 text-xs text-[#9BA3AF] hover:text-white hover:bg-white/10 transition-colors cursor-pointer"
+                  className="p-1.5 rounded-lg bg-white border border-[#E5E5E2] text-xs text-[#626873] hover:text-[#111318] hover:bg-[#FAFAF8] transition-colors cursor-pointer shadow-2xs"
                   title="Reset Preview"
                 >
                   <RotateCcw className="w-3.5 h-3.5" />
                 </button>
               )}
 
-              {/* Run Preview / Pause Button (Solves Run Preview not playing!) */}
+              {/* Run Preview / Pause Button */}
               {simStatus === 'running' ? (
                 <Button
                   size="sm"
                   variant="secondary"
                   onClick={handlePauseSimulation}
-                  className="h-8 text-xs cursor-pointer border-amber-500/30 text-amber-300 bg-amber-500/10 hover:bg-amber-500/20"
+                  className="h-8 text-xs cursor-pointer border-amber-300 text-amber-800 bg-amber-50 hover:bg-amber-100"
                 >
-                  <Pause className="w-3 h-3 mr-1 fill-amber-300" />
+                  <Pause className="w-3 h-3 mr-1 fill-amber-700" />
                   <span>Pause ({elapsedSeconds}s)</span>
                 </Button>
               ) : simStatus === 'completed' ? (
                 <Button
                   size="sm"
                   onClick={handleStartSimulation}
-                  className="h-8 text-xs cursor-pointer bg-emerald-600 hover:bg-emerald-500 text-white"
+                  className="h-8 text-xs cursor-pointer bg-emerald-600 hover:bg-emerald-700 text-white shadow-2xs"
                 >
                   <RotateCcw className="w-3 h-3 mr-1" />
                   <span>Replay (5.5s)</span>
@@ -458,7 +458,7 @@ pipeline:
                 <Button
                   size="sm"
                   onClick={handleStartSimulation}
-                  className="h-8 text-xs cursor-pointer shadow-lg shadow-[#6D4AFF]/20"
+                  className="h-8 text-xs cursor-pointer shadow-md shadow-[#6D4AFF]/20"
                 >
                   <Play className="w-3 h-3 mr-1 fill-white" />
                   <span>Run Preview</span>
@@ -469,42 +469,42 @@ pipeline:
 
           {/* Conditional View: CANVAS VIEW or YAML VIEW */}
           {viewMode === 'yaml' ? (
-            /* Clean YAML Editor View (No overlapping over canvas!) */
-            <div className="bg-[#111318] p-4 sm:p-6 text-left border-b border-white/[0.08]">
-              <div className="flex items-center justify-between pb-3 mb-3 border-b border-white/10">
+            /* Clean YAML Editor View */
+            <div className="bg-[#F8F9FA] p-4 sm:p-6 text-left border-b border-[#E5E5E2]">
+              <div className="flex items-center justify-between pb-3 mb-3 border-b border-[#E5E5E2]">
                 <div className="flex items-center gap-2">
-                  <FileCode className="w-4 h-4 text-emerald-400" />
-                  <span className="text-xs font-mono text-white">{workflowSettings.slug}.nexus.yaml</span>
-                  <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+                  <FileCode className="w-4 h-4 text-emerald-600" />
+                  <span className="text-xs font-mono font-bold text-[#111318]">{workflowSettings.slug}.nexus.yaml</span>
+                  <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-50 text-emerald-800 border border-emerald-200 font-semibold">
                     SCHEMA VALID
                   </span>
                 </div>
                 <div className="flex items-center gap-2">
                   <button
                     onClick={handleDownloadYaml}
-                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white/5 border border-white/10 text-xs font-mono text-[#9BA3AF] hover:text-white transition-colors cursor-pointer"
+                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white border border-[#E5E5E2] hover:border-[#D4D4CE] text-xs font-mono text-[#111318] hover:bg-[#FAFAF8] transition-colors cursor-pointer shadow-2xs"
                   >
-                    <Download className="w-3.5 h-3.5" />
+                    <Download className="w-3.5 h-3.5 text-[#6D4AFF]" />
                     <span>Download</span>
                   </button>
                   <button
                     onClick={handleCopyYaml}
-                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#6D4AFF] text-white text-xs font-mono transition-colors hover:bg-[#5B3CE8] cursor-pointer"
+                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#6D4AFF] text-white text-xs font-mono transition-colors hover:bg-[#5B3CE8] cursor-pointer shadow-2xs"
                   >
                     {copiedYaml ? <Check className="w-3.5 h-3.5" /> : <Copy className="w-3.5 h-3.5" />}
                     <span>{copiedYaml ? 'Copied!' : 'Copy YAML'}</span>
                   </button>
                 </div>
               </div>
-              <div className="flex font-mono text-xs max-h-[460px] overflow-y-auto">
-                <div className="select-none pr-4 text-right text-[#4B5563] border-r border-white/5 space-y-0.5 font-mono text-xs">
+              <div className="flex font-mono text-xs max-h-[460px] overflow-y-auto bg-white border border-[#E5E5E2] rounded-xl p-4 shadow-2xs">
+                <div className="select-none pr-4 text-right text-[#8B919B] border-r border-[#EFEFEA] space-y-0.5 font-mono text-xs">
                   {yamlContent.split('\n').map((_, i) => (
                     <div key={i} className="leading-5">
                       {i + 1}
                     </div>
                   ))}
                 </div>
-                <pre className="pl-4 text-emerald-300/90 leading-5 overflow-x-auto">
+                <pre className="pl-4 text-[#1F2937] leading-5 overflow-x-auto font-mono">
                   {yamlContent}
                 </pre>
               </div>
@@ -514,31 +514,31 @@ pipeline:
             <div>
               {/* Live Run Status Bar */}
               {simStatus !== 'idle' && (
-                <div className="px-5 py-2.5 bg-[#14161F] border-b border-white/[0.08] flex items-center justify-between text-xs font-mono">
+                <div className="px-5 py-2.5 bg-[#FBFBFA] border-b border-[#E5E5E2] flex items-center justify-between text-xs font-mono">
                   <div className="flex items-center gap-2">
                     <div className={`w-2 h-2 rounded-full ${
-                      simStatus === 'running' ? 'bg-blue-400 animate-ping' :
-                      simStatus === 'completed' ? 'bg-emerald-400' : 'bg-amber-400'
+                      simStatus === 'running' ? 'bg-blue-600 animate-ping' :
+                      simStatus === 'completed' ? 'bg-emerald-600' : 'bg-amber-500'
                     }`} />
-                    <span className="text-white font-semibold">
+                    <span className="text-[#111318] font-bold">
                       {simStatus === 'running' ? `Executing Step ${currentStepIndex + 1} of 6: ${PREVIEW_NODES[currentStepIndex]?.title}` :
                        simStatus === 'completed' ? '✓ Pipeline execution completed successfully' :
                        `Paused at Step ${currentStepIndex + 1}`}
                     </span>
-                    <span className="text-[#626A78]">({elapsedSeconds}s elapsed)</span>
+                    <span className="text-[#8B919B]">({elapsedSeconds}s elapsed)</span>
                   </div>
 
                   {/* Progress bar */}
                   <div className="flex items-center gap-3 w-48 sm:w-64">
-                    <div className="h-1.5 flex-1 bg-white/10 rounded-full overflow-hidden">
+                    <div className="h-1.5 flex-1 bg-[#E5E5E2] rounded-full overflow-hidden">
                       <div
-                        className="h-full bg-gradient-to-r from-[#6D4AFF] to-emerald-400 transition-all duration-300"
+                        className="h-full bg-gradient-to-r from-[#6D4AFF] to-emerald-500 transition-all duration-300"
                         style={{
                           width: `${simStatus === 'completed' ? 100 : Math.max(8, ((currentStepIndex + 1) / PREVIEW_NODES.length) * 100)}%`,
                         }}
                       />
                     </div>
-                    <span className="text-[11px] text-[#9BA3AF]">
+                    <span className="text-[11px] text-[#626873] font-mono">
                       {simStatus === 'completed' ? '100%' : `${Math.round(((currentStepIndex + 1) / PREVIEW_NODES.length) * 100)}%`}
                     </span>
                   </div>
@@ -546,27 +546,27 @@ pipeline:
               )}
 
               {/* Canvas Viewport */}
-              <div className="relative min-h-[380px] sm:min-h-[400px] p-4 sm:p-10 overflow-x-auto touch-pan-x overscroll-x-contain bg-grid-dark bg-[#111318]">
+              <div className="relative min-h-[380px] sm:min-h-[400px] p-4 sm:p-10 overflow-x-auto touch-pan-x overscroll-x-contain bg-[#FAFAF8]">
                 {/* Zoom Controls HUD */}
-                <div className="absolute bottom-4 right-4 flex items-center gap-1 bg-[#181A21]/90 border border-white/10 p-1 rounded-lg backdrop-blur-md z-20 text-[#9BA3AF]">
+                <div className="absolute bottom-4 right-4 flex items-center gap-1 bg-white/95 border border-[#E5E5E2] p-1 rounded-lg backdrop-blur-md z-20 text-[#626873] shadow-xs">
                   <button
                     onClick={() => setZoomLevel((z) => Math.max(z - 10, 70))}
-                    className="p-1.5 hover:text-white hover:bg-white/5 rounded cursor-pointer"
+                    className="p-1.5 hover:text-[#111318] hover:bg-[#F2F2EE] rounded cursor-pointer"
                     aria-label="Zoom Out"
                   >
                     <ZoomOut className="w-3.5 h-3.5" />
                   </button>
-                  <span className="text-[11px] font-mono px-1.5">{zoomLevel}%</span>
+                  <span className="text-[11px] font-mono px-1.5 font-semibold text-[#111318]">{zoomLevel}%</span>
                   <button
                     onClick={() => setZoomLevel((z) => Math.min(z + 10, 130))}
-                    className="p-1.5 hover:text-white hover:bg-white/5 rounded cursor-pointer"
+                    className="p-1.5 hover:text-[#111318] hover:bg-[#F2F2EE] rounded cursor-pointer"
                     aria-label="Zoom In"
                   >
                     <ZoomIn className="w-3.5 h-3.5" />
                   </button>
                   <button
                     onClick={() => setZoomLevel(100)}
-                    className="p-1.5 hover:text-white hover:bg-white/5 rounded border-l border-white/10 cursor-pointer"
+                    className="p-1.5 hover:text-[#111318] hover:bg-[#F2F2EE] rounded border-l border-[#E5E5E2] cursor-pointer"
                     aria-label="Reset Zoom"
                   >
                     <Maximize2 className="w-3.5 h-3.5" />
@@ -579,18 +579,18 @@ pipeline:
                   style={{ transform: `scale(${zoomLevel / 100})`, transformOrigin: 'left center' }}
                 >
                   {/* Background Cable */}
-                  <div className="absolute left-8 right-8 top-1/2 -translate-y-1/2 h-[2px] bg-white/10 -z-0" />
+                  <div className="absolute left-8 right-8 top-1/2 -translate-y-1/2 h-[2px] bg-[#E5E5E2] -z-0" />
 
                   {/* Active Cable Energy Flow when running */}
                   <div
-                    className="absolute left-8 top-1/2 -translate-y-1/2 h-[3px] bg-gradient-to-r from-emerald-500 via-[#6D4AFF] to-[#3B82F6] -z-0 transition-all duration-500 shadow-[0_0_12px_rgba(109,74,255,0.8)]"
+                    className="absolute left-8 top-1/2 -translate-y-1/2 h-[3px] bg-gradient-to-r from-emerald-500 via-[#6D4AFF] to-[#3B82F6] -z-0 transition-all duration-500 shadow-[0_0_10px_rgba(109,74,255,0.4)]"
                     style={{
                       width: simStatus === 'idle'
                         ? '100%'
                         : simStatus === 'completed'
                         ? '100%'
                         : `${((currentStepIndex + 0.5) / PREVIEW_NODES.length) * 100}%`,
-                      opacity: simStatus === 'idle' ? 0.3 : 0.9,
+                      opacity: simStatus === 'idle' ? 0.4 : 1,
                     }}
                   />
 
@@ -609,9 +609,9 @@ pipeline:
                     }
 
                     const statusStyles = {
-                      COMPLETED: 'text-emerald-400 bg-emerald-500/10 border-emerald-500/20',
-                      RUNNING: 'text-blue-400 bg-blue-500/10 border-blue-500/30 animate-pulse',
-                      WAITING: 'text-[#626A78] bg-white/5 border-white/5',
+                      COMPLETED: 'text-emerald-800 bg-emerald-50 border-emerald-200 font-bold',
+                      RUNNING: 'text-blue-800 bg-blue-50 border-blue-200 animate-pulse font-bold',
+                      WAITING: 'text-[#8B919B] bg-[#F6F6F3] border-[#E5E5E2]',
                     }[nodeStatus];
 
                     return (
@@ -620,17 +620,17 @@ pipeline:
                           onClick={() => setActiveNodeId(node.id)}
                           className={`w-44 p-4 rounded-xl border transition-all duration-200 cursor-pointer text-left ${
                             nodeStatus === 'RUNNING'
-                              ? 'bg-[#1C1F2B] border-[#3B82F6] ring-2 ring-[#3B82F6]/50 shadow-[0_0_25px_rgba(59,130,246,0.35)] scale-105'
+                              ? 'bg-white border-[#3B82F6] ring-4 ring-[#3B82F6]/15 shadow-md scale-105'
                               : isSelected
-                              ? 'bg-[#1C1F26] border-[#6D4AFF] ring-1 ring-[#6D4AFF]/50 shadow-[0_0_20px_rgba(109,74,255,0.25)]'
-                              : 'bg-[#181A21] border-white/10 hover:border-white/20 hover:bg-[#1C1F26]'
+                              ? 'bg-white border-[#6D4AFF] ring-4 ring-[#6D4AFF]/15 shadow-md'
+                              : 'bg-white border-[#E5E5E2] hover:border-[#D4D4CE] shadow-2xs hover:bg-[#FAFAF8]'
                           }`}
                         >
                           <div className="flex items-center justify-between mb-2.5">
                             <div className={`p-1.5 rounded-lg border ${
-                              nodeStatus === 'RUNNING' ? 'bg-[#3B82F6]/20 border-[#3B82F6]/40 text-blue-400' :
-                              nodeStatus === 'COMPLETED' ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-400' :
-                              'bg-white/5 border-white/10 text-white'
+                              nodeStatus === 'RUNNING' ? 'bg-blue-50 border-blue-200 text-blue-700' :
+                              nodeStatus === 'COMPLETED' ? 'bg-emerald-50 border-emerald-200 text-emerald-700' :
+                              'bg-[#F6F6F3] border-[#E5E5E2] text-[#626873]'
                             }`}>
                               <IconComponent className="w-3.5 h-3.5" />
                             </div>
@@ -639,24 +639,24 @@ pipeline:
                             </span>
                           </div>
 
-                          <div className="text-xs font-semibold text-white mb-0.5 truncate flex items-center justify-between">
+                          <div className="text-xs font-bold text-[#111318] mb-0.5 truncate flex items-center justify-between">
                             <span>{node.title}</span>
                             {nodeStatus === 'COMPLETED' && (
-                              <span className="text-[9px] font-mono text-[#8B919B]">{node.latency}</span>
+                              <span className="text-[9px] font-mono text-[#8B919B] font-normal">{node.latency}</span>
                             )}
                           </div>
 
-                          <div className="text-[10px] text-[#9BA3AF] truncate mb-2">
+                          <div className="text-[10px] text-[#626873] truncate mb-2">
                             {node.subtitle}
                           </div>
 
-                          <div className="flex items-center justify-between text-[9px] font-mono text-[#626A78] pt-2 border-t border-white/[0.06]">
+                          <div className="flex items-center justify-between text-[9px] font-mono text-[#8B919B] pt-2 border-t border-[#F0F0EC]">
                             <span>in: [event]</span>
                             <span>out: [state]</span>
                           </div>
                         </div>
 
-                        <span className="text-[10px] font-mono text-[#626A78] mt-3">
+                        <span className="text-[10px] font-mono text-[#8B919B] mt-3">
                           Step 0{index + 1}
                         </span>
                       </div>
@@ -666,44 +666,44 @@ pipeline:
               </div>
 
               {/* Streaming Live Execution Terminal (Expandable) */}
-              <div className="border-t border-white/[0.08] bg-[#0E1015] text-left">
+              <div className="border-t border-[#E5E5E2] bg-[#F8F9FA] text-left">
                 <div
                   onClick={() => setIsTerminalExpanded(!isTerminalExpanded)}
-                  className="flex items-center justify-between px-5 py-2.5 bg-[#14161E] hover:bg-[#181B26] transition-colors cursor-pointer border-b border-white/[0.04]"
+                  className="flex items-center justify-between px-5 py-2.5 bg-[#FBFBFA] hover:bg-[#F6F6F3] transition-colors cursor-pointer border-b border-[#EFEFEA]"
                 >
                   <div className="flex items-center gap-2">
                     <Terminal className="w-3.5 h-3.5 text-[#6D4AFF]" />
-                    <span className="text-xs font-mono font-semibold text-white">Live Execution Terminal</span>
-                    <span className="text-[10px] font-mono px-1.5 py-0.2 rounded bg-white/5 text-[#9BA3AF]">
+                    <span className="text-xs font-mono font-bold text-[#111318]">Live Execution Terminal</span>
+                    <span className="text-[10px] font-mono px-1.5 py-0.2 rounded bg-[#E5E5E2] text-[#626873]">
                       {terminalLogs.length} events
                     </span>
                   </div>
-                  <div className="flex items-center gap-2 text-xs text-[#9BA3AF]">
+                  <div className="flex items-center gap-2 text-xs text-[#626873]">
                     <span>{isTerminalExpanded ? 'Hide Console' : 'Show Console'}</span>
                     {isTerminalExpanded ? <ChevronDown className="w-3.5 h-3.5" /> : <ChevronUp className="w-3.5 h-3.5" />}
                   </div>
                 </div>
 
                 {isTerminalExpanded && (
-                  <div className="p-4 max-h-44 overflow-y-auto font-mono text-[11px] space-y-1.5 bg-[#0E1015]">
+                  <div className="p-4 max-h-44 overflow-y-auto font-mono text-[11px] space-y-1.5 bg-[#F8F9FA]">
                     {terminalLogs.length === 0 ? (
-                      <div className="text-[#626A78] italic py-2 flex items-center gap-2">
+                      <div className="text-[#8B919B] italic py-2 flex items-center gap-2">
                         <Clock className="w-3.5 h-3.5" />
                         <span>Click &quot;Run Preview&quot; above to play real-time pipeline execution simulation.</span>
                       </div>
                     ) : (
                       terminalLogs.map((log, idx) => (
                         <div key={idx} className="flex items-start gap-2.5 leading-relaxed">
-                          <span className="text-[#626A78] shrink-0">[{log.timestamp}]</span>
-                          <span className={`px-1 rounded text-[9px] shrink-0 ${
-                            log.level === 'SUCCESS' ? 'bg-emerald-500/20 text-emerald-300' :
-                            log.level === 'OK' ? 'bg-blue-500/20 text-blue-300' :
-                            log.level === 'INIT' ? 'bg-purple-500/20 text-purple-300' :
-                            'bg-white/5 text-[#9BA3AF]'
+                          <span className="text-[#8B919B] shrink-0">[{log.timestamp}]</span>
+                          <span className={`px-1.5 py-0.2 rounded text-[9px] font-bold shrink-0 ${
+                            log.level === 'SUCCESS' ? 'bg-emerald-50 border border-emerald-200 text-emerald-800' :
+                            log.level === 'OK' ? 'bg-blue-50 border border-blue-200 text-blue-800' :
+                            log.level === 'INIT' ? 'bg-purple-50 border border-purple-200 text-purple-800' :
+                            'bg-[#E5E5E2] text-[#626873]'
                           }`}>
                             {log.stepTitle}
                           </span>
-                          <span className="text-[#D1D5DB] break-all">{log.text}</span>
+                          <span className="text-[#1F2937] break-all font-mono">{log.text}</span>
                         </div>
                       ))
                     )}
@@ -714,21 +714,21 @@ pipeline:
           )}
 
           {/* Bottom Step Details & Studio Link */}
-          <div className="px-6 py-3 bg-[#181A21] border-t border-white/[0.08] flex flex-col sm:flex-row items-center justify-between gap-2 text-xs text-[#9BA3AF] text-left">
+          <div className="px-6 py-3 bg-[#FBFBFA] border-t border-[#E5E5E2] flex flex-col sm:flex-row items-center justify-between gap-2 text-xs text-[#626873] text-left">
             <div className="flex items-center gap-2 flex-wrap">
-              <span className="text-[#626A78]">Selected Step:</span>
-              <span className="text-white font-semibold">{activeNode.title}</span>
+              <span className="text-[#8B919B]">Selected Step:</span>
+              <span className="text-[#111318] font-bold">{activeNode.title}</span>
               {activeNode.model && (
-                <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-white/5 text-[#A78BFA] border border-white/10">
+                <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-purple-50 text-[#6D4AFF] border border-purple-200 font-semibold">
                   {activeNode.model}
                 </span>
               )}
-              <span className="text-[#9BA3AF] truncate max-w-md">({activeNode.details})</span>
+              <span className="text-[#626873] truncate max-w-md">({activeNode.details})</span>
             </div>
             <div className="flex items-center gap-3 shrink-0">
               <Link
                 to="/app/workflows/new"
-                className="text-xs font-semibold text-[#6D4AFF] hover:text-[#8264FF] transition-colors inline-flex items-center gap-1 cursor-pointer"
+                className="text-xs font-semibold text-[#6D4AFF] hover:text-[#5B3CE8] transition-colors inline-flex items-center gap-1 cursor-pointer"
               >
                 <span>Open in Visual Studio</span>
                 <ArrowRight className="w-3.5 h-3.5" />
