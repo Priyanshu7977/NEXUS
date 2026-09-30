@@ -25,6 +25,7 @@ import {
   ShieldAlert,
   Settings2,
   FileCode,
+  Sparkles,
 } from 'lucide-react';
 import {
   WorkflowNode,
@@ -44,6 +45,7 @@ import { getWorkspaceAgents } from '../../services/agentService';
 import { RunWorkflowModal } from '../workflows/RunWorkflowModal';
 import { WorkflowSettingsModal, WorkflowSettingsData, DEFAULT_WORKFLOW_SETTINGS } from '../workflows/WorkflowSettingsModal';
 import { WorkflowYamlModal } from '../workflows/WorkflowYamlModal';
+import { PromptToWorkflowModal } from '../workflow/PromptToWorkflowModal';
 
 interface NodeTemplate {
   category: WorkflowNodeType;
@@ -210,6 +212,7 @@ export const WorkflowBuilderPage: React.FC = () => {
   const [showRunModal, setShowRunModal] = useState(false);
   const [showSettingsModal, setShowSettingsModal] = useState(false);
   const [showYamlModal, setShowYamlModal] = useState(false);
+  const [showPromptModal, setShowPromptModal] = useState(false);
   const [workflowSettings, setWorkflowSettings] = useState<WorkflowSettingsData>({
     ...DEFAULT_WORKFLOW_SETTINGS,
     name: workflowName,
@@ -503,6 +506,16 @@ ${edges.map((e) => `  - from: "${e.source_node_key}"\n    to: "${e.target_node_k
           </div>
 
           <div className="h-4 w-px bg-[#252836]" />
+
+          {/* AI Compiler Button */}
+          <button
+            onClick={() => setShowPromptModal(true)}
+            className="px-3 py-1.5 rounded-xl bg-[#6D4AFF]/15 hover:bg-[#6D4AFF]/25 text-[#C4B5FD] hover:text-white text-xs font-semibold flex items-center gap-1.5 border border-[#6D4AFF]/30 transition-all cursor-pointer shadow-sm"
+            title="Compile DAG pipeline from natural language prompt"
+          >
+            <Sparkles className="w-3.5 h-3.5 text-[#A78BFA] animate-pulse" />
+            <span className="hidden sm:inline">AI Compiler</span>
+          </button>
 
           {/* YAML Button */}
           <button
@@ -1047,6 +1060,19 @@ ${edges.map((e) => `  - from: "${e.source_node_key}"\n    to: "${e.target_node_k
         onClose={() => setShowYamlModal(false)}
         workflowName={workflowName}
         yamlContent={generateDynamicYaml()}
+      />
+
+      {/* Prompt-to-Workflow AI Compiler Modal */}
+      <PromptToWorkflowModal
+        isOpen={showPromptModal}
+        onClose={() => setShowPromptModal(false)}
+        onWorkflowCompiled={(compiled) => {
+          setWorkflowName(compiled.name);
+          setWorkflowDescription(compiled.description);
+          setNodes(compiled.nodes);
+          setEdges(compiled.edges);
+          setSelectedNodeId(compiled.nodes[0]?.node_key || null);
+        }}
       />
     </div>
   );

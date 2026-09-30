@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import { Outlet, useLocation } from 'react-router-dom';
 import { Navbar } from './Navbar';
 import { Footer } from './Footer';
+import { AgentCommandOrb } from '../agent/AgentCommandOrb';
 
 const PAGE_TITLES: Record<string, string> = {
   '/': 'NEXUS · Connect every agent. Make them work together.',
@@ -13,6 +14,7 @@ const PAGE_TITLES: Record<string, string> = {
   '/open-source': 'Open Source Core · NEXUS',
   '/changelog': 'Changelog · NEXUS Built in Public',
   '/about': 'About NEXUS · The AI Agent Orchestration Layer',
+  '/swarm': 'NEXUS Swarm Arena · Multi-Model Consensus (GPT-4o, Claude, Gemini, DeepSeek)',
 };
 
 export const PublicLayout: React.FC = () => {
@@ -53,6 +55,8 @@ export const PublicLayout: React.FC = () => {
         <Outlet />
       </main>
       <Footer />
+      {/* Global AI Agent Command Orb & Co-Pilot */}
+      <AgentCommandOrb />
     </div>
   );
 };

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Outlet, useLocation } from 'react-router-dom';
 import { AppSidebar } from './AppSidebar';
 import { AppHeader } from './AppHeader';
+import { AgentCommandOrb } from '../agent/AgentCommandOrb';
 
 export const AppLayout: React.FC = () => {
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
@@ -43,6 +44,8 @@ export const AppLayout: React.FC = () => {
           <Outlet />
         </main>
       </div>
+      {/* Global AI Agent Command Orb & Co-Pilot */}
+      <AgentCommandOrb />
     </div>
   );
 };

@@ -12,7 +12,8 @@ import {
   ShieldCheck,
   ArrowRight,
   Monitor,
-  Layers
+  Layers,
+  Flame
 } from 'lucide-react';
 import { Button } from '../ui/Button';
 import { DesktopAppModal } from '../desktop/DesktopAppModal';
@@ -117,6 +118,14 @@ export const Navbar: React.FC = () => {
       icon: Layers,
       color: 'text-indigo-600',
       bg: 'bg-indigo-50'
+    },
+    {
+      title: 'Swarm Arena',
+      description: 'Run GPT-4o, Claude 3.5, Gemini & DeepSeek in parallel consensus.',
+      to: '/swarm',
+      icon: Flame,
+      color: 'text-amber-500',
+      bg: 'bg-amber-50'
     },
     {
       title: 'Agents',
@@ -244,6 +253,21 @@ export const Navbar: React.FC = () => {
                 className="px-3 py-1.5 text-xs lg:text-sm font-medium transition-colors rounded-lg cursor-pointer text-[#626873] hover:text-[#111318] hover:bg-black/[0.03]"
               >
                 Overview
+              </Link>
+
+              <Link
+                to="/swarm"
+                className={`px-3 py-1.5 text-xs lg:text-sm font-medium transition-colors rounded-lg cursor-pointer flex items-center gap-1.5 ${
+                  isActive('/swarm')
+                    ? 'text-[#6D4AFF] bg-[#6D4AFF]/10 font-semibold'
+                    : 'text-[#626873] hover:text-[#6D4AFF] hover:bg-black/[0.03]'
+                }`}
+              >
+                <Flame className="w-3.5 h-3.5 text-amber-500" />
+                <span>Swarm Arena</span>
+                <span className="text-[9px] font-mono px-1.5 py-0.2 rounded bg-amber-500/15 text-amber-700 font-bold">
+                  NEW
+                </span>
               </Link>
 
               <Link

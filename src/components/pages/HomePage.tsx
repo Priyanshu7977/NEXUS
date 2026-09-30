@@ -6,6 +6,7 @@ import { EcosystemStrip } from '../ecosystem/EcosystemStrip';
 import { FeatureGrid } from '../features/FeatureGrid';
 import { ConnectorShowcase } from '../connectors/ConnectorShowcase';
 import { AgentCollaboration } from '../collaboration/AgentCollaboration';
+import { MultiModelSwarm } from '../swarm/MultiModelSwarm';
 import { WorkflowPreview } from '../workflow/WorkflowPreview';
 import { MissionControl } from '../observability/MissionControl';
 import { FinalCTA } from '../cta/FinalCTA';
@@ -22,7 +23,10 @@ export const HomePage: React.FC = () => {
       {/* 3. Top AI APIs Working Together (Claude, OpenAI, DeepSeek, Gemini, Llama) */}
       <MultiAiShowcase />
 
-      {/* 4. Bring the tools you already use - Ecosystem Strip */}
+      {/* 4. Industry First: Multi-Model Swarm Arena (GPT-4o + Claude 3.5 + Gemini + DeepSeek Consensus) */}
+      <MultiModelSwarm />
+
+      {/* 5. Bring the tools you already use - Ecosystem Strip */}
       <EcosystemStrip />
 
       {/* 3. One system. Every agent. - Left-Right Editorial Flow */}
