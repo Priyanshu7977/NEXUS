@@ -32,3 +32,15 @@ dist-ssr
 *.tsbuildinfo
 scratch/
 NEXUS-main/
+
+# Office/scratch exports
+*.xlsx
+*.xls
+*.csv
+*.docx
+*lds*
+generate_*.cjs
+build_*.cjs
+clean_*.cjs
+audit_*.cjs
+populate_*.cjs
