@@ -338,16 +338,16 @@ export const PricingPage: React.FC = () => {
         </div>
 
         {/* Bottom CTA */}
-        <div className="p-8 sm:p-10 rounded-2xl bg-[#111318] text-white border border-[#252A34] text-center max-w-4xl mx-auto shadow-sm">
-          <h3 className="text-xl sm:text-2xl font-bold mb-2">
+        <div className="p-8 sm:p-12 rounded-2xl bg-gradient-to-br from-white via-purple-50/40 to-indigo-50/30 text-[#111318] border border-[#6D4AFF]/20 text-center max-w-4xl mx-auto shadow-sm">
+          <h3 className="text-xl sm:text-2xl font-bold mb-2 text-[#111318]">
             Start building with NEXUS today.
           </h3>
-          <p className="text-xs sm:text-sm text-[#9BA3AF] max-w-xl mx-auto mb-6 leading-relaxed">
+          <p className="text-xs sm:text-sm text-[#626873] max-w-xl mx-auto mb-6 leading-relaxed">
             Create an account in seconds, connect your GitHub repositories, and begin orchestrating your first agent pipeline.
           </p>
           <div className="flex items-center justify-center gap-3">
             <Link to="/signup" className="w-full sm:w-auto">
-              <Button size="md" withArrow className="w-full sm:w-auto justify-center">
+              <Button size="md" withArrow className="w-full sm:w-auto justify-center shadow-md shadow-[#6D4AFF]/15">
                 Get Started Free
               </Button>
             </Link>

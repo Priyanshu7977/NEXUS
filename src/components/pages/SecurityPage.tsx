@@ -422,16 +422,16 @@ export const SecurityPage: React.FC = () => {
         </div>
 
         {/* Bottom Action */}
-        <div className="p-8 sm:p-10 rounded-2xl bg-[#111318] text-white border border-[#252A34] text-center max-w-4xl mx-auto shadow-sm">
-          <h3 className="text-xl sm:text-2xl font-bold mb-2">
+        <div className="p-8 sm:p-12 rounded-2xl bg-gradient-to-br from-white via-emerald-50/40 to-purple-50/30 text-[#111318] border border-emerald-500/20 text-center max-w-4xl mx-auto shadow-sm">
+          <h3 className="text-xl sm:text-2xl font-bold mb-2 text-[#111318]">
             Experience deterministic agent security.
           </h3>
-          <p className="text-xs sm:text-sm text-[#9BA3AF] max-w-xl mx-auto mb-6 leading-relaxed">
+          <p className="text-xs sm:text-sm text-[#626873] max-w-xl mx-auto mb-6 leading-relaxed">
             Connect your first service with granular permissions and complete execution audit trails.
           </p>
           <div className="flex items-center justify-center gap-3">
             <Link to="/signup" className="w-full sm:w-auto">
-              <Button size="md" withArrow className="w-full sm:w-auto justify-center">
+              <Button size="md" withArrow className="w-full sm:w-auto justify-center shadow-md shadow-emerald-500/15">
                 Start Free in Sandbox
               </Button>
             </Link>

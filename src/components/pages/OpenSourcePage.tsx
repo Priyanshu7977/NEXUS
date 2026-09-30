@@ -137,37 +137,37 @@ export const OpenSourcePage: React.FC = () => {
         </div>
 
         {/* Extensibility & Self-Hosting Highlights */}
-        <div className="p-8 sm:p-10 rounded-2xl bg-[#111318] text-white border border-[#252A34] mb-20 shadow-sm">
+        <div className="p-8 sm:p-10 rounded-2xl bg-white text-[#111318] border border-[#E5E5E2] mb-20 shadow-sm">
           <div className="max-w-3xl">
-            <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-[#6D4AFF]/20 text-[#6D4AFF] text-[10px] font-mono font-semibold uppercase tracking-wider mb-3">
+            <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-[#6D4AFF]/10 text-[#6D4AFF] text-[10px] font-mono font-semibold uppercase tracking-wider mb-3">
               <Code2 className="w-3 h-3 text-[#6D4AFF]" />
               EXTENSIBILITY FIRST
             </div>
-            <h3 className="text-2xl font-bold mb-2">
+            <h3 className="text-2xl font-bold mb-2 text-[#111318]">
               Never locked into a single AI provider or runner.
             </h3>
-            <p className="text-xs sm:text-sm text-[#9BA3AF] leading-relaxed mb-8">
+            <p className="text-xs sm:text-sm text-[#626873] leading-relaxed mb-8">
               We believe the infrastructure connecting AI agents must remain transparent and modular. You can write custom tool drivers in TypeScript or Python, run local LLMs with Ollama, or connect private enterprise APIs behind your own VPC.
             </p>
 
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-left">
-              <div className="p-4 rounded-xl bg-[#15171C] border border-[#252A34]">
-                <h4 className="text-sm font-bold text-white mb-1">Custom Runners</h4>
-                <p className="text-xs text-[#9BA3AF] leading-relaxed">
+              <div className="p-4 rounded-xl bg-[#FAFAF8] border border-[#E5E5E2]">
+                <h4 className="text-sm font-bold text-[#111318] mb-1">Custom Runners</h4>
+                <p className="text-xs text-[#626873] leading-relaxed">
                   Execute agents in local Docker containers, AWS ECS tasks, or WebAssembly micro-runtimes.
                 </p>
               </div>
 
-              <div className="p-4 rounded-xl bg-[#15171C] border border-[#252A34]">
-                <h4 className="text-sm font-bold text-white mb-1">Model Agnostic</h4>
-                <p className="text-xs text-[#9BA3AF] leading-relaxed">
+              <div className="p-4 rounded-xl bg-[#FAFAF8] border border-[#E5E5E2]">
+                <h4 className="text-sm font-bold text-[#111318] mb-1">Model Agnostic</h4>
+                <p className="text-xs text-[#626873] leading-relaxed">
                   Switch between Claude, GPT-4o, Gemini, or self-hosted models per agent node in the workflow.
                 </p>
               </div>
 
-              <div className="p-4 rounded-xl bg-[#15171C] border border-[#252A34]">
-                <h4 className="text-sm font-bold text-white mb-1">Open Protocol</h4>
-                <p className="text-xs text-[#9BA3AF] leading-relaxed">
+              <div className="p-4 rounded-xl bg-[#FAFAF8] border border-[#E5E5E2]">
+                <h4 className="text-sm font-bold text-[#111318] mb-1">Open Protocol</h4>
+                <p className="text-xs text-[#626873] leading-relaxed">
                   Export workflow topologies and trace logs in standard OpenTelemetry and JSON-DAG formats.
                 </p>
               </div>

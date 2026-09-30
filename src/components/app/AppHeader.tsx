@@ -32,16 +32,20 @@ export const AppHeader: React.FC<AppHeaderProps> = ({ onOpenMobileSidebar }) => 
 
       {/* Right: Search, Help, Notifications, Status Badge */}
       <div className="flex items-center gap-2 sm:gap-3 shrink-0">
-        <div className="relative hidden md:flex items-center">
-          <Search className="w-3.5 h-3.5 text-[#8B919B] absolute left-3 pointer-events-none" />
-          <input
-            type="text"
-            placeholder="Search workspace (⌘K)..."
-            className="h-9 w-48 lg:w-72 pl-9 pr-8 rounded-xl bg-[#FAFAF8] border border-[#E5E5E2] text-xs text-[#111318] placeholder:text-[#8B919B] focus:border-[#6D4AFF] focus:bg-white focus:outline-none transition-colors"
-          />
-          <kbd className="absolute right-2.5 px-1.5 py-0.5 rounded bg-white border border-[#E5E5E2] text-[9px] font-mono text-[#8B919B]">
-            ⌘K
-          </kbd>
+        <div 
+          onClick={() => {
+            window.dispatchEvent(new KeyboardEvent('keydown', { key: 'k', ctrlKey: true }));
+          }}
+          className="relative hidden md:flex items-center cursor-pointer group"
+          title="Open AI Command Orb (Ctrl+K)"
+        >
+          <Search className="w-3.5 h-3.5 text-[#8B919B] absolute left-3 pointer-events-none group-hover:text-[#6D4AFF] transition-colors" />
+          <div className="h-9 w-48 lg:w-72 pl-9 pr-12 rounded-xl bg-[#FAFAF8] group-hover:bg-white border border-[#E5E5E2] group-hover:border-[#6D4AFF] text-xs text-[#8B919B] group-hover:text-[#111318] transition-all shadow-2xs flex items-center justify-between">
+            <span className="truncate">Search workspace (⌘K)...</span>
+            <kbd className="absolute right-2 px-1.5 py-0.5 rounded bg-white border border-[#E5E5E2] text-[9px] font-mono text-[#8B919B]">
+              ⌘K
+            </kbd>
+          </div>
         </div>
 
         {/* Help Menu Trigger */}

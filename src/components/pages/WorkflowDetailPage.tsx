@@ -177,14 +177,14 @@ export const WorkflowDetailPage: React.FC = () => {
 
       {/* Tab 1: Canvas / DAG Topology View */}
       {activeTab === 'Canvas' && (
-        <div className="p-6 sm:p-8 rounded-2xl bg-[#111318] text-white border border-[#252836] shadow-sm flex flex-col gap-6">
-          <div className="flex items-center justify-between pb-4 border-b border-[#252836]">
+        <div className="p-6 sm:p-8 rounded-2xl bg-white text-[#111318] border border-[#E5E5E2] shadow-sm flex flex-col gap-6">
+          <div className="flex items-center justify-between pb-4 border-b border-[#EFEFEA]">
             <div>
-              <h3 className="text-sm font-bold text-white mb-0.5 flex items-center gap-2">
+              <h3 className="text-sm font-bold text-[#111318] mb-0.5 flex items-center gap-2">
                 <Layers className="w-4 h-4 text-[#6D4AFF]" />
                 <span>DAG Pipeline Topology</span>
               </h3>
-              <p className="text-xs text-[#8B919B]">
+              <p className="text-xs text-[#626873]">
                 Ordered execution sequence and multi-agent data handoffs.
               </p>
             </div>
@@ -198,21 +198,21 @@ export const WorkflowDetailPage: React.FC = () => {
             {workflow.nodes.map((node, i) => (
               <div
                 key={node.node_key || i}
-                className="p-4 rounded-xl bg-[#161922] border border-[#252836] flex flex-col justify-between text-left h-full min-w-0"
+                className="p-4 rounded-xl bg-[#FAFAF8] border border-[#E5E5E2] hover:border-[#D4D4CE] transition-all flex flex-col justify-between text-left h-full min-w-0 shadow-2xs"
               >
                 <div className="flex-1 flex flex-col min-w-0">
                   <div className="flex items-center justify-between mb-2 gap-2">
-                    <span className="text-[9px] font-mono text-[#8B919B] uppercase px-1.5 py-0.5 rounded bg-black/40 shrink-0">
+                    <span className="text-[9px] font-mono text-[#626873] uppercase px-2 py-0.5 rounded-full bg-white border border-[#E5E5E2] font-semibold shrink-0">
                       Step {i + 1} · {node.node_type}
                     </span>
-                    <span className="text-[10px] font-mono text-emerald-400 shrink-0">
+                    <span className="text-[10px] font-mono text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200 font-semibold shrink-0">
                       Configured
                     </span>
                   </div>
-                  <h4 className="text-xs font-bold text-white mb-1 truncate">
+                  <h4 className="text-xs font-bold text-[#111318] mb-1 truncate">
                     {node.name}
                   </h4>
-                  <p className="text-[11px] font-mono text-[#8B919B] truncate">
+                  <p className="text-[11px] font-mono text-[#626873] truncate">
                     {node.node_key}
                   </p>
                 </div>

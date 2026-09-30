@@ -26,6 +26,7 @@ import {
   ShieldAlert,
   Loader2,
   RefreshCw,
+  Sparkles,
 } from 'lucide-react';
 
 export const DashboardPage: React.FC = () => {
@@ -127,6 +128,51 @@ export const DashboardPage: React.FC = () => {
           <Button size="sm" onClick={() => navigate('/app/workflows/new')} withArrow>
             New Workflow
           </Button>
+        </div>
+      </div>
+
+      {/* 4 Connected Applications Quick Testing Strip */}
+      <div className="p-4 sm:p-5 rounded-2xl bg-gradient-to-r from-purple-50/70 via-stone-50/50 to-indigo-50/70 border border-[#6D4AFF]/25 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-4 text-left">
+        <div className="space-y-1">
+          <div className="flex items-center gap-2">
+            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+            <span className="text-xs font-bold text-[#111318]">Frontier Autonomous AI Suite Ready</span>
+            <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-emerald-100/70 text-emerald-800 font-semibold border border-emerald-200">
+              4 Apps Connected
+            </span>
+          </div>
+          <p className="text-xs text-[#626873]">
+            Orchestrate <strong>GitHub</strong>, <strong>Vercel</strong>, <strong>Supabase</strong>, and <strong>Slack</strong> together or run parallel multi-model arbitration across GPT-4o, Claude 3.5, Gemini & DeepSeek.
+          </p>
+        </div>
+
+        <div className="flex items-center gap-2 flex-wrap shrink-0">
+          <button
+            type="button"
+            onClick={() => navigate('/app/connectors')}
+            className="px-3 py-1.5 rounded-xl bg-white hover:bg-[#FAFAF8] border border-[#E5E5E2] text-xs font-semibold text-[#111318] shadow-xs flex items-center gap-1.5 cursor-pointer transition-colors"
+          >
+            <Cable className="w-3.5 h-3.5 text-[#6D4AFF]" />
+            <span>Test 4-App Builder</span>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => navigate('/swarm')}
+            className="px-3 py-1.5 rounded-xl bg-white hover:bg-[#FAFAF8] border border-[#E5E5E2] text-xs font-semibold text-[#111318] shadow-xs flex items-center gap-1.5 cursor-pointer transition-colors"
+          >
+            <Bot className="w-3.5 h-3.5 text-blue-600" />
+            <span>Launch Swarm Arena</span>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => window.dispatchEvent(new KeyboardEvent('keydown', { key: 'k', ctrlKey: true }))}
+            className="px-3 py-1.5 rounded-xl bg-[#6D4AFF] hover:bg-[#5B3CE8] text-white text-xs font-semibold shadow-xs flex items-center gap-1.5 cursor-pointer transition-colors"
+          >
+            <Sparkles className="w-3.5 h-3.5" />
+            <span>Co-Pilot (⌘K)</span>
+          </button>
         </div>
       </div>
 
