@@ -133,7 +133,7 @@ export const getWorkspaceAgents = async (
   }
 
   const local = getLocalAgents(workspaceId);
-  if (local.length === 0) {
+  if (local.length < 8) {
     return await seedDefaultReferenceAgent(workspaceId);
   }
 
@@ -584,6 +584,116 @@ export const seedDefaultReferenceAgent = async (
 ): Promise<{ agents: Agent[] }> => {
   const defaultAgents: CreateAgentInput[] = [
     {
+      name: 'Claude 3.5 Sonnet Lead Architect',
+      role: 'System Architecture & TypeScript AST Synthesis',
+      description:
+        'Decomposes engineering tasks into typed contracts, AST abstractions, and architectural invariants with extreme safety.',
+      instructions:
+        'You are Claude 3.5 Sonnet Lead Architect, an elite software engineering agent on NEXUS. Analyze system requirements, synthesize type-safe TypeScript interfaces, enforce architectural constraints, and generate clean, production-ready code with zero regressions.',
+      model_provider: 'anthropic',
+      model_name: 'claude-3-5-sonnet',
+      status: 'active',
+      temperature: 0.2,
+      max_steps: 15,
+      max_runtime_seconds: 600,
+      tools: [
+        {
+          connector_id: 'github',
+          capability: 'github.repositories.read',
+          permission_mode: 'read_only',
+        },
+      ],
+    },
+    {
+      name: 'DeepSeek-R1 Zero-Trust Security Auditor',
+      role: 'Mathematical Verification & AST Security Audit',
+      description:
+        'Employs cold-blooded formal reasoning to audit code diffs for SQL injections, RLS policy leaks, and transaction race conditions.',
+      instructions:
+        'You are DeepSeek-R1 Security Auditor. Your purpose is adversarial security evaluation. Scrutinize every line of code, database query, and authentication header. Trace every input to sink. Enforce strict Row-Level Security, check for IDOR boundary leaks, and provide formal mathematical proofs of correctness.',
+      model_provider: 'deepseek',
+      model_name: 'deepseek-reasoner',
+      status: 'active',
+      temperature: 0.1,
+      max_steps: 12,
+      max_runtime_seconds: 450,
+      tools: [
+        {
+          connector_id: 'github',
+          capability: 'github.repositories.read',
+          permission_mode: 'read_only',
+        },
+      ],
+    },
+    {
+      name: 'OpenAI GPT-4o Core Synthesizer',
+      role: 'Multi-File Refactoring & MCP Orchestration',
+      description:
+        'Autonomous full-stack engineering agent capable of multi-file synthesis, test generation, and tool coordination.',
+      instructions:
+        'You are GPT-4o Core Synthesizer. You implement end-to-end features, coordinate Model Context Protocol (MCP) tools, execute test suites, and author clean pull request summaries.',
+      model_provider: 'openai',
+      model_name: 'gpt-4o',
+      status: 'active',
+      temperature: 0.3,
+      max_steps: 15,
+      max_runtime_seconds: 500,
+      tools: [
+        {
+          connector_id: 'github',
+          capability: 'github.repositories.read',
+          permission_mode: 'read_only',
+        },
+        {
+          connector_id: 'docker',
+          capability: 'docker.sandbox.exec',
+          permission_mode: 'read_write',
+        },
+      ],
+    },
+    {
+      name: 'Google Gemini 1.5 Pro Context Analyst',
+      role: '1M+ Monorepo Context & Edge Optimization',
+      description:
+        'Ingests massive context windows across full monorepos, audits architectural consistency, and designs edge latency budgets.',
+      instructions:
+        'You are Gemini 1.5 Pro Context Analyst. Evaluate cross-service dependencies, synthesize comprehensive technical specifications, and optimize distributed edge routing with sub-50ms latency targets.',
+      model_provider: 'gemini',
+      model_name: 'gemini-1.5-pro',
+      status: 'active',
+      temperature: 0.3,
+      max_steps: 10,
+      max_runtime_seconds: 400,
+      tools: [
+        {
+          connector_id: 'github',
+          capability: 'github.repositories.read',
+          permission_mode: 'read_only',
+        },
+      ],
+    },
+    {
+      name: 'Groq Llama 3.3 70B Edge Dispatcher',
+      role: 'Sub-Second Webhook Triage & Incident Router',
+      description:
+        'Ultra-low-latency event processing agent (500+ tok/s). Classifies incoming webhooks and alerts in under 50ms.',
+      instructions:
+        'You are Groq Llama 3.3 70B Edge Dispatcher. Evaluate incoming payloads at maximum speed, classify security risk level, and dispatch deterministic instructions to downstream specialist agents.',
+      model_provider: 'groq',
+      model_name: 'llama-3.3-70b-versatile',
+      status: 'active',
+      temperature: 0.1,
+      max_steps: 5,
+      max_runtime_seconds: 60,
+      tools: [
+        {
+          connector_id: 'slack',
+          capability: 'slack.messages.send',
+          permission_mode: 'read_write',
+        },
+      ],
+    },
+    {
       name: 'Repository Analyst',
       role: 'GitHub Repository Inspection & Context Synthesis',
       description:
@@ -610,14 +720,14 @@ export const seedDefaultReferenceAgent = async (
       ],
     },
     {
-      name: 'Code Analysis Agent',
+      name: 'Code Analysis & Diff Inspector',
       role: 'Automated Code Review & Diff Quality Inspection',
       description:
         'Analyzes git commits, code diffs, architectural modifications, and computes risk levels for continuous integration.',
       instructions:
         'You are Code Analyst, a specialized NEXUS intelligence worker for automated code review and diff inspection. When triggered with code diffs, commits, or pull requests, inspect the modified lines, analyze architectural impact, identify potential syntax or runtime bugs, and provide a structured JSON analysis with summary, risk_level (low, medium, high), issues, and recommendation (approve, reject, needs_review).',
-      model_provider: 'gemini',
-      model_name: 'gemini-1.5-flash',
+      model_provider: 'openai',
+      model_name: 'gpt-4o',
       status: 'active',
       temperature: 0.3,
       max_steps: 10,
@@ -631,23 +741,23 @@ export const seedDefaultReferenceAgent = async (
       ],
     },
     {
-      name: 'Security Validation Agent',
-      role: 'Security Audit & Credential Leak Detection',
+      name: 'DevOps Edge Deployer & Health Verifier',
+      role: 'Vercel Deployment & Synthetic Latency Testing',
       description:
-        'Audits repository commits for hardcoded secrets, dangerous dependencies, and security vulnerabilities before production deployments.',
+        'Orchestrates zero-downtime edge deployments, verifies DNS propagation, and executes post-deploy health suites.',
       instructions:
-        'You are Security Auditor, a specialized NEXUS compliance and safety verification agent. Your purpose is to scan incoming repository changes and commit payloads for exposed secret tokens, hardcoded credentials, malicious payloads, unsafe dependencies, and infrastructure misconfigurations. Output a structured advisory report with security_status (pass, warning, critical), findings list, and recommendation (proceed, block).',
-      model_provider: 'gemini',
-      model_name: 'gemini-1.5-flash',
+        'You are DevOps Edge Deployer. When pipelines reach deployment, verify build artifacts, trigger Vercel/Cloudflare production deployments, execute synthetic HTTP health probes, and report latency percentiles.',
+      model_provider: 'openai',
+      model_name: 'gpt-4o',
       status: 'active',
       temperature: 0.2,
-      max_steps: 10,
-      max_runtime_seconds: 300,
+      max_steps: 8,
+      max_runtime_seconds: 240,
       tools: [
         {
-          connector_id: 'github',
-          capability: 'github.repositories.read',
-          permission_mode: 'read_only',
+          connector_id: 'vercel',
+          capability: 'vercel.deployments.create',
+          permission_mode: 'read_write',
         },
       ],
     },
