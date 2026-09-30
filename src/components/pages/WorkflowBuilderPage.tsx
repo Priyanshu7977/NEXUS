@@ -23,6 +23,8 @@ import {
   HelpCircle,
   Loader2,
   ShieldAlert,
+  Settings2,
+  FileCode,
 } from 'lucide-react';
 import {
   WorkflowNode,
@@ -40,6 +42,8 @@ import { validateWorkflowGraph } from '../../runtime/workflow/graphValidator';
 import { useAuth } from '../../context/AuthContext';
 import { getWorkspaceAgents } from '../../services/agentService';
 import { RunWorkflowModal } from '../workflows/RunWorkflowModal';
+import { WorkflowSettingsModal, WorkflowSettingsData, DEFAULT_WORKFLOW_SETTINGS } from '../workflows/WorkflowSettingsModal';
+import { WorkflowYamlModal } from '../workflows/WorkflowYamlModal';
 
 interface NodeTemplate {
   category: WorkflowNodeType;
@@ -204,6 +208,13 @@ export const WorkflowBuilderPage: React.FC = () => {
   const [saveSuccess, setSaveSuccess] = useState(false);
   const [connectingSourceKey, setConnectingSourceKey] = useState<string | null>(null);
   const [showRunModal, setShowRunModal] = useState(false);
+  const [showSettingsModal, setShowSettingsModal] = useState(false);
+  const [showYamlModal, setShowYamlModal] = useState(false);
+  const [workflowSettings, setWorkflowSettings] = useState<WorkflowSettingsData>({
+    ...DEFAULT_WORKFLOW_SETTINGS,
+    name: workflowName,
+    description: workflowDescription,
+  });
   const [workspaceAgentsList, setWorkspaceAgentsList] = useState<any[]>([]);
 
   // Dragging State
@@ -380,6 +391,47 @@ export const WorkflowBuilderPage: React.FC = () => {
     updated_at: new Date().toISOString(),
   };
 
+  const generateDynamicYaml = () => {
+    const nodeLines = nodes
+      .map((n) => {
+        const parentEdges = edges.filter((e) => e.target_node_key === n.node_key);
+        const needs =
+          parentEdges.length > 0
+            ? `\n    needs: [${parentEdges.map((e) => `"${e.source_node_key}"`).join(', ')}]`
+            : '';
+        return `  - id: "${n.node_key}"
+    name: "${n.name}"
+    type: "${n.node_type.toLowerCase()}"${needs}
+    position: [${n.position_x}, ${n.position_y}]`;
+      })
+      .join('\n\n');
+
+    return `version: "3.1"
+metadata:
+  id: "${workflowId}"
+  name: "${workflowName.toLowerCase().replace(/[^a-z0-9]+/g, '-')}"
+  title: "${workflowName}"
+  description: "${workflowDescription}"
+
+trigger:
+  type: "${triggerType}"
+  branch: "${workflowSettings.triggerBranch}"
+
+settings:
+  timeout_minutes: ${workflowSettings.executionTimeoutMinutes}
+  max_concurrency: ${workflowSettings.maxConcurrency}
+  failure_strategy: "${workflowSettings.failureStrategy}"
+  slack_channel: "${workflowSettings.slackChannel}"
+  approval_quorum: "${workflowSettings.approvalQuorum}"
+
+pipeline:
+${nodeLines}
+
+connections:
+${edges.map((e) => `  - from: "${e.source_node_key}"\n    to: "${e.target_node_key}"`).join('\n') || '  []'}
+`;
+  };
+
   return (
     <div className="flex flex-col h-[calc(100vh-64px)] w-full overflow-hidden bg-[#111318] text-white select-none">
       {/* Top Builder Navigation & Controls */}
@@ -451,6 +503,26 @@ export const WorkflowBuilderPage: React.FC = () => {
           </div>
 
           <div className="h-4 w-px bg-[#252836]" />
+
+          {/* YAML Button */}
+          <button
+            onClick={() => setShowYamlModal(true)}
+            className="px-3 py-1.5 rounded-xl bg-white/5 hover:bg-white/10 text-white text-xs font-mono flex items-center gap-1.5 border border-white/10 transition-all cursor-pointer shadow-sm"
+            title="Inspect DAG YAML Specification"
+          >
+            <FileCode className="w-3.5 h-3.5 text-emerald-400" />
+            <span className="hidden sm:inline">YAML</span>
+          </button>
+
+          {/* Settings Button */}
+          <button
+            onClick={() => setShowSettingsModal(true)}
+            className="px-3 py-1.5 rounded-xl bg-white/5 hover:bg-white/10 text-white text-xs font-semibold flex items-center gap-1.5 border border-white/10 transition-all cursor-pointer shadow-sm"
+            title="Configure Execution, Concurrency, and Gate Settings"
+          >
+            <Settings2 className="w-3.5 h-3.5 text-[#6D4AFF]" />
+            <span className="hidden sm:inline">Settings</span>
+          </button>
 
           {/* Test Run Button */}
           <button
@@ -956,6 +1028,26 @@ export const WorkflowBuilderPage: React.FC = () => {
           workflow={currentWorkflowObject}
         />
       )}
+
+      {/* Workflow Settings Modal */}
+      <WorkflowSettingsModal
+        isOpen={showSettingsModal}
+        onClose={() => setShowSettingsModal(false)}
+        settings={workflowSettings}
+        onSave={(updated) => {
+          setWorkflowSettings(updated);
+          setWorkflowName(updated.name);
+          setWorkflowDescription(updated.description);
+        }}
+      />
+
+      {/* Workflow YAML Modal */}
+      <WorkflowYamlModal
+        isOpen={showYamlModal}
+        onClose={() => setShowYamlModal(false)}
+        workflowName={workflowName}
+        yamlContent={generateDynamicYaml()}
+      />
     </div>
   );
 };
